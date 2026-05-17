@@ -1,0 +1,959 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Privacy Policy — Azat | Otan Systems</title>
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:        #0a0c0f;
+  --surface:   #101318;
+  --border:    #1e2530;
+  --accent:    #00e5a0;
+  --accent-dim:#00e5a030;
+  --muted:     #4a5568;
+  --text:      #c9d1dc;
+  --heading:   #edf0f4;
+  --mono:      'IBM Plex Mono', monospace;
+  --sans:      'Syne', sans-serif;
+}
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--mono);
+  font-size: 14px;
+  line-height: 1.85;
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+/* Scanline overlay */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0,0,0,0.07) 2px,
+    rgba(0,0,0,0.07) 4px
+  );
+  pointer-events: none;
+  z-index: 999;
+}
+
+/* ─── HEADER ─── */
+header {
+  border-bottom: 1px solid var(--border);
+  padding: 28px 48px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  background: var(--bg);
+  z-index: 100;
+  animation: fadeDown 0.6s ease both;
+}
+
+.logo {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: 20px;
+  color: var(--heading);
+  letter-spacing: -0.5px;
+}
+
+.logo span { color: var(--accent); }
+
+.badge {
+  font-size: 11px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--muted);
+  border: 1px solid var(--border);
+  padding: 4px 10px;
+}
+
+/* ─── HERO ─── */
+.hero {
+  padding: 72px 48px 48px;
+  border-bottom: 1px solid var(--border);
+  animation: fadeUp 0.7s 0.1s ease both;
+}
+
+.hero-label {
+  font-size: 11px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--accent);
+  margin-bottom: 20px;
+}
+
+h1 {
+  font-family: var(--sans);
+  font-weight: 800;
+  font-size: clamp(36px, 6vw, 72px);
+  color: var(--heading);
+  line-height: 1.0;
+  letter-spacing: -2px;
+  margin-bottom: 24px;
+}
+
+h1 em {
+  font-style: normal;
+  color: var(--accent);
+}
+
+.hero-meta {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+  margin-top: 28px;
+}
+
+.hero-meta-item {
+  font-size: 11px;
+  color: var(--muted);
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+}
+
+.hero-meta-item strong {
+  display: block;
+  color: var(--text);
+  font-weight: 500;
+  margin-bottom: 2px;
+}
+
+/* ─── LAYOUT ─── */
+.layout {
+  display: grid;
+  grid-template-columns: 240px 1fr;
+  min-height: calc(100vh - 200px);
+}
+
+/* ─── SIDEBAR ─── */
+nav.sidebar {
+  border-right: 1px solid var(--border);
+  padding: 40px 24px;
+  position: sticky;
+  top: 73px;
+  height: calc(100vh - 73px);
+  overflow-y: auto;
+  animation: fadeRight 0.7s 0.2s ease both;
+}
+
+nav.sidebar h2 {
+  font-size: 10px;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+}
+
+nav.sidebar a {
+  display: block;
+  padding: 7px 12px;
+  color: var(--muted);
+  text-decoration: none;
+  font-size: 12px;
+  border-left: 2px solid transparent;
+  transition: all 0.2s;
+  line-height: 1.4;
+}
+
+nav.sidebar a:hover {
+  color: var(--accent);
+  border-left-color: var(--accent);
+  background: var(--accent-dim);
+}
+
+/* ─── CONTENT ─── */
+main {
+  padding: 56px 64px 96px;
+  animation: fadeUp 0.7s 0.25s ease both;
+}
+
+section {
+  margin-bottom: 64px;
+  padding-bottom: 64px;
+  border-bottom: 1px solid var(--border);
+}
+
+section:last-child { border-bottom: none; }
+
+.section-num {
+  font-size: 11px;
+  color: var(--accent);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-bottom: 10px;
+}
+
+h2 {
+  font-family: var(--sans);
+  font-weight: 700;
+  font-size: 26px;
+  color: var(--heading);
+  letter-spacing: -0.5px;
+  margin-bottom: 24px;
+}
+
+h3 {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 15px;
+  color: var(--heading);
+  margin: 28px 0 10px;
+  letter-spacing: 0.02em;
+}
+
+p { margin-bottom: 16px; color: var(--text); }
+
+ul {
+  list-style: none;
+  margin-bottom: 16px;
+}
+
+ul li {
+  padding: 6px 0 6px 20px;
+  position: relative;
+  color: var(--text);
+}
+
+ul li::before {
+  content: '›';
+  position: absolute;
+  left: 0;
+  color: var(--accent);
+  font-weight: 700;
+}
+
+/* Callout block */
+.callout {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-left: 3px solid var(--accent);
+  padding: 18px 22px;
+  margin: 24px 0;
+  font-size: 13px;
+}
+
+.callout strong {
+  color: var(--accent);
+  font-weight: 600;
+}
+
+/* Tag pills */
+.tag-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.tag {
+  font-size: 11px;
+  background: var(--surface);
+  border: 1px solid var(--border);
+  color: var(--muted);
+  padding: 4px 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+
+/* Table */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 20px 0;
+  font-size: 12.5px;
+}
+
+thead tr {
+  border-bottom: 1px solid var(--accent);
+}
+
+th {
+  text-align: left;
+  padding: 10px 14px;
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+  font-weight: 600;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text);
+  vertical-align: top;
+}
+
+tr:hover td { background: var(--surface); }
+
+/* Contact block */
+.contact-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.contact-card {
+  border: 1px solid var(--border);
+  padding: 18px 20px;
+  background: var(--surface);
+  transition: border-color 0.2s;
+}
+
+.contact-card:hover { border-color: var(--accent); }
+
+.contact-card .label {
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.15em;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.contact-card a, .contact-card span {
+  color: var(--accent);
+  text-decoration: none;
+  font-size: 12px;
+  word-break: break-all;
+}
+
+/* Footer */
+footer {
+  border-top: 1px solid var(--border);
+  padding: 28px 48px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+
+footer p { color: var(--muted); font-size: 11px; margin: 0; }
+footer span { color: var(--accent); }
+
+/* Animations */
+@keyframes fadeDown {
+  from { opacity: 0; transform: translateY(-16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(24px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeRight {
+  from { opacity: 0; transform: translateX(-16px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+
+/* Responsive */
+@media (max-width: 860px) {
+  .layout { grid-template-columns: 1fr; }
+  nav.sidebar { display: none; }
+  main { padding: 40px 24px 64px; }
+  header { padding: 20px 24px; }
+  .hero { padding: 48px 24px 36px; }
+}
+```
+
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+
+  <header>
+    <div class="logo">Azat</div>
+    <div class="badge">Otan Systems</div>
+  </header>
+
+  <!-- HERO -->
+
+  <section class="hero">
+    <p class="hero-label">Legal Document</p>
+    <h1>Privacy &amp;<br/><em>Policy</em></h1>
+    <div class="hero-meta">
+      <div class="hero-meta-item"><strong>Version</strong>1.4</div>
+      <div class="hero-meta-item"><strong>Jurisdiction</strong>Republic of Kazakhstan</div>
+      <div class="hero-meta-item"><strong>Language</strong>English</div>
+    </div>
+  </section>
+
+  <!-- LAYOUT -->
+
+  <div class="layout">
+
+```
+<!-- SIDEBAR NAV -->
+<nav class="sidebar" aria-label="Table of contents">
+  <h2>Contents</h2>
+  <a href="#overview">01 — Overview</a>
+  <a href="#scope">02 — Scope of Application</a>
+  <a href="#data-collected">03 — Data Collected</a>
+  <a href="#data-usage">04 — How We Use Data</a>
+  <a href="#data-storage">05 — Data Storage &amp; Security</a>
+  <a href="#third-parties">06 — Third-Party Services</a>
+  <a href="#rag">07 — RAG System &amp; Knowledge Base</a>
+  <a href="#user-rights">08 — Your Rights</a>
+  <a href="#restrictions">09 — Prohibited Use</a>
+  <a href="#retention">10 — Data Retention</a>
+  <a href="#changes">11 — Policy Changes</a>
+  <a href="#kyc">12 — KYC &amp; Identity Verification</a>
+  <a href="#payments">13 — Payments &amp; Currencies</a>
+  <a href="#local-storage">14 — Local Data Storage</a>
+  <a href="#ai-processing">15 — AI Processing &amp; Infrastructure</a>
+  <a href="#contact">16 — Contact</a>
+</nav>
+
+<!-- MAIN CONTENT -->
+<main>
+
+  <!-- 01 -->
+  <section id="overview">
+    <p class="section-num">01</p>
+    <h2>Overview</h2>
+    <p>
+      This Privacy Policy ("Policy") is issued by <strong>Otan Systems</strong> ("we", "us", "our") 
+      and governs the collection, processing, storage, and use of information in connection 
+      with <strong>Azat</strong> — a specialized AI language model designed for backend 
+      development and system architecture assistance.
+    </p>
+    <p>
+      By accessing or using Azat A1, you ("User") confirm that you have read, understood, 
+      and agree to the terms described in this Policy. If you do not agree, you must 
+      discontinue use of the service immediately.
+    </p>
+    <div class="callout">
+      <strong>Core Principle:</strong> Otan Systems is committed to transparency. 
+      We collect only what is necessary to operate and improve Azat A1, and we do not 
+      sell, rent, or trade personal data under any circumstance.
+    </div>
+  </section>
+
+  <!-- 02 -->
+  <section id="scope">
+    <p class="section-num">02</p>
+    <h2>Scope of Application</h2>
+    <p>This Policy applies to all interactions with the Azat A1 system, including but not limited to:</p>
+    <ul>
+      <li>Direct usage through the Otan Systems platform or interface.</li>
+      <li>API access to Azat A1 by authorized developers or organizations.</li>
+      <li>All communication channels operated by Otan Systems (email, website, support).</li>
+      <li>Beta, preview, and production versions of the Azat A1 model.</li>
+    </ul>
+    <p>
+      This Policy does not apply to third-party services, platforms, or integrations 
+      that are independently operated and have their own privacy terms.
+    </p>
+  </section>
+
+  <!-- 03 -->
+  <section id="data-collected">
+    <p class="section-num">03</p>
+    <h2>Data Collected</h2>
+    <p>We distinguish between two categories of data collection:</p>
+
+    <h3>3.1 — Operational Data (Automatic)</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data Type</th>
+          <th>Purpose</th>
+          <th>Retention</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Session identifiers</td>
+          <td>Maintaining conversation context within a session</td>
+          <td>Session duration only</td>
+        </tr>
+        <tr>
+          <td>Input token count</td>
+          <td>Rate limiting, quota management</td>
+          <td>30 days (aggregated)</td>
+        </tr>
+        <tr>
+          <td>Output token count</td>
+          <td>Billing and performance metrics</td>
+          <td>30 days (aggregated)</td>
+        </tr>
+        <tr>
+          <td>Error logs</td>
+          <td>System stability and debugging</td>
+          <td>14 days</td>
+        </tr>
+        <tr>
+          <td>Request timestamps</td>
+          <td>Abuse detection, audit trail</td>
+          <td>90 days</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <h3>3.2 — User-Provided Data (Voluntary)</h3>
+    <ul>
+      <li>Contact information submitted via email (otan-systems@proton.me).</li>
+      <li>GitHub handle or organization name for integration requests.</li>
+      <li>Feedback, bug reports, or feature requests submitted voluntarily.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>No PII by Design:</strong> Azat A1 does not require account registration 
+      to function. No name, physical address, national ID, or payment details are 
+      collected at the model interaction level.
+    </div>
+
+    <h3>3.3 — Data We Do Not Collect</h3>
+    <div class="tag-row">
+      <span class="tag">Biometric data</span>
+      <span class="tag">Location data</span>
+      <span class="tag">Device fingerprints</span>
+      <span class="tag">Browser history</span>
+      <span class="tag">Social media profiles</span>
+      <span class="tag">Financial information</span>
+      <span class="tag">Health records</span>
+    </div>
+  </section>
+
+  <!-- 04 -->
+  <section id="data-usage">
+    <p class="section-num">04</p>
+    <h2>How We Use Data</h2>
+    <p>All data collected is used strictly for the following purposes:</p>
+    <ul>
+      <li><strong>Service Delivery:</strong> Processing your requests and generating model responses within the defined stack.</li>
+      <li><strong>Performance Monitoring:</strong> Measuring response latency, token throughput, and model reliability.</li>
+      <li><strong>Security &amp; Abuse Prevention:</strong> Detecting and mitigating unauthorized or malicious usage patterns.</li>
+      <li><strong>Product Improvement:</strong> Aggregated, anonymized analytics to improve future versions of Azat A1.</li>
+      <li><strong>Communication:</strong> Responding to direct inquiries submitted to official Otan Systems channels.</li>
+    </ul>
+    <p>
+      We do not use your data for advertising, profiling, behavioral targeting, or 
+      training third-party models. Any model improvement based on interaction data 
+      is performed on fully anonymized and aggregated datasets only.
+    </p>
+  </section>
+
+  <!-- 05 -->
+  <section id="data-storage">
+    <p class="section-num">05</p>
+    <h2>Data Storage &amp; Security</h2>
+    <p>
+      Otan Systems applies industry-standard security practices to protect all data 
+      associated with Azat A1. Our infrastructure follows strict operational security principles.
+    </p>
+
+    <h3>5.1 — Infrastructure</h3>
+    <ul>
+      <li>Services are containerized using <strong>Podman 5.8.2</strong>, isolating workloads at the process level.</li>
+      <li>Network traffic is proxied and filtered via <strong>Nginx 1.24</strong>.</li>
+      <li>Authentication between internal services relies on <strong>PASETO tokens</strong> — no JWT vulnerabilities apply.</li>
+      <li>All inter-service communication is encrypted in transit (TLS 1.3 minimum).</li>
+    </ul>
+
+    <h3>5.2 — Data Isolation</h3>
+    <ul>
+      <li>Conversation data is not persisted to disk after session termination by default.</li>
+      <li>Logs are stored in append-only, access-controlled storage with automated expiry.</li>
+      <li>Databases (<strong>ArangoDB 4.0</strong>, <strong>DuckDB v1.4 LTS</strong>) hosting RAG knowledge are read-only at query time and do not store user interaction history.</li>
+    </ul>
+
+    <h3>5.3 — Breach Response</h3>
+    <p>
+      In the event of a confirmed data breach affecting user data, Otan Systems 
+      will notify affected parties via email within <strong>72 hours</strong> of 
+      confirmed discovery, in accordance with applicable data protection standards.
+    </p>
+  </section>
+
+  <!-- 06 -->
+  <section id="third-parties">
+    <p class="section-num">06</p>
+    <h2>Third-Party Services</h2>
+    <p>
+      Azat A1 operates within a defined, closed stack. We do not integrate third-party 
+      analytics, advertising SDKs, or social media tracking into the core product.
+    </p>
+    <p>The following platforms are used for official communication only:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Platform</th>
+          <th>Usage</th>
+          <th>Data Shared</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Proton Mail</td>
+          <td>Secure email support</td>
+          <td>Email address, message content (voluntary)</td>
+        </tr>
+        <tr>
+          <td>GitHub (@Otan-systems)</td>
+          <td>Source code, issue tracking</td>
+          <td>GitHub username (voluntary)</td>
+        </tr>
+        <tr>
+          <td>Instagram / TikTok</td>
+          <td>Public announcements only</td>
+          <td>None — no data collection via social</td>
+        </tr>
+      </tbody>
+    </table>
+    <p>
+      These platforms maintain their own privacy policies. Otan Systems is not 
+      responsible for data practices of third-party platforms once a user interacts 
+      with them directly.
+    </p>
+  </section>
+
+  <!-- 07 -->
+  <section id="rag">
+    <p class="section-num">07</p>
+    <h2>RAG System &amp; Knowledge Base</h2>
+    <p>
+      Azat A1 utilizes a <strong>Retrieval-Augmented Generation (RAG)</strong> architecture, 
+      embedding curated, filtered documentation from official sources of the supported stack 
+      (Go, Python, Ruby, Node.js, ArangoDB, DuckDB, and related libraries).
+    </p>
+    <div class="callout">
+      <strong>Important:</strong> The RAG knowledge base contains only publicly available 
+      official documentation. No user-submitted content, proprietary code, or personal data 
+      is ever embedded into or used to update the RAG knowledge base.
+    </div>
+    <ul>
+      <li>The RAG base is read-only at inference time — no query modifies the knowledge store.</li>
+      <li>Documentation sources are from official project repositories and maintained by Otan Systems engineers manually.</li>
+      <li>The context window of 262,144 tokens is processed ephemerally and not persisted post-session.</li>
+    </ul>
+  </section>
+
+  <!-- 08 -->
+  <section id="user-rights">
+    <p class="section-num">08</p>
+    <h2>Your Rights</h2>
+    <p>
+      Depending on applicable law in your jurisdiction, you may have the following rights 
+      regarding any personal data Otan Systems holds about you:
+    </p>
+    <ul>
+      <li><strong>Right of Access:</strong> Request a copy of data we hold associated with your contact information.</li>
+      <li><strong>Right to Rectification:</strong> Request correction of inaccurate personal data.</li>
+      <li><strong>Right to Erasure:</strong> Request deletion of personal data we hold, subject to legal obligations.</li>
+      <li><strong>Right to Restriction:</strong> Request that we limit how we use your data while a dispute is resolved.</li>
+      <li><strong>Right to Object:</strong> Object to processing of your data for specific purposes.</li>
+      <li><strong>Right to Data Portability:</strong> Request your data in a structured, machine-readable format where technically feasible.</li>
+    </ul>
+    <p>
+      To exercise any of these rights, contact us at 
+      <strong>otan-systems@proton.me</strong> with the subject line 
+      <em>"Privacy Request — [Right Type]"</em>. We will respond within <strong>30 calendar days</strong>.
+    </p>
+  </section>
+
+  <!-- 09 -->
+  <section id="restrictions">
+    <p class="section-num">09</p>
+    <h2>Prohibited Use</h2>
+    <p>
+      Users are strictly prohibited from using Azat A1 in ways that violate this Policy 
+      or applicable law. The following actions are explicitly forbidden:
+    </p>
+    <ul>
+      <li>Submitting personally identifiable information of third parties without their consent.</li>
+      <li>Attempting to extract, reverse-engineer, or replicate the RAG knowledge base or model weights.</li>
+      <li>Using the system to generate malicious code, exploits, or tools for unauthorized access.</li>
+      <li>Circumventing rate limits, session controls, or authentication mechanisms.</li>
+      <li>Submitting content that constitutes hate speech, threats, or illegal material.</li>
+      <li>Automated scraping of model outputs for the purpose of training competing models.</li>
+    </ul>
+    <p>
+      Violations may result in immediate suspension of access and, where required by law, 
+      reporting to relevant authorities.
+    </p>
+  </section>
+
+  <!-- 10 -->
+  <section id="retention">
+    <p class="section-num">10</p>
+    <h2>Data Retention</h2>
+    <p>We retain data only for as long as operationally or legally required:</p>
+    <table>
+      <thead>
+        <tr>
+          <th>Data Category</th>
+          <th>Retention Period</th>
+          <th>Deletion Method</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Session context</td>
+          <td>End of session</td>
+          <td>Automatic (in-memory flush)</td>
+        </tr>
+        <tr>
+          <td>Error &amp; diagnostic logs</td>
+          <td>14 days</td>
+          <td>Automated scheduled deletion</td>
+        </tr>
+        <tr>
+          <td>Request timestamps</td>
+          <td>90 days</td>
+          <td>Automated scheduled deletion</td>
+        </tr>
+        <tr>
+          <td>Voluntary contact data</td>
+          <td>Until request for erasure</td>
+          <td>Manual deletion upon request</td>
+        </tr>
+        <tr>
+          <td>Anonymized usage analytics</td>
+          <td>Up to 12 months</td>
+          <td>Aggregated — no individual deletion required</td>
+        </tr>
+      </tbody>
+    </table>
+  </section>
+
+  <!-- 11 -->
+  <section id="changes">
+    <p class="section-num">11</p>
+    <h2>Policy Changes</h2>
+    <p>
+      Otan Systems reserves the right to update or modify this Privacy Policy at any time. 
+      Changes will be announced through our official channels (GitHub, website, email to 
+      known contacts) with a minimum notice period of <strong>14 days</strong> before 
+      changes take effect, except in cases of urgent security updates.
+    </p>
+    <p>
+      The version number and effective date at the top of this document will be updated 
+      with each revision. Continued use of Azat A1 after the effective date of a revised 
+      Policy constitutes acceptance of the new terms.
+    </p>
+    <div class="callout">
+      <strong>Recommendation:</strong> Bookmark this page and review it periodically. 
+      Significant changes affecting user rights will always be communicated directly.
+    </div>
+  </section>
+
+  <!-- 12 -->
+  <section id="kyc">
+    <p class="section-num">12</p>
+    <h2>KYC &amp; Identity Verification</h2>
+    <p>
+      Because Otan Systems operates using <strong>USDC (Solana)</strong> as its primary currency 
+      and additionally supports fiat payment methods, all users are free from completing a 
+      <strong>Know Your Customer (KYC)</strong> verification process. 
+      Otan Systems itself has already completed <strong>Know Your Business (KYB)</strong> verification.
+    </p>
+
+  <!-- 13 -->
+  <section id="payments">
+    <p class="section-num">13</p>
+    <h2>Payments &amp; Currencies</h2>
+    <p>
+      Otan Systems supports multiple payment methods to accommodate a global user base. 
+      The primary settlement currency is <strong>USDC on the Solana blockchain</strong>. 
+      Fiat and alternative payment channels are provided for regional accessibility.
+    </p>
+
+    <h3>13.1 — Supported Payment Methods</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Method</th>
+          <th>Currency / Network</th>
+          <th>Provider</th>
+          <th>Region</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Direct USDC Payment</td>
+          <td>USDC · Solana</td>
+          <td><strong>Plisio</strong></td>
+          <td>Global</td>
+        </tr>
+        <tr>
+          <td>Fiat (card, bank transfer)</td>
+          <td>Multi-currency fiat</td>
+          <td><strong>Cryptomus</strong></td>
+          <td>Global (KYC required)</td>
+        </tr>
+
+    <h3>13.2 — Payment Data</h3>
+    <ul>
+      <li>Otan Systems does not store card numbers, bank account details, or full wallet credentials.</li>
+      <li>All payment transactions are processed by the respective payment provider (Plisio, Cryptomus, WeChat, or Alipay) under their own security and compliance standards.</li>
+      <li>Transaction identifiers and amounts may be retained for <strong>up to 1 year</strong> for accounting, tax, and regulatory purposes.</li>
+      <li>USDC transactions on the Solana blockchain are inherently public by nature of the blockchain ledger.</li>
+    </ul>
+
+    <div class="callout">
+      <strong>KYC Reminder:</strong> Fiat payments via Cryptomus require completed KYC verification 
+      (see Section 12). USDC payments via Plisio do not require KYC, but access to the full platform 
+      may still require identity verification depending on your subscription tier.
+    </div>
+  </section>
+
+  <!-- 14 -->
+  <section id="local-storage">
+    <p class="section-num">14</p>
+    <h2>Local Data Storage</h2>
+    <p>
+      Azat A1 is designed with a <strong>local-first privacy architecture</strong> for personal 
+      user data. The following data categories are stored exclusively on the user's own device 
+      and are never transmitted to or stored on Otan Systems servers:
+    </p>
+
+    <h3>14.1 — Locally Stored Data</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Data Type</th>
+          <th>Storage Location</th>
+          <th>Synced to Server?</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>Chat messages &amp; conversation history</td>
+          <td>User's local device</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>AI-generated notes about the user</td>
+          <td>User's local device</td>
+          <td>No</td>
+        </tr>
+        <tr>
+          <td>Active and past project data</td>
+          <td>User's local device</td>
+          <td>No</td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div class="callout">
+      <strong>User Responsibility:</strong> Because this data lives only on your device, 
+      Otan Systems cannot recover it in the event of device loss, hardware failure, or 
+      accidental deletion. We recommend maintaining your own backups of critical project data.
+    </div>
+
+    <h3>14.2 — Implications</h3>
+    <ul>
+      <li>Otan Systems has no ability to access, view, or audit locally stored conversations or notes.</li>
+      <li>Uninstalling or clearing the Azat A1 application will permanently delete all locally stored user data.</li>
+      <li>Data portability for local data is the user's own responsibility — export features may be available within the app interface.</li>
+    </ul>
+  </section>
+
+  <!-- 15 -->
+  <section id="ai-processing">
+    <p class="section-num">15</p>
+    <h2>AI Processing &amp; Infrastructure</h2>
+    <p>
+      Azat A1 relies on a combination of proprietary and third-party AI infrastructure 
+      to deliver its capabilities. This section describes the external AI services 
+      involved in data processing.
+    </p>
+
+    <h3>15.1 — Google Vertex AI</h3>
+    <p>
+      Otan Systems uses <strong>Google Vertex AI</strong> as part of the underlying 
+      AI processing pipeline. Specifically, Vertex AI is involved in:
+    </p>
+    <ul>
+      <li>Processing of prompts and generation of model responses where applicable.</li>
+      <li>Powering data processing tasks associated with <strong>Azat</strong> workflows and workloads.</li>
+      <li>Supporting inference infrastructure for high-availability response delivery.</li>
+    </ul>
+    <p>
+      Data processed via Google Vertex AI is governed by 
+      <strong>Google Cloud's Data Processing Addendum</strong> and applicable 
+      Google Cloud privacy terms. Otan Systems has configured Vertex AI services 
+      under settings designed to minimize data retention by Google.
+    </p>
+
+    <div class="callout">
+      <strong>Data Residency:</strong> Prompts processed through Google Vertex AI may 
+      be transmitted to Google Cloud infrastructure. Otan Systems has configured 
+      regional processing settings where available, but users in jurisdictions with 
+      strict data residency requirements should be aware of this cross-border processing.
+    </div>
+
+    <h3>15.2 — Scope of Third-Party AI Processing</h3>
+    <ul>
+      <li>Only the content of active requests (prompts) is sent to Vertex AI — no locally stored history or personal profile data is forwarded.</li>
+      <li>Otan Systems does not permit Google to use submitted prompts for training its own models, in accordance with applicable Google Cloud enterprise data terms.</li>
+      <li>Session context is ephemeral and not persisted beyond the active inference window.</li>
+    </ul>
+  </section>
+
+  <!-- 16 -->
+  <section id="contact">
+    <p class="section-num">16</p>
+    <h2>Contact</h2>
+    <p>
+      For privacy-related inquiries, data requests, or to report a potential security 
+      issue, please reach out through the official Otan Systems channels:
+    </p>
+    <div class="contact-grid">
+      <div class="contact-card">
+        <div class="label">Email</div>
+        <a href="mailto:otan-systems@proton.me">otan-systems@proton.me</a>
+      </div>
+      <div class="contact-card">
+        <div class="label">GitHub</div>
+        <a href="https://github.com/Otan-systems" target="_blank">@Otan-systems</a>
+      </div>
+      <div class="contact-card">
+        <div class="label">Instagram</div>
+        <span>@otansystems_official</span>
+      </div>
+      <div class="contact-card">
+        <div class="label">TikTok</div>
+        <span>@otan.systems</span>
+      </div>
+    </div>
+    <p style="margin-top: 28px; color: var(--muted); font-size: 12px;">
+      Response time for privacy requests: up to <strong style="color: var(--text)">30 calendar days</strong>. 
+      For urgent security disclosures, use email with subject: <em>"Security Disclosure — Azat A1"</em>.
+    </p>
+  </section>
+
+</main>
+```
+
+  </div>
+
+  <!-- FOOTER -->
+
+  <footer>
+    <p>© Otan Systems. All rights reserved. — <span>Azat A1</span> Privacy Policy v1.4.0</p>
+    <p>Effective: <span>July 1, 2025</span> (estimated) — Jurisdiction: Republic of Kazakhstan</p>
+  </footer>
+
+</body>
+</html>
