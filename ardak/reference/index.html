@@ -1,585 +1,914 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Privacy & Policy — Ardak | Otan Systems</title>
-  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
-  <style>
-    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privacy Policy — Ardak AI · Otan Systems</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    :root {
-      --bg:        #0a0c0f;
-      --surface:   #101318;
-      --border:    #1e2530;
-      --accent:    #00e5a0;
-      --accent-dim:#00e5a030;
-      --muted:     #4a5568;
-      --text:      #c9d1dc;
-      --heading:   #edf0f4;
-      --mono:      'IBM Plex Mono', monospace;
-      --sans:      'Syne', sans-serif;
-    }
+  :root {
+    --blue-deep:    #0B2C6B;
+    --blue-mid:     #1A4DB5;
+    --blue-bright:  #2563EB;
+    --blue-light:   #3B82F6;
+    --blue-pale:    #DBEAFE;
+    --blue-xpale:   #EFF6FF;
+    --white:        #FFFFFF;
+    --text-dark:    #0F172A;
+    --text-muted:   #475569;
+    --border:       #BFDBFE;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Consolas", monospace;
+  }
 
-    html { scroll-behavior: smooth; }
+  html { scroll-behavior: smooth; }
 
-    body {
-      background: var(--bg);
-      color: var(--text);
-      font-family: var(--mono);
-      font-size: 14px;
-      line-height: 1.85;
-      min-height: 100vh;
-      overflow-x: hidden;
-    }
+  body {
+    font-family: var(--font);
+    background: var(--white);
+    color: var(--text-dark);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
 
-    /* Scanline overlay */
-    body::before {
-      content: '';
-      position: fixed;
-      inset: 0;
-      background: repeating-linear-gradient(
-        0deg,
-        transparent,
-        transparent 2px,
-        rgba(0,0,0,0.07) 2px,
-        rgba(0,0,0,0.07) 4px
-      );
-      pointer-events: none;
-      z-index: 999;
-    }
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--blue-deep);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--blue-bright);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo {
+    width: 32px; height: 32px;
+    background: var(--blue-bright);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    color: var(--white);
+  }
+  .topbar-name {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+  .topbar-name span {
+    opacity: .55;
+    font-weight: 400;
+    margin-left: 6px;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  .topbar-badge {
+    background: var(--blue-mid);
+    border: 1px solid var(--blue-light);
+    color: var(--blue-pale);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+  }
 
-    /* ─── HEADER ─── */
-    header {
-      border-bottom: 1px solid var(--border);
-      padding: 28px 48px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      position: sticky;
-      top: 0;
-      background: var(--bg);
-      z-index: 100;
-      animation: fadeDown 0.6s ease both;
-    }
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(145deg, var(--blue-deep) 0%, var(--blue-mid) 60%, var(--blue-bright) 100%);
+    color: var(--white);
+    padding: 72px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 60px solid rgba(255,255,255,.05);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -100px; right: 80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 40px solid rgba(255,255,255,.04);
+  }
+  .hero-inner { max-width: 860px; margin: 0 auto; position: relative; }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-pale);
+    margin-bottom: 16px;
+    opacity: .85;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: #93C5FD;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--white);
+    backdrop-filter: blur(4px);
+  }
+  .meta-pill strong { font-weight: 700; }
 
-    .logo {
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: 20px;
-      color: var(--heading);
-      letter-spacing: -0.5px;
-    }
+  /* ── MAIN LAYOUT ── */
+  .page { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
 
-    .logo span { color: var(--accent); }
+  /* ── SECTION NAV ── */
+  .toc-bar {
+    background: var(--blue-xpale);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin: 40px 0;
+  }
+  .toc-bar h2 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-mid);
+    margin-bottom: 14px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+  }
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--blue-deep);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: background .15s;
+  }
+  .toc-link:hover { background: var(--border); }
+  .toc-num {
+    background: var(--blue-bright);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
 
-    .badge {
-      font-size: 11px;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      padding: 4px 10px;
-    }
+  /* ── SECTION ── */
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--blue-pale);
+  }
+  .section-icon {
+    width: 44px; height: 44px;
+    background: var(--blue-bright);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .section-title-group { flex: 1; }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 2px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -.4px;
+    color: var(--blue-deep);
+  }
+  .section p { color: var(--text-muted); margin-bottom: 14px; }
+  .section p:last-child { margin-bottom: 0; }
 
-    /* ─── HERO ─── */
-    .hero {
-      padding: 72px 48px 48px;
-      border-bottom: 1px solid var(--border);
-      animation: fadeUp 0.7s 0.1s ease both;
-    }
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue-bright);
+  }
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 8px;
+  }
+  .card-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blue-deep);
+    line-height: 1.4;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
 
-    .hero-label {
-      font-size: 11px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--accent);
-      margin-bottom: 20px;
-    }
+  /* ── HIGHLIGHT BOX ── */
+  .highlight {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .highlight strong { color: #93C5FD; }
+  .highlight.soft {
+    background: var(--blue-xpale);
+    color: var(--text-dark);
+    border-left: 4px solid var(--blue-bright);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .highlight.soft strong { color: var(--blue-mid); }
 
-    h1 {
-      font-family: var(--sans);
-      font-weight: 800;
-      font-size: clamp(36px, 6vw, 72px);
-      color: var(--heading);
-      line-height: 1.0;
-      letter-spacing: -2px;
-      margin-bottom: 24px;
-    }
+  /* ── NO-COLLECT LIST ── */
+  .no-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .no-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--blue-xpale);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--text-dark);
+  }
+  .no-list li::before {
+    content: "✕";
+    color: var(--blue-bright);
+    font-weight: 800;
+    font-size: 12px;
+    line-height: 1.6;
+    flex-shrink: 0;
+  }
 
-    h1 em {
-      font-style: normal;
-      color: var(--accent);
-    }
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+  .pipeline-step {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .pipeline-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 44px;
+    flex-shrink: 0;
+  }
+  .pipeline-dot {
+    width: 20px; height: 20px;
+    background: var(--blue-bright);
+    border-radius: 50%;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 2px var(--blue-bright);
+    flex-shrink: 0;
+    margin-top: 18px;
+  }
+  .pipeline-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    margin: 4px auto 0;
+  }
+  .pipeline-step:last-child .pipeline-line { display: none; }
+  .pipeline-body {
+    flex: 1;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    margin: 8px 0 8px 8px;
+  }
+  .pipeline-body h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    margin-bottom: 4px;
+  }
+  .pipeline-body p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .pipeline-tag {
+    display: inline-block;
+    background: var(--blue-pale);
+    color: var(--blue-mid);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
 
-    .hero-meta {
-      display: flex;
-      gap: 32px;
-      flex-wrap: wrap;
-      margin-top: 28px;
-    }
+  /* ── WEB3 GRID ── */
+  .token-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .token-chip {
+    background: var(--blue-deep);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: .3px;
+  }
 
-    .hero-meta-item {
-      font-size: 11px;
-      color: var(--muted);
-      text-transform: uppercase;
-      letter-spacing: 0.12em;
-    }
+  /* ── RIGHTS TABLE ── */
+  .rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .right-card {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .right-card .right-icon { font-size: 24px; margin-bottom: 8px; }
+  .right-card .right-name { font-size: 13px; font-weight: 700; color: #93C5FD; }
+  .right-card .right-desc { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 4px; line-height: 1.4; }
 
-    .hero-meta-item strong {
-      display: block;
-      color: var(--text);
-      font-weight: 500;
-      margin-bottom: 2px;
-    }
+  /* ── SECURITY ITEMS ── */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .sec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  .sec-icon {
+    width: 36px; height: 36px;
+    background: var(--blue-bright);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--white);
+  }
+  .sec-text h4 { font-size: 13px; font-weight: 700; color: var(--blue-deep); margin-bottom: 3px; }
+  .sec-text p  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-    /* ─── LAYOUT ─── */
-    .layout {
-      display: grid;
-      grid-template-columns: 240px 1fr;
-      min-height: calc(100vh - 200px);
-    }
+  /* ── CONTACT ── */
+  .contact-bar {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 48px;
+  }
+  .contact-bar h2 { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
+  .contact-bar p  { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  .contact-link:hover { background: rgba(255,255,255,.2); }
+  .contact-link .cl-icon { font-size: 16px; }
 
-    /* ─── SIDEBAR ─── */
-    nav.sidebar {
-      border-right: 1px solid var(--border);
-      padding: 40px 24px;
-      position: sticky;
-      top: 73px;
-      height: calc(100vh - 73px);
-      overflow-y: auto;
-      animation: fadeRight 0.7s 0.2s ease both;
-    }
+  /* ── FOOTER ── */
+  footer {
+    background: var(--blue-xpale);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 24px 40px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer strong { color: var(--blue-deep); }
 
-    nav.sidebar h2 {
-      font-size: 10px;
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 16px;
-    }
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--blue-pale); margin: 0 0 32px; }
 
-    nav.sidebar a {
-      display: block;
-      padding: 7px 12px;
-      color: var(--muted);
-      text-decoration: none;
-      font-size: 12px;
-      border-left: 2px solid transparent;
-      transition: all 0.2s;
-      line-height: 1.4;
-    }
+  /* ── SUB SECTIONS ── */
+  .subsection { margin-bottom: 28px; }
+  .subsection-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue-mid);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subsection-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 16px;
+    background: var(--blue-bright);
+    border-radius: 2px;
+  }
 
-    nav.sidebar a:hover {
-      color: var(--accent);
-      border-left-color: var(--accent);
-      background: var(--accent-dim);
-    }
-
-    /* ─── CONTENT ─── */
-    main {
-      padding: 56px 64px 96px;
-      animation: fadeUp 0.7s 0.25s ease both;
-    }
-
-    section {
-      margin-bottom: 64px;
-      padding-bottom: 64px;
-      border-bottom: 1px solid var(--border);
-    }
-
-    section:last-child { border-bottom: none; }
-
-    .section-num {
-      font-size: 11px;
-      color: var(--accent);
-      letter-spacing: 0.2em;
-      text-transform: uppercase;
-      margin-bottom: 10px;
-    }
-
-    h2 {
-      font-family: var(--sans);
-      font-weight: 700;
-      font-size: 26px;
-      color: var(--heading);
-      letter-spacing: -0.5px;
-      margin-bottom: 24px;
-    }
-
-    h3 {
-      font-family: var(--sans);
-      font-weight: 600;
-      font-size: 15px;
-      color: var(--heading);
-      margin: 28px 0 10px;
-      letter-spacing: 0.02em;
-    }
-
-    p { margin-bottom: 16px; color: var(--text); }
-
-    ul {
-      list-style: none;
-      margin-bottom: 16px;
-    }
-
-    ul li {
-      padding: 6px 0 6px 20px;
-      position: relative;
-      color: var(--text);
-    }
-
-    ul li::before {
-      content: '›';
-      position: absolute;
-      left: 0;
-      color: var(--accent);
-      font-weight: 700;
-    }
-
-    /* Callout block */
-    .callout {
-      background: var(--surface);
-      border: 1px solid var(--border);
-      border-left: 3px solid var(--accent);
-      padding: 18px 22px;
-      margin: 24px 0;
-      font-size: 13px;
-    }
-
-    .callout strong {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* Tag pills */
-    .tag-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin: 16px 0;
-    }
-
-    .tag {
-      font-size: 11px;
-      background: var(--surface);
-      border: 1px solid var(--border);
-      color: var(--muted);
-      padding: 4px 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.1em;
-    }
-
-    /* Table */
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin: 20px 0;
-      font-size: 12.5px;
-    }
-
-    thead tr {
-      border-bottom: 1px solid var(--accent);
-    }
-
-    th {
-      text-align: left;
-      padding: 10px 14px;
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    td {
-      padding: 10px 14px;
-      border-bottom: 1px solid var(--border);
-      color: var(--text);
-      vertical-align: top;
-    }
-
-    tr:hover td { background: var(--surface); }
-
-    /* Contact block */
-    .contact-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 16px;
-      margin-top: 24px;
-    }
-
-    .contact-card {
-      border: 1px solid var(--border);
-      padding: 18px 20px;
-      background: var(--surface);
-      transition: border-color 0.2s;
-    }
-
-    .contact-card:hover { border-color: var(--accent); }
-
-    .contact-card .label {
-      font-size: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.15em;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-
-    .contact-card a, .contact-card span {
-      color: var(--accent);
-      text-decoration: none;
-      font-size: 12px;
-      word-break: break-all;
-    }
-
-    /* Footer */
-    footer {
-      border-top: 1px solid var(--border);
-      padding: 28px 48px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      flex-wrap: wrap;
-      gap: 12px;
-    }
-
-    footer p { color: var(--muted); font-size: 11px; margin: 0; }
-    footer span { color: var(--accent); }
-
-    /* Animations */
-    @keyframes fadeDown {
-      from { opacity: 0; transform: translateY(-16px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
-      to   { opacity: 1; transform: translateY(0); }
-    }
-
-    @keyframes fadeRight {
-      from { opacity: 0; transform: translateX(-16px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
-
-    /* Responsive */
-    @media (max-width: 860px) {
-      .layout { grid-template-columns: 1fr; }
-      nav.sidebar { display: none; }
-      main { padding: 40px 24px 64px; }
-      header { padding: 20px 24px; }
-      .hero { padding: 48px 24px 36px; }
-    }
-  </style>
+  @media (max-width: 600px) {
+    .topbar { padding: 0 16px; }
+    .hero { padding: 48px 16px 40px; }
+    .page { padding: 0 16px 60px; }
+    .contact-bar { padding: 24px 20px; }
+  }
+</style>
 </head>
 <body>
-  <!-- ─── HEADER ─── -->
-  <header>
-    <div class="logo">Ardak<span>.</span>AI</div>
-    <div class="badge">Otan Systems · v2.0</div>
-  </header>
 
-  <!-- ─── HERO ─── -->
-  <section class="hero">
-    <p class="hero-label">// Legal · v2.0</p>
-    <h1>Privacy <em>&</em> Policy</h1>
+<!-- TOP BAR -->
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">AK</div>
+    <div class="topbar-name">Ardak AI <span>by Otan Systems</span></div>
+  </div>
+  <div class="topbar-badge">Privacy Policy</div>
+</nav>
+
+<!-- HERO -->
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Legal Documentation</div>
+    <h1>Privacy Policy<br><em>Ardak AI</em></h1>
+    <p style="color:rgba(255,255,255,.75); max-width:540px; font-size:15px;">
+      We believe privacy is a right, not a feature. This document explains exactly how your data is — and isn't — handled.
+    </p>
     <div class="hero-meta">
-      <div class="hero-meta-item"><strong>Operator</strong>Otan Systems</div>
-      <div class="hero-meta-item"><strong>Jurisdiction</strong>Republic of Kazakhstan</div>
-      <div class="hero-meta-item"><strong>Effective</strong>2025</div>
+      <div class="meta-pill"><strong>Published:</strong> 20 May 2026</div>
+      <div class="meta-pill"><strong>Updated:</strong> 20 May 2026</div>
+      <div class="meta-pill"><strong>HQ:</strong> Astana, Kazakhstan</div>
+      <div class="meta-pill"><strong>Scope:</strong> Global · GDPR · CCPA/CPRA</div>
+    </div>
+  </div>
+</header>
+
+<!-- MAIN -->
+<main class="page">
+
+  <!-- TABLE OF CONTENTS -->
+  <nav class="toc-bar">
+    <h2>Contents</h2>
+    <div class="toc-grid">
+      <a class="toc-link" href="#s1"><span class="toc-num">1</span> Core Philosophy</a>
+      <a class="toc-link" href="#s2"><span class="toc-num">2</span> Data Not Collected</a>
+      <a class="toc-link" href="#s3"><span class="toc-num">3</span> Processing &amp; Auth</a>
+      <a class="toc-link" href="#s4"><span class="toc-num">4</span> AI Inference Pipeline</a>
+      <a class="toc-link" href="#s5"><span class="toc-num">5</span> Web3 &amp; Payments</a>
+      <a class="toc-link" href="#s6"><span class="toc-num">6</span> Global Rights</a>
+      <a class="toc-link" href="#s7"><span class="toc-num">7</span> Technical Security</a>
+      <a class="toc-link" href="#s8"><span class="toc-num">8</span> Contact</a>
+    </div>
+  </nav>
+
+  <!-- SECTION 1 -->
+  <section class="section" id="s1">
+    <div class="section-header">
+      <div class="section-icon">🏛️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 1</div>
+        <div class="section-title">Core Philosophy &amp; Architecture</div>
+      </div>
+    </div>
+    <p>This Privacy Policy governs the processing of data within <strong>Ardak AI</strong>, a specialised artificial intelligence language model application operated by <strong>Otan Systems</strong>.</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Architecture</div>
+        <div class="card-value">Local-First</div>
+        <div class="card-desc">Minimises data collection and maximises user control at every layer.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Data Sales</div>
+        <div class="card-value">Never</div>
+        <div class="card-desc">We do not sell, rent, or trade user information with any third party.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Guiding Principle</div>
+        <div class="card-value">Minimum Necessary</div>
+        <div class="card-desc">Only what is strictly required to deliver the service — nothing more.</div>
+      </div>
+    </div>
+    <p>By authenticating and using Ardak AI, you acknowledge and agree to the data practices outlined in this Policy.</p>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 2 -->
+  <section class="section" id="s2">
+    <div class="section-header">
+      <div class="section-icon">🚫</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 2</div>
+        <div class="section-title">Data We Do Not Collect</div>
+      </div>
+    </div>
+    <p>Ardak AI does not maintain traditional cloud-based user databases. The following data is <strong>never collected or stored</strong>:</p>
+    <ul class="no-list">
+      <li>Names, email addresses, or phone numbers</li>
+      <li>User passwords of any kind</li>
+      <li>Identity documents or biometric data</li>
+      <li>Passports or driver's licences (Zero KYC)</li>
+      <li>Web analytics or behavioural tracking</li>
+      <li>Advertising pixels (Meta, TikTok, etc.)</li>
+      <li>Tracking cookies of any type</li>
+    </ul>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 3 -->
+  <section class="section" id="s3">
+    <div class="section-header">
+      <div class="section-icon">🔑</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 3</div>
+        <div class="section-title">Data Processing &amp; Authentication</div>
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">3.1 Authentication Layer</div>
+      <p>Access is managed via trusted third-party OAuth 2.0 providers. Supported methods:</p>
+      <div class="card-grid">
+        <div class="card">
+          <div class="card-label">Provider</div>
+          <div class="card-value">Continue with Google</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Provider</div>
+          <div class="card-value">Continue with GitHub</div>
+        </div>
+        <div class="card">
+          <div class="card-label">Provider</div>
+          <div class="card-value">Continue with Apple</div>
+        </div>
+      </div>
+      <div class="highlight soft">
+        <strong>How it works:</strong> During login, authentication occurs on the provider's secure infrastructure. Otan Systems receives only a <strong>transient cryptographic session token</strong> to authorise your current session. This token is discarded at the end of your session and is never linked to any persistent identifier held by us.
+      </div>
+      <div class="highlight">
+        <strong>GDPR Note:</strong> Even a transient session token may constitute personal data under the GDPR. Otan Systems processes this token solely on the legal basis of <strong>performance of contract</strong> (Article 6(1)(b) GDPR).
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">3.2 Local-First Storage</div>
+      <p>All conversation histories, system prompts, configuration contexts, notes, and active project data are stored <strong>strictly on your local device</strong>. Otan Systems operates no server-side databases that log, sync, or retain your conversation data.</p>
+      <div class="highlight soft">
+        <strong>Important:</strong> Because your data resides entirely on your device, we are unable to recover, restore, or export it if you clear your browser storage or lose your device. To ensure complete erasure, clear your browser's site data for the Ardak AI domain — clearing the cache alone may not be sufficient.
+      </div>
     </div>
   </section>
 
-  <!-- ─── LAYOUT ─── -->
-  <div class="layout">
+  <div class="divider"></div>
 
-    <!-- Sidebar -->
-    <nav class="sidebar">
-      <h2>Contents</h2>
-      <a href="#data-governance">01 · Data Governance & Non-Training</a>
-      <a href="#local-storage">02 · Local Storage & Responsibility</a>
-      <a href="#auth">03 · Registration & Authentication</a>
-      <a href="#kyc">04 · Identity Verification (KYC)</a>
-      <a href="#payments">05 · Payments & Financial Data</a>
-      <a href="#age">06 · Age Policy & Universal Access</a>
-      <a href="#jurisdiction">07 · Jurisdiction & Global Compliance</a>
-      <a href="#contact">08 · Contact & Updates</a>
-    </nav>
+  <!-- SECTION 4 -->
+  <section class="section" id="s4">
+    <div class="section-header">
+      <div class="section-icon">⚙️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 4</div>
+        <div class="section-title">AI Inference Pipeline (Sub-Processors)</div>
+      </div>
+    </div>
+    <p>To generate responses, your live prompts must be transmitted to external AI infrastructure. This is necessary for the service to function.</p>
 
-    <!-- Content -->
-    <main>
-
-      <section id="data-governance">
-        <p class="section-num">Section 01</p>
-        <h2>Data Governance & Non-Training Commitment</h2>
-        <p>Ardak is designed with a privacy-first architecture.</p>
-        <ul>
-          <li><strong>No Training:</strong> Your prompts, queries, and the AI's responses are <em>not</em> used to train the underlying models.</li>
-          <li><strong>Third-Party Processing:</strong> To provide high-performance LLM capabilities, Ardak utilizes <span style="color:var(--accent)">Venice AI</span> as a sub-processor.</li>
-        </ul>
-        <div class="tag-row">
-          <span class="tag">No training</span>
-          <span class="tag">Sub-processor: Venice AI</span>
-          <span class="tag">Privacy-first</span>
+    <div class="pipeline">
+      <div class="pipeline-step">
+        <div class="pipeline-left">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
         </div>
-      </section>
-
-      <section id="local-storage">
-        <p class="section-num">Section 02</p>
-        <h2>Local Storage & User Responsibility</h2>
-        <p>Unlike traditional cloud-based AI services, Ardak prioritizes local data sovereignty.</p>
-        <ul>
-          <li><strong>Local Records:</strong> Your entire chat history, messages, and Ardak's long-term memory (including notes regarding your profile and active projects) are stored locally on your device.</li>
-          <li><strong>Data Portability & Risk:</strong> Because your data is stored locally, it is not synced across devices by our servers. If you switch devices or delete local files, the data cannot be recovered by Ardak.</li>
-        </ul>
-        <div class="callout">
-          <strong>Backup recommendation:</strong> To ensure data persistence, we highly recommend manually backing up your local data to a secure cloud provider (Google Drive, iCloud, OneDrive, Proton Drive).
+        <div class="pipeline-body">
+          <div class="pipeline-tag">Step 1 · Your Device</div>
+          <h4>Prompt Composed Locally</h4>
+          <p>Your message is composed on-device. No data is sent until you submit a query.</p>
         </div>
-      </section>
-
-      <section id="auth">
-        <p class="section-num">Section 03</p>
-        <h2>Registration & Authentication</h2>
-        <p>Ardak does not maintain a proprietary registration or password database.</p>
-        <ul>
-          <li><strong>OAuth Integration:</strong> We use <em>Continue with Google</em>, <em>Continue with GitHub</em>, and <em>Continue with Apple</em> for secure authentication.</li>
-          <li><strong>No Direct Credentials:</strong> We do not collect or store your passwords. Authentication is handled entirely by your chosen third-party provider.</li>
-        </ul>
-        <div class="tag-row">
-          <span class="tag">Google</span>
-          <span class="tag">GitHub</span>
-          <span class="tag">Apple</span>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-left">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
         </div>
-      </section>
-
-      <section id="kyc">
-        <p class="section-num">Section 04</p>
-        <h2>Identity Verification (KYC)</h2>
-        <p>To ensure compliance with international financial regulations and enable the use of fiat currencies, all users must complete a Know Your Customer process.</p>
-        <ul>
-          <li><strong>Mandatory Requirements:</strong> Upload a valid Passport or National ID card, along with a clear selfie.</li>
-          <li><strong>Verification Provider:</strong> Managed securely through <span style="color:var(--accent)">Cryptomus</span>.</li>
-          <li><strong>Compliance:</strong> Otan Systems has successfully completed KYB (Know Your Business) verification.</li>
-        </ul>
-      </section>
-
-      <section id="payments">
-        <p class="section-num">Section 05</p>
-        <h2>Payments & Financial Data</h2>
-        <p>Ardak supports digital assets and traditional fiat for premium features.</p>
-        <table>
-          <thead>
-            <tr>
-              <th>Method</th>
-              <th>Provider</th>
-              <th>Region</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr><td>USDC (Solana/Optimism/Base/Polygon/Arbitrum One)</td><td>Jumper Widget</td><td>Global</td></tr>
-            <tr><td>Web3 wallet</td><td>TrustWallet</td><td>Storage</td></tr>
-          </tbody>
-        </table>
-        <div class="callout">
-          <strong>Privacy in payments:</strong> Ardak does not store your private keys or full credit card numbers. These are handled exclusively by the respective payment gateways and wallet providers.
+        <div class="pipeline-body">
+          <div class="pipeline-tag">Step 2 · Gateway</div>
+          <h4>OpenRouter (Sub-Processor)</h4>
+          <p>Your prompt is routed via a secure internal proxy to OpenRouter, bound by a Data Processing Agreement. It may not retain or train on your data.</p>
         </div>
-      </section>
-
-      <section id="age">
-        <p class="section-num">Section 06</p>
-        <h2>Age Policy & Universal Access</h2>
-        <p><strong style="color:var(--heading)">Equal Standards:</strong> Our privacy and safety policies are applied equally to all users, regardless of age or location. We maintain a uniform standard of data protection across our entire global user base.</p>
-      </section>
-
-      <section id="jurisdiction">
-        <p class="section-num">Section 07</p>
-        <h2>Jurisdiction & Global Compliance</h2>
-        <ul>
-          <li><strong>Origin:</strong> Developed and operated out of Astana, Kazakhstan.</li>
-          <li><strong>Applicable Law:</strong> Governed by the laws of the Republic of Kazakhstan.</li>
-          <li><strong>Global Aim:</strong> Local storage and non-training practices aligned with international privacy expectations.</li>
-        </ul>
-      </section>
-
-      <section id="contact">
-        <p class="section-num">Section 08</p>
-        <h2>Contact & Updates</h2>
-        <p>We reserve the right to update this policy as our technology evolves. Continued use of the service constitutes acceptance of any changes regarding how your data is handled within the local and third-party frameworks mentioned above.</p>
-        <div class="contact-grid">
-          <div class="contact-card">
-            <div class="label">Operator</div>
-            <span>Otan Systems</span>
-          </div>
-          <div class="contact-card">
-            <div class="label">Location</div>
-            <span>Astana, Kazakhstan</span>
-          </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-left">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
         </div>
-      </section>
+        <div class="pipeline-body">
+          <div class="pipeline-tag">Step 3 · Inference</div>
+          <h4>Venice AI (Processor)</h4>
+          <p>OpenRouter (Sub-Processor) routes to Venice AI enterprise infrastructure for model inference. Data transfers from the EEA are covered by Standard Contractual Clauses (SCCs).</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-left">
+          <div class="pipeline-dot"></div>
+        </div>
+        <div class="pipeline-body">
+          <div class="pipeline-tag">Step 4 · Response</div>
+          <h4>Response Returned &amp; Discarded</h4>
+          <p>Your prompt exists in processing memory only for the duration of the active inference window. It is not persistently stored by Otan Systems.</p>
+        </div>
+      </div>
+    </div>
 
-    </main>
-  </div>
+    <div class="highlight soft">
+      <strong>Infrastructure Logging:</strong> Hosting providers and API gateways may passively generate transient security logs (e.g. for rate-limiting and DDoS protection). These are not controlled by Otan Systems and are subject to providers' own retention policies.
+    </div>
+  </section>
 
-  <!-- ─── FOOTER ─── -->
-  <footer>
-    <p>© 2026 <span>Ardak AI</span> · Otan Systems · All rights reserved</p>
-    <p>Last updated: <span id="lastUpdated"></span></p>
-  </footer>
+  <div class="divider"></div>
 
-  <!-- ─── JAVASCRIPT ─── -->
-  <script>
-    // Last updated date
-    document.getElementById('lastUpdated').textContent =
-      new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+  <!-- SECTION 5 -->
+  <section class="section" id="s5">
+    <div class="section-header">
+      <div class="section-icon">⛓️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 5</div>
+        <div class="section-title">Web3 Financial Privacy &amp; Monetisation</div>
+      </div>
+    </div>
+    <p>Ardak AI uses decentralised digital assets for premium features, avoiding the collection of traditional banking or payment card data entirely.</p>
 
-    // Smooth scroll + active link highlight
-    const links = document.querySelectorAll('nav.sidebar a');
-    const sections = document.querySelectorAll('main section');
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Supported Currency</div>
+        <div class="card-value">USD Coin (USDC)</div>
+        <div class="card-desc">Stablecoin payments — no card details ever required.</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Payment Interface</div>
+        <div class="card-value">Jumper Widget</div>
+        <div class="card-desc">Integrated non-custodial widget. Otan Systems never sees your keys.</div>
+      </div>
+    </div>
 
-    links.forEach(link => {
-      link.addEventListener('click', e => {
-        e.preventDefault();
-        const target = document.querySelector(link.getAttribute('href'));
-        if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
-      });
-    });
+    <div style="margin-bottom:12px;">
+      <div class="subsection-title">Supported Networks</div>
+      <div class="token-row">
+        <span class="token-chip">Solana</span>
+        <span class="token-chip">Base</span>
+        <span class="token-chip">Polygon</span>
+        <span class="token-chip">Arbitrum One</span>
+        <span class="token-chip">Optimism</span>
+      </div>
+    </div>
 
-    // Highlight active section in sidebar on scroll
-    const observer = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          const id = entry.target.id;
-          links.forEach(l => {
-            const active = l.getAttribute('href') === '#' + id;
-            l.style.color = active ? 'var(--accent)' : '';
-            l.style.borderLeftColor = active ? 'var(--accent)' : 'transparent';
-            l.style.background = active ? 'var(--accent-dim)' : '';
-          });
-        }
-      });
-    }, { rootMargin: '-30% 0px -60% 0px' });
+    <div class="highlight">
+      <strong>Public Ledger Notice:</strong> Blockchain transactions are public and permanent by design. Otan Systems does not cross-reference or correlate your public wallet address with any personal identity information held by us.
+    </div>
+  </section>
 
-    sections.forEach(s => observer.observe(s));
+  <div class="divider"></div>
 
-    // Fade-in sections as they enter viewport
-    const fadeObserver = new IntersectionObserver((entries) => {
-      entries.forEach(entry => {
-        if (entry.isIntersecting) {
-          entry.target.style.opacity = '1';
-          entry.target.style.transform = 'translateY(0)';
-        }
-      });
-    }, { threshold: 0.1 });
+  <!-- SECTION 6 -->
+  <section class="section" id="s6">
+    <div class="section-header">
+      <div class="section-icon">🌍</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 6</div>
+        <div class="section-title">Global Rights &amp; Compliance</div>
+      </div>
+    </div>
 
-    sections.forEach(s => {
-      s.style.opacity = '0';
-      s.style.transform = 'translateY(20px)';
-      s.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
-      fadeObserver.observe(s);
-    });
+    <div class="subsection">
+      <div class="subsection-title">6.1 EEA Residents — GDPR</div>
+      <p>Otan Systems acts as the <strong>Data Controller</strong> for personal data we process: (a) the transient session token via OAuth, and (b) prompt content transmitted during an active session. Legal basis: <strong>Performance of Contract</strong> (Art. 6(1)(b) GDPR).</p>
+      <p>Your rights under GDPR:</p>
+      <div class="rights-grid">
+        <div class="right-card">
+          <div class="right-icon">📋</div>
+          <div class="right-name">Access</div>
+          <div class="right-desc">Request a copy of data we hold about you</div>
+        </div>
+        <div class="right-card">
+          <div class="right-icon">✏️</div>
+          <div class="right-name">Rectification</div>
+          <div class="right-desc">Correct inaccurate data</div>
+        </div>
+        <div class="right-card">
+          <div class="right-icon">🗑️</div>
+          <div class="right-name">Erasure</div>
+          <div class="right-desc">Delete locally stored data via browser site-data settings</div>
+        </div>
+        <div class="right-card">
+          <div class="right-icon">⏸️</div>
+          <div class="right-name">Restriction</div>
+          <div class="right-desc">Restrict how we process your data</div>
+        </div>
+        <div class="right-card">
+          <div class="right-icon">📦</div>
+          <div class="right-name">Portability</div>
+          <div class="right-desc">Receive your data in a portable format</div>
+        </div>
+        <div class="right-card">
+          <div class="right-icon">🏛️</div>
+          <div class="right-name">Complaint</div>
+          <div class="right-desc">Lodge a complaint with your local supervisory authority</div>
+        </div>
+      </div>
+    </div>
 
-    console.log('%cArdak.AI', 'color:#00e5a0;font-size:18px;font-weight:bold', '— Privacy Policy loaded');
-  </script>
+    <div class="subsection">
+      <div class="subsection-title">6.2 California Residents — CCPA/CPRA</div>
+      <div class="highlight soft">
+        Otan Systems does <strong>not sell or share</strong> your personal information for commercial gain or cross-context behavioural advertising. Prompt transmission to sub-processors is classified as an essential <strong>service-provider operational function</strong> under strict data-use limitation.
+      </div>
+      <p>California residents have the right to <strong>know</strong>, <strong>delete</strong>, and <strong>opt out</strong> of the sale or sharing of personal information. As we do not sell personal information, no opt-out mechanism is required. Contact us at <strong>otan-systems@proton.me</strong> for any other requests.</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 7 -->
+  <section class="section" id="s7">
+    <div class="section-header">
+      <div class="section-icon">🛡️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 7</div>
+        <div class="section-title">Technical Security</div>
+      </div>
+    </div>
+    <p>We protect live data sessions using the following safeguards:</p>
+    <div class="security-grid">
+      <div class="sec-item">
+        <div class="sec-icon">📦</div>
+        <div class="sec-text">
+          <h4>Containerised Isolation</h4>
+          <p>Application logic and routing proxies are containerised via secure Podman environments.</p>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">🔒</div>
+        <div class="sec-text">
+          <h4>TLS 1.3 Encryption</h4>
+          <p>All network data is transmitted over TLS 1.3, the latest and most secure transport standard.</p>
+        </div>
+      </div>
+      <div class="sec-item">
+        <div class="sec-icon">✅</div>
+        <div class="sec-text">
+          <h4>PASETO Tokens</h4>
+          <p>Active sessions are validated using tamper-proof PASETO tokens to prevent client-side manipulation.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- SECTION 8 / CONTACT -->
+  <section class="section" id="s8">
+    <div class="contact-bar">
+      <div>
+        <h2>Contact Otan Systems</h2>
+        <p>Questions, data rights requests, or transparency enquiries</p>
+      </div>
+      <div class="contact-links">
+        <a class="contact-link" href="mailto:otan-systems@proton.me">
+          <span class="cl-icon">✉️</span> otan-systems@proton.me
+        </a>
+        <a class="contact-link" href="https://github.com/Otan-Systems" target="_blank">
+          <span class="cl-icon">🐙</span> @Otan-systems
+        </a>
+        <a class="contact-link" href="https://www.youtube.com/@OtanSystems" target="_blank">
+          <span class="cl-icon">▶️</span> @OtanSystems
+        </a>
+        <a class="contact-link" href="https://instagram.com/otansystems_official" target="_blank">
+          <span class="cl-icon">📸</span> @otansystems_official
+        </a>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <strong>Ardak AI</strong> · Otan Systems · Astana, Republic of Kazakhstan ·
+  Originally published 20 May 2026 · Designed to comply with GDPR, CCPA/CPRA, and the Laws of the Republic of Kazakhstan.
+</footer>
+
 </body>
 </html>
