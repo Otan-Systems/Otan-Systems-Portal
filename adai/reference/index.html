@@ -1,0 +1,738 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Terms of Use & Privacy Policy — Adai</title>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-deep:    #0B2C6B;
+    --blue-mid:     #1A4DB5;
+    --blue-bright:  #2563EB;
+    --blue-light:   #3B82F6;
+    --blue-pale:    #DBEAFE;
+    --blue-xpale:   #EFF6FF;
+    --white:        #FFFFFF;
+    --text-dark:    #0F172A;
+    --text-muted:   #475569;
+    --border:       #BFDBFE;
+    --radius-sm: 6px;
+    --radius-md: 12px;
+    --radius-lg: 20px;
+    --font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Helvetica Neue", Arial, sans-serif;
+    --font-mono: ui-monospace, "SF Mono", "Cascadia Mono", "Consolas", monospace;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--font);
+    background: var(--white);
+    color: var(--text-dark);
+    line-height: 1.65;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ── TOP BAR ── */
+  .topbar {
+    background: var(--blue-deep);
+    color: var(--white);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 60px;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    border-bottom: 3px solid var(--blue-bright);
+  }
+  .topbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+  .topbar-logo {
+    width: 32px; height: 32px;
+    background: var(--blue-bright);
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-weight: 800;
+    font-size: 14px;
+    letter-spacing: -0.5px;
+    color: var(--white);
+  }
+  .topbar-name {
+    font-weight: 700;
+    font-size: 16px;
+    letter-spacing: -0.3px;
+  }
+  .topbar-name span {
+    opacity: .55;
+    font-weight: 400;
+    margin-left: 6px;
+    font-size: 13px;
+    letter-spacing: 0;
+  }
+  .topbar-badge {
+    background: var(--blue-mid);
+    border: 1px solid var(--blue-light);
+    color: var(--blue-pale);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    letter-spacing: .4px;
+    text-transform: uppercase;
+  }
+
+  /* ── HERO ── */
+  .hero {
+    background: linear-gradient(145deg, var(--blue-deep) 0%, var(--blue-mid) 60%, var(--blue-bright) 100%);
+    color: var(--white);
+    padding: 72px 40px 60px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    top: -60px; right: -80px;
+    width: 420px; height: 420px;
+    border-radius: 50%;
+    border: 60px solid rgba(255,255,255,.05);
+  }
+  .hero::after {
+    content: "";
+    position: absolute;
+    bottom: -100px; right: 80px;
+    width: 280px; height: 280px;
+    border-radius: 50%;
+    border: 40px solid rgba(255,255,255,.04);
+  }
+  .hero-inner { max-width: 860px; margin: 0 auto; position: relative; }
+  .hero-eyebrow {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-pale);
+    margin-bottom: 16px;
+    opacity: .85;
+  }
+  .hero h1 {
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.1;
+    margin-bottom: 20px;
+  }
+  .hero h1 em {
+    font-style: normal;
+    color: #93C5FD;
+  }
+  .hero-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 28px;
+  }
+  .meta-pill {
+    background: rgba(255,255,255,.12);
+    border: 1px solid rgba(255,255,255,.2);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--white);
+    backdrop-filter: blur(4px);
+  }
+  .meta-pill strong { font-weight: 700; }
+
+  /* ── MAIN LAYOUT ── */
+  .page { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ── SECTION NAV ── */
+  .toc-bar {
+    background: var(--blue-xpale);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px 28px;
+    margin: 40px 0;
+  }
+  .toc-bar h2 {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-mid);
+    margin-bottom: 14px;
+  }
+  .toc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 6px;
+  }
+  .toc-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    text-decoration: none;
+    color: var(--blue-deep);
+    font-size: 13px;
+    font-weight: 500;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    transition: background .15s;
+  }
+  .toc-link:hover { background: var(--border); }
+  .toc-num {
+    background: var(--blue-bright);
+    color: var(--white);
+    font-size: 10px;
+    font-weight: 700;
+    width: 20px; height: 20px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+  }
+
+  /* ── SECTION ── */
+  .section { margin-bottom: 48px; }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 14px;
+    border-bottom: 2px solid var(--blue-pale);
+  }
+  .section-icon {
+    width: 44px; height: 44px;
+    background: var(--blue-bright);
+    border-radius: var(--radius-md);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 20px;
+  }
+  .section-title-group { flex: 1; }
+  .section-num {
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 2px;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 750;
+    letter-spacing: -.4px;
+    color: var(--blue-deep);
+  }
+  .section p { color: var(--text-muted); margin-bottom: 14px; }
+  .section p:last-child { margin-bottom: 0; }
+
+  /* ── CARDS ── */
+  .card-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+    gap: 14px;
+    margin-bottom: 20px;
+  }
+  .card {
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+  }
+  .card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+    background: var(--blue-bright);
+  }
+  .card-label {
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--blue-light);
+    margin-bottom: 8px;
+  }
+  .card-value {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--blue-deep);
+    line-height: 1.4;
+  }
+  .card-desc {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin-top: 6px;
+    line-height: 1.5;
+  }
+
+  /* ── HIGHLIGHT BOX ── */
+  .highlight {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 22px 24px;
+    margin-bottom: 16px;
+    font-size: 14px;
+    line-height: 1.6;
+  }
+  .highlight strong { color: #93C5FD; }
+  .highlight.soft {
+    background: var(--blue-xpale);
+    color: var(--text-dark);
+    border-left: 4px solid var(--blue-bright);
+    border-radius: 0 var(--radius-md) var(--radius-md) 0;
+  }
+  .highlight.soft strong { color: var(--blue-mid); }
+
+  /* ── NO-COLLECT LIST ── */
+  .no-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .no-list li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    background: var(--blue-xpale);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: 12px 14px;
+    font-size: 13.5px;
+    color: var(--text-dark);
+  }
+  .no-list li::before {
+    content: "✕";
+    color: var(--blue-bright);
+    font-weight: 800;
+    font-size: 12px;
+    line-height: 1.6;
+    flex-shrink: 0;
+  }
+
+  /* ── PIPELINE ── */
+  .pipeline {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    margin-bottom: 20px;
+  }
+  .pipeline-step {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+  }
+  .pipeline-left {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 44px;
+    flex-shrink: 0;
+  }
+  .pipeline-dot {
+    width: 20px; height: 20px;
+    background: var(--blue-bright);
+    border-radius: 50%;
+    border: 3px solid var(--white);
+    box-shadow: 0 0 0 2px var(--blue-bright);
+    flex-shrink: 0;
+    margin-top: 18px;
+  }
+  .pipeline-line {
+    width: 2px;
+    flex: 1;
+    background: var(--border);
+    margin: 4px auto 0;
+  }
+  .pipeline-step:last-child .pipeline-line { display: none; }
+  .pipeline-body {
+    flex: 1;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px 18px;
+    margin: 8px 0 8px 8px;
+  }
+  .pipeline-body h4 {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--blue-deep);
+    margin-bottom: 4px;
+  }
+  .pipeline-body p {
+    font-size: 13px;
+    color: var(--text-muted);
+    margin: 0;
+  }
+  .pipeline-tag {
+    display: inline-block;
+    background: var(--blue-pale);
+    color: var(--blue-mid);
+    font-size: 11px;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 20px;
+    margin-bottom: 6px;
+  }
+
+  /* ── WEB3 GRID ── */
+  .token-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .token-chip {
+    background: var(--blue-deep);
+    color: var(--white);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    font-weight: 600;
+    padding: 6px 14px;
+    border-radius: 20px;
+    letter-spacing: .3px;
+  }
+
+  /* ── RIGHTS TABLE ── */
+  .rights-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+  .right-card {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-md);
+    padding: 18px 16px;
+    text-align: center;
+  }
+  .right-card .right-icon { font-size: 24px; margin-bottom: 8px; }
+  .right-card .right-name { font-size: 13px; font-weight: 700; color: #93C5FD; }
+  .right-card .right-desc { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 4px; line-height: 1.4; }
+
+  /* ── SECURITY ITEMS ── */
+  .security-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 12px;
+    margin-bottom: 16px;
+  }
+  .sec-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    background: var(--white);
+    border: 1.5px solid var(--border);
+    border-radius: var(--radius-md);
+    padding: 16px;
+  }
+  .sec-icon {
+    width: 36px; height: 36px;
+    background: var(--blue-bright);
+    border-radius: var(--radius-sm);
+    display: flex; align-items: center; justify-content: center;
+    flex-shrink: 0;
+    font-size: 16px;
+    color: var(--white);
+  }
+  .sec-text h4 { font-size: 13px; font-weight: 700; color: var(--blue-deep); margin-bottom: 3px; }
+  .sec-text p  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
+
+  /* ── CONTACT ── */
+  .contact-bar {
+    background: var(--blue-deep);
+    color: var(--white);
+    border-radius: var(--radius-lg);
+    padding: 32px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 48px;
+  }
+  .contact-bar h2 { font-size: 22px; font-weight: 800; letter-spacing: -.5px; }
+  .contact-bar p  { font-size: 13px; color: rgba(255,255,255,.6); margin-top: 4px; }
+  .contact-links { display: flex; flex-wrap: wrap; gap: 10px; }
+  .contact-link {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(255,255,255,.1);
+    border: 1px solid rgba(255,255,255,.18);
+    border-radius: var(--radius-md);
+    padding: 10px 16px;
+    color: var(--white);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    transition: background .15s;
+  }
+  .contact-link:hover { background: rgba(255,255,255,.2); }
+  .contact-link .cl-icon { font-size: 16px; }
+
+  /* ── FOOTER ── */
+  footer {
+    background: var(--blue-xpale);
+    border-top: 1px solid var(--border);
+    text-align: center;
+    padding: 24px 40px;
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+  footer strong { color: var(--blue-deep); }
+
+  /* ── DIVIDER ── */
+  .divider { height: 1px; background: var(--blue-pale); margin: 0 0 32px; }
+
+  /* ── SUB SECTIONS ── */
+  .subsection { margin-bottom: 28px; }
+  .subsection-title {
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--blue-mid);
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .subsection-title::before {
+    content: "";
+    display: inline-block;
+    width: 4px; height: 16px;
+    background: var(--blue-bright);
+    border-radius: 2px;
+  }
+
+  @media (max-width: 600px) {
+    .topbar { padding: 0 16px; }
+    .hero { padding: 48px 16px 40px; }
+    .page { padding: 0 16px 60px; }
+    .contact-bar { padding: 24px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<nav class="topbar">
+  <div class="topbar-brand">
+    <div class="topbar-logo">AD</div>
+    <div class="topbar-name">Adai</div>
+  </div>
+  <div class="topbar-badge">Terms &amp; Privacy</div>
+</nav>
+
+<header class="hero">
+  <div class="hero-inner">
+    <div class="hero-eyebrow">Legal Documentation</div>
+    <h1>Terms of Use &amp; [span_0](start_span)Privacy Policy[span_0](end_span)[span_1](start_span)<br><em>Adai</em>[span_1](end_span)</h1>
+    <p style="color:rgba(255,255,255,.75); max-width:540px; font-size:15px;">
+      [span_2](start_span)By accessing or using the Adai application ("we," "our," "us"), you agree to be bound by these Terms of Use and Privacy Policy.[span_2](end_span) [span_3](start_span)If you do not agree, please do not use the application.[span_3](end_span)
+    </p>
+    <div class="hero-meta">
+      [span_4](start_span)<div class="meta-pill"><strong>Effective Date:</strong> June 15, 2026[span_4](end_span)</div>
+    </div>
+  </div>
+</header>
+
+<main class="page">
+
+  <nav class="toc-bar">
+    <h2>Contents</h2>
+    <div class="toc-grid">
+      <a class="toc-link" href="#s1"><span class="toc-num">1</span> Purpose &amp; Functionality</a>
+      <a class="toc-link" href="#s2"><span class="toc-num">2</span> Global Contributions</a>
+      <a class="toc-link" href="#s3"><span class="toc-num">3</span> Data Storage &amp; Privacy</a>
+      <a class="toc-link" href="#s4"><span class="toc-num">4</span> Financial Model</a>
+      <a class="toc-link" href="#s5"><span class="toc-num">5</span> Liability &amp; Accuracy</a>
+      <a class="toc-link" href="#s6"><span class="toc-num">6</span> Updates &amp; Modifications</a>
+    </div>
+  </nav>
+
+  <section class="section" id="s1">
+    <div class="section-header">
+      <div class="section-icon">🗺️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 1</div>
+        <div class="section-title">Application Purpose and Functionality</div>
+      </div>
+    </div>
+    [span_5](start_span)<p>Adai is a decentralized, privacy-focused mapping tool designed to facilitate local and global Point of Interest (POI) management.[span_5](end_span)</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Local Processing</div>
+        <div class="card-value">Offline Privacy</div>
+        [span_6](start_span)<div class="card-desc">Core functionalities, including AI-driven natural language processing (EmbeddingGemma-300M) and speech-to-text (Vosk), operate entirely offline on your device to ensure maximum privacy.[span_6](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Data Integrity</div>
+        <div class="card-value">Zero Ecosystem Storage</div>
+        [span_7](start_span)<div class="card-desc">The application does not generate or store user identification data within its own ecosystem.[span_7](end_span) [span_8](start_span)All global contributions are processed via OpenStreetMap (OSM) protocols.[span_8](end_span)</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="s2">
+    <div class="section-header">
+      <div class="section-icon">🔑</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 2</div>
+        <div class="section-title">Global Contributions and Authentication</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">OSM Integration</div>
+        <div class="card-value">OAuth 2.0 Auth</div>
+        [span_9](start_span)<div class="card-desc">To contribute global POI data, you may choose to authenticate via OpenStreetMap using OAuth 2.0.[span_9](end_span) [span_10](start_span)This process ensures that you interact with the OSM database directly.[span_10](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">No User Account Storage</div>
+        <div class="card-value">Local Tokens</div>
+        [span_11](start_span)<div class="card-desc">Adai does not store your OSM credentials.[span_11](end_span) [span_12](start_span)The application only manages temporary authentication tokens locally to facilitate your contributions.[span_12](end_span)</div>
+      </div>
+    </div>
+    <div class="highlight soft">
+      [span_13](start_span)<strong>Data Responsibility:</strong> By submitting data to OSM, you acknowledge that your contributions become part of the OpenStreetMap project and are subject to their respective contributor terms.[span_13](end_span)
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="s3">
+    <div class="section-header">
+      <div class="section-icon">🛡️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 3</div>
+        <div class="section-title">Data Storage and Privacy</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Local Data</div>
+        <div class="card-value">Encrypted SQLite</div>
+        [span_14](start_span)<div class="card-desc">All personal POI records marked as "Local" are stored exclusively in an encrypted SQLite database on your physical device.[span_14](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Zero-Persistence Policy</div>
+        <div class="card-value">Immediate Purge</div>
+        [span_15](start_span)<div class="card-desc">Your search history and temporary session data are purged upon closing the application to ensure that no footprint of your activity remains.[span_15](end_span)</div>
+      </div>
+    </div>
+    <div class="highlight soft">
+      [span_16](start_span)<strong>Transparency:</strong> We do not collect, monetize, or track your geolocation data or habits.[span_16](end_span)
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="s4">
+    <div class="section-header">
+      <div class="section-icon">💰</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 4</div>
+        <div class="section-title">Financial Model and Future Services</div>
+      </div>
+    </div>
+    [span_17](start_span)<p>Adai is currently provided free of charge, with no mandatory subscription or registration fees.[span_17](end_span)</p>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Current Availability</div>
+        <div class="card-value">No Cost features</div>
+        [span_18](start_span)<div class="card-desc">All core mapping, routing, and AI features are available at no cost.[span_18](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Potential Expansion</div>
+        <div class="card-value">Optional Premium Features</div>
+        [span_19](start_span)<div class="card-desc">We reserve the right to introduce optional premium features or services in future versions.[span_19](end_span) [span_20](start_span)Such additions will be clearly identified, and existing free features will remain unaffected.[span_20](end_span)</div>
+      </div>
+    </div>
+    <div class="highlight soft">
+      [span_21](start_span)<strong>Paid Expansions:</strong> Any paid expansion will be managed through official app distribution stores, adhering to their standard privacy and billing practices.[span_21](end_span)
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="s5">
+    <div class="section-header">
+      <div class="section-icon">⚠️</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 5</div>
+        <div class="section-title">Limitation of Liability and Data Accuracy</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">AI Disclaimer</div>
+        <div class="card-value">"As-Is" Tooling</div>
+        [span_22](start_span)<div class="card-desc">While the AI engine (EmbeddingGemma) is designed to interpret natural language commands accurately, it is a tool provided "as-is".[span_22](end_span) [span_23](start_span)You are responsible for reviewing and confirming any POI details (the "Final Form") before they are saved locally or synchronized globally.[span_23](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Conflicts</div>
+        <div class="card-value">Resolution Mechanisms</div>
+        [span_24](start_span)<div class="card-desc">The application provides mechanisms for resolving data conflicts between local and global POI sets during monthly updates.[span_24](end_span) [span_25](start_span)Adai is not responsible for the accuracy of global OSM data or discrepancies arising from external map updates.[span_25](end_span)</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section" id="s6">
+    <div class="section-header">
+      <div class="section-icon">🔄</div>
+      <div class="section-title-group">
+        <div class="section-num">Section 6</div>
+        <div class="section-title">Updates and Modifications</div>
+      </div>
+    </div>
+    <div class="card-grid">
+      <div class="card">
+        <div class="card-label">Map Updates</div>
+        <div class="card-value">Resumable Downloads</div>
+        [span_26](start_span)<div class="card-desc">Map data (Geofabrik .osm.pbf) is updated periodically.[span_26](end_span) [span_27](start_span)The update process requires an active internet connection, and the application supports resumable downloads to minimize data disruption.[span_27](end_span)</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Terms Modification</div>
+        <div class="card-value">Acceptance</div>
+        [span_28](start_span)<div class="card-desc">We may update these terms at any time.[span_28](end_span) [span_29](start_span)Continued use of Adai constitutes your acceptance of the revised terms.[span_29](end_span)</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <section class="section">
+    <div class="highlight">
+      [span_30](start_span)<strong>Important Legal Note:</strong> This document is a formal draft intended to serve as a foundation for your application's legal compliance.[span_30](end_span) [span_31](start_span)Given that Adai operates as an interface for OpenStreetMap, you should ensure that your application's use of their API complies with the <strong>OpenStreetMap Foundation (OSMF) License and Attribution requirements</strong>.[span_31](end_span)
+    </div>
+  </section>
+
+</main>
+
+<footer>
+  [span_32](start_span)<strong>Adai</strong> · Effective Date: June 15, 2026[span_32](end_span)
+</footer>
+
+</body>
+</html>
