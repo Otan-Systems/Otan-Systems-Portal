@@ -37,7 +37,6 @@
     -webkit-font-smoothing: antialiased;
   }
 
-  /* ── TOP BAR ── */
   .topbar {
     background: var(--blue-deep);
     color: var(--white);
@@ -90,7 +89,6 @@
     text-transform: uppercase;
   }
 
-  /* ── HERO ── */
   .hero {
     background: linear-gradient(145deg, var(--blue-deep) 0%, var(--blue-mid) 60%, var(--blue-bright) 100%);
     color: var(--white);
@@ -153,10 +151,8 @@
   }
   .meta-pill strong { font-weight: 700; }
 
-  /* ── MAIN LAYOUT ── */
   .page { max-width: 960px; margin: 0 auto; padding: 0 24px 80px; }
 
-  /* ── SECTION NAV ── */
   .toc-bar {
     background: var(--blue-xpale);
     border: 1px solid var(--border);
@@ -201,7 +197,6 @@
     flex-shrink: 0;
   }
 
-  /* ── SECTION ── */
   .section { margin-bottom: 48px; }
   .section-header {
     display: flex;
@@ -237,7 +232,6 @@
   .section p { color: var(--text-muted); margin-bottom: 14px; }
   .section p:last-child { margin-bottom: 0; }
 
-  /* ── CARDS ── */
   .card-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
@@ -280,7 +274,6 @@
     line-height: 1.5;
   }
 
-  /* ── HIGHLIGHT BOX ── */
   .highlight {
     background: var(--blue-deep);
     color: var(--white);
@@ -299,7 +292,6 @@
   }
   .highlight.soft strong { color: var(--blue-mid); }
 
-  /* ── NO-COLLECT LIST ── */
   .no-list {
     list-style: none;
     display: grid;
@@ -327,7 +319,6 @@
     flex-shrink: 0;
   }
 
-  /* ── PIPELINE ── */
   .pipeline {
     display: flex;
     flex-direction: column;
@@ -392,7 +383,6 @@
     margin-bottom: 6px;
   }
 
-  /* ── WEB3 GRID ── */
   .token-row {
     display: flex;
     flex-wrap: wrap;
@@ -410,7 +400,6 @@
     letter-spacing: .3px;
   }
 
-  /* ── RIGHTS TABLE ── */
   .rights-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
@@ -428,7 +417,6 @@
   .right-card .right-name { font-size: 13px; font-weight: 700; color: #93C5FD; }
   .right-card .right-desc { font-size: 12px; color: rgba(255,255,255,.65); margin-top: 4px; line-height: 1.4; }
 
-  /* ── SECURITY ITEMS ── */
   .security-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
@@ -456,7 +444,6 @@
   .sec-text h4 { font-size: 13px; font-weight: 700; color: var(--blue-deep); margin-bottom: 3px; }
   .sec-text p  { font-size: 12px; color: var(--text-muted); line-height: 1.4; }
 
-  /* ── CONTACT ── */
   .contact-bar {
     background: var(--blue-deep);
     color: var(--white);
@@ -489,7 +476,6 @@
   .contact-link:hover { background: rgba(255,255,255,.2); }
   .contact-link .cl-icon { font-size: 16px; }
 
-  /* ── FOOTER ── */
   footer {
     background: var(--blue-xpale);
     border-top: 1px solid var(--border);
@@ -500,10 +486,8 @@
   }
   footer strong { color: var(--blue-deep); }
 
-  /* ── DIVIDER ── */
   .divider { height: 1px; background: var(--blue-pale); margin: 0 0 32px; }
 
-  /* ── SUB SECTIONS ── */
   .subsection { margin-bottom: 28px; }
   .subsection-title {
     font-size: 15px;
@@ -543,12 +527,12 @@
 <header class="hero">
   <div class="hero-inner">
     <div class="hero-eyebrow">Legal Documentation</div>
-    <h1>Terms of Use &amp; [span_0](start_span)Privacy Policy[span_0](end_span)[span_1](start_span)<br><em>Adai</em>[span_1](end_span)</h1>
+    <h1>Terms of Use &amp; Privacy Policy<br><em>Adai</em></h1>
     <p style="color:rgba(255,255,255,.75); max-width:540px; font-size:15px;">
-      [span_2](start_span)By accessing or using the Adai application ("we," "our," "us"), you agree to be bound by these Terms of Use and Privacy Policy.[span_2](end_span) [span_3](start_span)If you do not agree, please do not use the application.[span_3](end_span)
+      By accessing or using the Adai application ("we," "our," "us"), you agree to be bound by these Terms of Use and Privacy Policy. If you do not agree, please do not use the application.
     </p>
     <div class="hero-meta">
-      [span_4](start_span)<div class="meta-pill"><strong>Effective Date:</strong> June 15, 2026[span_4](end_span)</div>
+      <div class="meta-pill"><strong>Effective Date:</strong> June 15, 2026</div>
     </div>
   </div>
 </header>
@@ -575,17 +559,17 @@
         <div class="section-title">Application Purpose and Functionality</div>
       </div>
     </div>
-    [span_5](start_span)<p>Adai is a decentralized, privacy-focused mapping tool designed to facilitate local and global Point of Interest (POI) management.[span_5](end_span)</p>
+    <p>Adai is a decentralized, privacy-focused mapping tool designed to facilitate local and global Point of Interest (POI) management.</p>
     <div class="card-grid">
       <div class="card">
         <div class="card-label">Local Processing</div>
         <div class="card-value">Offline Privacy</div>
-        [span_6](start_span)<div class="card-desc">Core functionalities, including AI-driven natural language processing (EmbeddingGemma-300M) and speech-to-text (Vosk), operate entirely offline on your device to ensure maximum privacy.[span_6](end_span)</div>
+        <div class="card-desc">Core functionalities, including AI-driven natural language processing (EmbeddingGemma-300M) and speech-to-text (Vosk), operate entirely offline on your device to ensure maximum privacy.</div>
       </div>
       <div class="card">
         <div class="card-label">Data Integrity</div>
         <div class="card-value">Zero Ecosystem Storage</div>
-        [span_7](start_span)<div class="card-desc">The application does not generate or store user identification data within its own ecosystem.[span_7](end_span) [span_8](start_span)All global contributions are processed via OpenStreetMap (OSM) protocols.[span_8](end_span)</div>
+        <div class="card-desc">The application does not generate or store user identification data within its own ecosystem. All global contributions are processed via OpenStreetMap (OSM) protocols.</div>
       </div>
     </div>
   </section>
@@ -604,16 +588,16 @@
       <div class="card">
         <div class="card-label">OSM Integration</div>
         <div class="card-value">OAuth 2.0 Auth</div>
-        [span_9](start_span)<div class="card-desc">To contribute global POI data, you may choose to authenticate via OpenStreetMap using OAuth 2.0.[span_9](end_span) [span_10](start_span)This process ensures that you interact with the OSM database directly.[span_10](end_span)</div>
+        <div class="card-desc">To contribute global POI data, you may choose to authenticate via OpenStreetMap using OAuth 2.0. This process ensures that you interact with the OSM database directly.</div>
       </div>
       <div class="card">
         <div class="card-label">No User Account Storage</div>
         <div class="card-value">Local Tokens</div>
-        [span_11](start_span)<div class="card-desc">Adai does not store your OSM credentials.[span_11](end_span) [span_12](start_span)The application only manages temporary authentication tokens locally to facilitate your contributions.[span_12](end_span)</div>
+        <div class="card-desc">Adai does not store your OSM credentials. The application only manages temporary authentication tokens locally to facilitate your contributions.</div>
       </div>
     </div>
     <div class="highlight soft">
-      [span_13](start_span)<strong>Data Responsibility:</strong> By submitting data to OSM, you acknowledge that your contributions become part of the OpenStreetMap project and are subject to their respective contributor terms.[span_13](end_span)
+      <strong>Data Responsibility:</strong> By submitting data to OSM, you acknowledge that your contributions become part of the OpenStreetMap project and are subject to their respective contributor terms.
     </div>
   </section>
 
@@ -631,16 +615,16 @@
       <div class="card">
         <div class="card-label">Local Data</div>
         <div class="card-value">Encrypted SQLite</div>
-        [span_14](start_span)<div class="card-desc">All personal POI records marked as "Local" are stored exclusively in an encrypted SQLite database on your physical device.[span_14](end_span)</div>
+        <div class="card-desc">All personal POI records marked as "Local" are stored exclusively in an encrypted SQLite database on your physical device.</div>
       </div>
       <div class="card">
         <div class="card-label">Zero-Persistence Policy</div>
         <div class="card-value">Immediate Purge</div>
-        [span_15](start_span)<div class="card-desc">Your search history and temporary session data are purged upon closing the application to ensure that no footprint of your activity remains.[span_15](end_span)</div>
+        <div class="card-desc">Your search history and temporary session data are purged upon closing the application to ensure that no footprint of your activity remains.</div>
       </div>
     </div>
     <div class="highlight soft">
-      [span_16](start_span)<strong>Transparency:</strong> We do not collect, monetize, or track your geolocation data or habits.[span_16](end_span)
+      <strong>Transparency:</strong> We do not collect, monetize, or track your geolocation data or habits.
     </div>
   </section>
 
@@ -654,21 +638,21 @@
         <div class="section-title">Financial Model and Future Services</div>
       </div>
     </div>
-    [span_17](start_span)<p>Adai is currently provided free of charge, with no mandatory subscription or registration fees.[span_17](end_span)</p>
+    <p>Adai is currently provided free of charge, with no mandatory subscription or registration fees.</p>
     <div class="card-grid">
       <div class="card">
         <div class="card-label">Current Availability</div>
         <div class="card-value">No Cost features</div>
-        [span_18](start_span)<div class="card-desc">All core mapping, routing, and AI features are available at no cost.[span_18](end_span)</div>
+        <div class="card-desc">All core mapping, routing, and AI features are available at no cost.</div>
       </div>
       <div class="card">
         <div class="card-label">Potential Expansion</div>
         <div class="card-value">Optional Premium Features</div>
-        [span_19](start_span)<div class="card-desc">We reserve the right to introduce optional premium features or services in future versions.[span_19](end_span) [span_20](start_span)Such additions will be clearly identified, and existing free features will remain unaffected.[span_20](end_span)</div>
+        <div class="card-desc">We reserve the right to introduce optional premium features or services in future versions. Such additions will be clearly identified, and existing free features will remain unaffected.</div>
       </div>
     </div>
     <div class="highlight soft">
-      [span_21](start_span)<strong>Paid Expansions:</strong> Any paid expansion will be managed through official app distribution stores, adhering to their standard privacy and billing practices.[span_21](end_span)
+      <strong>Paid Expansions:</strong> Any paid expansion will be managed through official app distribution stores, adhering to their standard privacy and billing practices.
     </div>
   </section>
 
@@ -686,12 +670,12 @@
       <div class="card">
         <div class="card-label">AI Disclaimer</div>
         <div class="card-value">"As-Is" Tooling</div>
-        [span_22](start_span)<div class="card-desc">While the AI engine (EmbeddingGemma) is designed to interpret natural language commands accurately, it is a tool provided "as-is".[span_22](end_span) [span_23](start_span)You are responsible for reviewing and confirming any POI details (the "Final Form") before they are saved locally or synchronized globally.[span_23](end_span)</div>
+        <div class="card-desc">While the AI engine (EmbeddingGemma) is designed to interpret natural language commands accurately, it is a tool provided "as-is". You are responsible for reviewing and confirming any POI details (the "Final Form") before they are saved locally or synchronized globally.</div>
       </div>
       <div class="card">
         <div class="card-label">Conflicts</div>
         <div class="card-value">Resolution Mechanisms</div>
-        [span_24](start_span)<div class="card-desc">The application provides mechanisms for resolving data conflicts between local and global POI sets during monthly updates.[span_24](end_span) [span_25](start_span)Adai is not responsible for the accuracy of global OSM data or discrepancies arising from external map updates.[span_25](end_span)</div>
+        <div class="card-desc">The application provides mechanisms for resolving data conflicts between local and global POI sets during monthly updates. Adai is not responsible for the accuracy of global OSM data or discrepancies arising from external map updates.</div>
       </div>
     </div>
   </section>
@@ -710,12 +694,12 @@
       <div class="card">
         <div class="card-label">Map Updates</div>
         <div class="card-value">Resumable Downloads</div>
-        [span_26](start_span)<div class="card-desc">Map data (Geofabrik .osm.pbf) is updated periodically.[span_26](end_span) [span_27](start_span)The update process requires an active internet connection, and the application supports resumable downloads to minimize data disruption.[span_27](end_span)</div>
+        <div class="card-desc">Map data (Geofabrik .osm.pbf) is updated periodically. The update process requires an active internet connection, and the application supports resumable downloads to minimize data disruption.</div>
       </div>
       <div class="card">
         <div class="card-label">Terms Modification</div>
         <div class="card-value">Acceptance</div>
-        [span_28](start_span)<div class="card-desc">We may update these terms at any time.[span_28](end_span) [span_29](start_span)Continued use of Adai constitutes your acceptance of the revised terms.[span_29](end_span)</div>
+        <div class="card-desc">We may update these terms at any time. Continued use of Adai constitutes your acceptance of the revised terms.</div>
       </div>
     </div>
   </section>
@@ -724,14 +708,14 @@
 
   <section class="section">
     <div class="highlight">
-      [span_30](start_span)<strong>Important Legal Note:</strong> This document is a formal draft intended to serve as a foundation for your application's legal compliance.[span_30](end_span) [span_31](start_span)Given that Adai operates as an interface for OpenStreetMap, you should ensure that your application's use of their API complies with the <strong>OpenStreetMap Foundation (OSMF) License and Attribution requirements</strong>.[span_31](end_span)
+      <strong>Important Legal Note:</strong> This document is a formal draft intended to serve as a foundation for your application's legal compliance. Given that Adai operates as an interface for OpenStreetMap, you should ensure that your application's use of their API complies with the <strong>OpenStreetMap Foundation (OSMF) License and Attribution requirements</strong>.
     </div>
   </section>
 
 </main>
 
 <footer>
-  [span_32](start_span)<strong>Adai</strong> · Effective Date: June 15, 2026[span_32](end_span)
+  <strong>Adai</strong> · Effective Date: June 15, 2026
 </footer>
 
 </body>
