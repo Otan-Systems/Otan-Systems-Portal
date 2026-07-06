@@ -1008,13 +1008,11 @@
   <h2 class="section-title">Pay however<br><span class="accent">works for you.</span></h2>
   <p class="section-desc">Checkout goes straight to our payment processor; their fee is shown before you confirm and added on top, nothing hidden on our end.</p>
   <div class="rails">
-    <div class="rail featured"><b>Card</b><span>Visa, Mastercard & more</span></div>
-    <div class="rail featured"><b>Solana</b><span>Native, fastest settlement</span></div>
-    <div class="rail featured"><b>Ethereum L2</b><span>Base, Polygon, Arbitrum, Optimism</span></div>
-    <div class="rail featured"><b>WeChat Pay</b><span>China</span></div>
-    <div class="rail featured"><b>Alipay</b><span>China</span></div>
+    <div class="rail featured"><b>Cards</b><span>Visa, Mastercard, American Express, 50+ more methods</span></div>
+    <div class="rail featured"><b>Currencies</b><span>USD, GBP, CNY, INR, EUR, 100+ more currencies</span></div>
+    <div class="rail featured"><b>Networks</b><span>Ethereum L2, TRON-20, Solana, 50+ more networks</span></div>
+    <div class="rail featured"><b>Cryptocurrencies</b><span>BTC, ETH, USDC, USDT, SOL, 50+ more cryptocurrencies</span></div>
   </div>
-  <p class="section-desc" style="margin-top:16px">Supported currencies include USD, EUR, CNY, GBP and USDC — plus 100+ more currencies and 50+ more payment methods at checkout.</p>
 </section>
 
 <div class="divider"></div>
@@ -1103,6 +1101,11 @@ $('#tz').addEventListener('click',e=>{
 });
 tick(); setInterval(tick,1000);
 
+const REPLIES=[
+  {q:/data|stor|where/i, a:"Your full chat history and Long-Term Memory live on your device. On our servers — zero bytes. Need backup? Connect Google Drive or Proton on your terms."},
+  {q:/usdc|solana|pay|currency|card/i, a:"Pay however suits you — Solana, major EVM networks, or a card. Checkout goes straight to our payment processor; their fee is shown upfront and added on top."},
+  {q:/kyb|kyc|verif/i, a:"Know Your Business — entity verification. Otan Systems is KYB-verified, so we can legally bridge fiat and crypto. Users complete a simple KYC via Cryptomus."}
+];
 function reply(q){ for(const r of REPLIES) if(r.q.test(q)) return r.a; return "Thanks for the question! The Ardak team will follow up at hello@otan.systems."; }
 function push(who,label,html){ const d=document.createElement('div'); d.className='msg '+who; d.innerHTML='<div><div class="who">'+label+'</div><div class="bubble">'+html+'</div></div>'; $('#msgs').appendChild(d); d.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 function send(q){ push('user','You',q); const t=document.createElement('div'); t.className='msg bot'; t.innerHTML='<div><div class="who">Ardak AI</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>'; $('#msgs').appendChild(t); setTimeout(()=>{ t.remove(); push('bot','Ardak AI',reply(q)); },700); }
