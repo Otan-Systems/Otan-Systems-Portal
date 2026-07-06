@@ -975,10 +975,10 @@
 <section id="privacy" class="reveal">
   <div class="section-label">Privacy without compromise</div>
   <h2 class="section-title">Most AI learns from you.<br><span class="accent">Ardak doesn't.</span></h2>
-  <p class="section-desc">Your prompts are not training data. Your context is not a product. A strict zero-training policy and high-performance Venice AI.</p>
+  <p class="section-desc">Your prompts are not training data. Your context is not a product. A strict zero-training policy, full stop.</p>
   <div class="why-grid">
     <div class="why-card"><div class="why-icon">🛡️</div><div class="why-title">Zero-Training Policy</div><div class="why-desc">Your queries and data never feed model training. No silent opt-ins.</div><div class="why-stat">0 bytes used for training</div></div>
-    <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Venice AI Engine</div><div class="why-desc">High-performance inference via Venice AI: instant answers, absolute privacy.</div><div class="why-stat">Privacy-first inference</div></div>
+    <div class="why-card"><div class="why-icon">⚡</div><div class="why-title">Fast Inference</div><div class="why-desc">Requests are answered in real time, with no queues and no throttling.</div><div class="why-stat">Sub-second response</div></div>
     <div class="why-card"><div class="why-icon">🔐</div><div class="why-title">End-to-End Sealed</div><div class="why-desc">Sessions are encrypted in transit and on device. We can't read what we don't have. Otan Systems has KYB-status itself.</div><div class="why-stat">AES-256 device vault</div></div>
   </div>
 </section>
@@ -1004,13 +1004,17 @@
 
 <!-- PAYMENTS -->
 <section id="payments" class="reveal">
-  <div class="section-label">Otan Payment Engine</div>
-  <h2 class="section-title">Financial freedom —<br><span class="accent">at the speed of light.</span></h2>
-  <p class="section-desc">USDC is considered as the only payment method in order to minimize fees and ensure instant transaction.</p>
+  <div class="section-label">Payments</div>
+  <h2 class="section-title">Pay however<br><span class="accent">works for you.</span></h2>
+  <p class="section-desc">Checkout goes straight to our payment processor; their fee is shown before you confirm and added on top, nothing hidden on our end.</p>
   <div class="rails">
-    <div class="rail featured"><b>Solana • USDC</b><span>Native, recommended settlement</span></div>
-    <div class="rail featured"><b>Polygon/Base/Arbitrum One/Optimism • USDC</b><span>Etherium Layer 2 networks</span></div>
+    <div class="rail featured"><b>Card</b><span>Visa, Mastercard & more</span></div>
+    <div class="rail featured"><b>Solana</b><span>Native, fastest settlement</span></div>
+    <div class="rail featured"><b>Ethereum L2</b><span>Base, Polygon, Arbitrum, Optimism</span></div>
+    <div class="rail featured"><b>WeChat Pay</b><span>China</span></div>
+    <div class="rail featured"><b>Alipay</b><span>China</span></div>
   </div>
+  <p class="section-desc" style="margin-top:16px">Supported currencies include USD, EUR, CNY, GBP and USDC — plus 100+ more currencies and 50+ more payment methods at checkout.</p>
 </section>
 
 <div class="divider"></div>
@@ -1099,11 +1103,6 @@ $('#tz').addEventListener('click',e=>{
 });
 tick(); setInterval(tick,1000);
 
-const REPLIES=[
-  {q:/данн|хран|stor|где/i, a:"Your full chat history and Long-Term Memory live on your device. On our servers — zero bytes. Need backup? Connect Google Drive or Proton on your terms."},
-  {q:/usdc|solana|оплат|pay|плат/i, a:"Native via Solana — sub-second transactions, pennies in fees. We also accept USD, WeChat Pay and Alipay via Plisio, Triple-A and TrustWallet."},
-  {q:/kyb|kyc|verif|провер/i, a:"Know Your Business — entity verification. Otan Systems is KYB-verified, so we can legally bridge fiat and crypto. Users complete a simple KYC via Cryptomus."}
-];
 function reply(q){ for(const r of REPLIES) if(r.q.test(q)) return r.a; return "Thanks for the question! The Ardak team will follow up at hello@otan.systems."; }
 function push(who,label,html){ const d=document.createElement('div'); d.className='msg '+who; d.innerHTML='<div><div class="who">'+label+'</div><div class="bubble">'+html+'</div></div>'; $('#msgs').appendChild(d); d.scrollIntoView({behavior:'smooth',block:'nearest'}); }
 function send(q){ push('user','You',q); const t=document.createElement('div'); t.className='msg bot'; t.innerHTML='<div><div class="who">Ardak AI</div><div class="bubble"><div class="typing"><span></span><span></span><span></span></div></div></div>'; $('#msgs').appendChild(t); setTimeout(()=>{ t.remove(); push('bot','Ardak AI',reply(q)); },700); }
