@@ -1,1 +1,882 @@
-LAUNCHING SOON...
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Ardak AI</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-deep: #0A1628;
+    --blue-mid: #0D3B7C;
+    --blue-bright: #1A6FD8;
+    --blue-electric: #2E9BFF;
+    --blue-pale: #9CC8FF;
+    --blue-ultra: #C8E4FF;
+    --white: #FFFFFF;
+    --glass: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.14);
+    --glass-strong: rgba(255,255,255,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--blue-deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── BACKGROUND ─── */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,111,216,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(46,155,255,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 50% at 50% 50%, rgba(13,59,124,0.25) 0%, transparent 70%);
+  }
+
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(46,155,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,155,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    backdrop-filter: blur(20px);
+    background: rgba(10,22,40,0.7);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+    text-decoration: none;
+  }
+
+  .nav-logo-icon {
+    width: 34px; height: 34px;
+    color: var(--blue-electric);
+    filter: drop-shadow(0 0 8px rgba(46,155,255,0.6));
+    flex-shrink: 0;
+  }
+
+  .nav-logo-text {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 800; font-size: 20px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 30%, var(--blue-electric));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(46,155,255,0.35);
+    transition: box-shadow 0.25s, transform 0.2s;
+  }
+
+  .nav-cta:hover {
+    box-shadow: 0 0 32px rgba(46,155,255,0.55);
+    transform: translateY(-1px);
+  }
+
+  .nav-toggle {
+    display: none;
+    width: 22px; height: 16px;
+    position: relative;
+    background: none; border: none; cursor: pointer;
+  }
+
+  .nav-toggle span {
+    position: absolute; left: 0; right: 0; height: 2px;
+    background: var(--white); border-radius: 2px;
+    transition: transform 0.25s, opacity 0.25s;
+  }
+
+  .nav-toggle span:nth-child(1) { top: 0; }
+  .nav-toggle span:nth-child(2) { top: 7px; }
+  .nav-toggle span:nth-child(3) { top: 14px; }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+    color: var(--blue-pale);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue-electric);
+    box-shadow: 0 0 8px var(--blue-electric);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-logo {
+    width: 120px; height: 120px;
+    color: var(--blue-electric);
+    filter: drop-shadow(0 0 30px rgba(46,155,255,0.5)) drop-shadow(0 0 60px rgba(26,111,216,0.3));
+    margin-bottom: 40px;
+    animation: fadeUp 0.9s ease 0.1s both, float 4s ease-in-out infinite 1s;
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .hero-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    margin-bottom: 12px;
+    animation: fadeUp 1s ease 0.15s both;
+  }
+
+  .hero-title .line-white { color: var(--white); }
+  .hero-title .line-blue {
+    background: linear-gradient(90deg, var(--blue-electric), var(--blue-pale));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-tagline {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 600;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--blue-electric);
+    margin-top: 20px;
+    animation: fadeUp 1s ease 0.2s both;
+  }
+
+  .hero-sub {
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+    max-width: 480px;
+    line-height: 1.7;
+    margin: 24px auto 48px;
+    animation: fadeUp 1s ease 0.25s both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 1s ease 0.35s both;
+  }
+
+  .btn-primary {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 700; font-size: 15px;
+    padding: 16px 40px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 0 40px rgba(46,155,255,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 60px rgba(46,155,255,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 600; font-size: 15px;
+    padding: 16px 40px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .scroll-cue {
+    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
+    display: flex; flex-direction: column; align-items: center; gap: 8px;
+    color: rgba(255,255,255,0.35);
+    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
+    animation: fadeUp 1s ease 0.5s both;
+  }
+
+  .scroll-cue-line {
+    width: 1px; height: 32px;
+    background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
+    animation: scrollLine 2s ease-in-out infinite;
+  }
+
+  @keyframes scrollLine {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── SHARED SECTION LAYOUT ─── */
+  section {
+    position: relative; z-index: 1;
+    padding: 140px 48px;
+    max-width: 1200px;
+    margin: 0 auto;
+  }
+
+  .section-eyebrow {
+    display: inline-flex; align-items: center; gap: 10px;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--blue-electric);
+    margin-bottom: 18px;
+  }
+
+  .section-eyebrow::before {
+    content: '';
+    width: 24px; height: 1px;
+    background: var(--blue-electric);
+  }
+
+  .section-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(32px, 5vw, 56px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 20px;
+    max-width: 700px;
+  }
+
+  .section-desc {
+    font-size: 16px; font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.75;
+    max-width: 560px;
+    margin-bottom: 64px;
+  }
+
+  .reveal {
+    opacity: 0; transform: translateY(28px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.is-visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  /* ─── SCOPE ─── */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 28px;
+  }
+
+  .scope-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.3s, background 0.3s, transform 0.3s;
+  }
+
+  .scope-card:hover {
+    border-color: rgba(46,155,255,0.4);
+    background: var(--glass-strong);
+    transform: translateY(-4px);
+  }
+
+  .scope-card-head {
+    display: flex; align-items: center; gap: 14px;
+    margin-bottom: 28px;
+  }
+
+  .scope-card-icon {
+    width: 44px; height: 44px;
+    border-radius: 14px;
+    display: flex; align-items: center; justify-content: center;
+    background: linear-gradient(135deg, var(--blue-mid), var(--blue-bright));
+    box-shadow: 0 0 24px rgba(26,111,216,0.4);
+    flex-shrink: 0;
+  }
+
+  .scope-card-icon svg { width: 22px; height: 22px; color: #fff; }
+
+  .scope-card-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 22px; font-weight: 700;
+    letter-spacing: -0.5px;
+  }
+
+  .scope-tags {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+
+  .scope-tag {
+    font-size: 13px; font-weight: 500;
+    padding: 9px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    color: var(--blue-ultra);
+    background: rgba(255,255,255,0.03);
+  }
+
+  /* ─── TOOLS ─── */
+  .tools-lede {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 24px;
+    margin-bottom: 56px;
+  }
+
+  .tools-lede .section-desc { margin-bottom: 0; }
+
+  .tools-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 28px;
+  }
+
+  .tools-panel {
+    background: linear-gradient(160deg, rgba(13,59,124,0.35), rgba(255,255,255,0.03));
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 40px;
+  }
+
+  .tools-panel-label {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: var(--blue-pale);
+    margin-bottom: 24px;
+  }
+
+  .tools-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 0;
+  }
+
+  .tools-list li {
+    display: flex; align-items: center; gap: 14px;
+    padding: 16px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.08);
+    font-family: 'SF Mono', 'Menlo', monospace;
+    font-size: 16px; font-weight: 500;
+    color: var(--white);
+  }
+
+  .tools-list li:last-child { border-bottom: none; }
+
+  .tools-list li span {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 400;
+    color: rgba(255,255,255,0.4);
+  }
+
+  .tools-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue-electric);
+    flex-shrink: 0;
+  }
+
+  /* ─── SECURITY ─── */
+  .security-wrap {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 64px;
+    align-items: center;
+  }
+
+  .security-visual {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    border-radius: 24px;
+    padding: 48px;
+    backdrop-filter: blur(12px);
+  }
+
+  .security-visual-icon {
+    width: 64px; height: 64px;
+    color: var(--blue-electric);
+    filter: drop-shadow(0 0 20px rgba(46,155,255,0.5));
+    margin-bottom: 28px;
+  }
+
+  .security-list {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 16px;
+  }
+
+  .security-list li {
+    display: flex; align-items: center; gap: 12px;
+    font-size: 15px; font-weight: 400;
+    color: rgba(255,255,255,0.75);
+  }
+
+  .security-check {
+    width: 20px; height: 20px; flex-shrink: 0;
+    color: var(--blue-electric);
+  }
+
+  .security-note {
+    margin-top: 28px;
+    padding: 18px 20px;
+    border-radius: 14px;
+    border: 1px solid rgba(46,155,255,0.25);
+    background: rgba(46,155,255,0.06);
+    font-size: 13px; font-weight: 400;
+    color: var(--blue-pale);
+    line-height: 1.6;
+  }
+
+  .security-note strong { color: var(--white); }
+
+  /* ─── RELEASE ─── */
+  .release-section { text-align: center; padding-top: 100px; padding-bottom: 100px; }
+
+  .release-card {
+    display: inline-flex; flex-direction: column; align-items: center;
+    gap: 20px;
+    padding: 64px 80px;
+    border-radius: 28px;
+    border: 1px solid var(--glass-border);
+    background: radial-gradient(circle at 50% 0%, rgba(46,155,255,0.12), transparent 70%), var(--glass);
+    backdrop-filter: blur(12px);
+  }
+
+  .release-label {
+    font-size: 12px; font-weight: 700; letter-spacing: 3px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.45);
+  }
+
+  .release-status {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(30px, 4vw, 44px);
+    font-weight: 800;
+    letter-spacing: -1px;
+    background: linear-gradient(90deg, var(--blue-electric), var(--blue-pale));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--glass-border);
+    padding: 72px 48px 40px;
+  }
+
+  .footer-inner {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex; justify-content: space-between; align-items: flex-start;
+    flex-wrap: wrap;
+    gap: 48px;
+  }
+
+  .footer-brand-icon {
+    width: 32px; height: 32px;
+    color: var(--blue-electric);
+    margin-bottom: 16px;
+  }
+
+  .footer-brand-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 18px; font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .footer-brand-desc {
+    font-size: 13px; font-weight: 300;
+    color: rgba(255,255,255,0.4);
+    max-width: 280px;
+    line-height: 1.6;
+    margin-bottom: 20px;
+  }
+
+  .footer-contact {
+    font-size: 13px; font-weight: 500;
+    color: var(--blue-pale);
+    text-decoration: none;
+  }
+
+  .footer-contact:hover { color: var(--white); }
+
+  .footer-col-title {
+    font-size: 12px; font-weight: 700; letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 20px;
+  }
+
+  .footer-links {
+    list-style: none;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+
+  .footer-links a {
+    font-size: 14px; font-weight: 400;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .footer-links a:hover { color: var(--white); }
+
+  .footer-bottom {
+    max-width: 1200px;
+    margin: 56px auto 0;
+    padding-top: 28px;
+    border-top: 1px solid rgba(255,255,255,0.08);
+    display: flex; justify-content: space-between; align-items: center;
+    flex-wrap: wrap; gap: 16px;
+    font-size: 12px;
+    color: rgba(255,255,255,0.35);
+  }
+
+  /* ─── RESPONSIVE ─── */
+  @media (max-width: 900px) {
+    .scope-grid, .tools-grid, .security-wrap { grid-template-columns: 1fr; }
+    .security-wrap { gap: 40px; }
+  }
+
+  @media (max-width: 760px) {
+    nav { padding: 16px 20px; }
+    .nav-links { display: none; }
+    .nav-toggle { display: block; }
+    section { padding: 100px 20px; }
+    .hero { padding: 110px 20px 60px; }
+    .release-card { padding: 48px 32px; }
+    .footer-inner { flex-direction: column; }
+  }
+
+  /* ─── ACCESSIBILITY ─── */
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--blue-electric);
+    outline-offset: 3px;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    * { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+  }
+</style>
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grid-overlay"></div>
+
+<nav>
+  <a class="nav-logo" href="#top" aria-label="Ardak AI home">
+    <svg class="nav-logo-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <circle cx="24" cy="24" r="4.5" fill="currentColor"/>
+      <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2"/>
+      <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2" transform="rotate(60 24 24)"/>
+      <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2" transform="rotate(120 24 24)"/>
+    </svg>
+    <span class="nav-logo-text">Ardak AI</span>
+  </a>
+  <ul class="nav-links">
+    <li><a href="#scope">Scope</a></li>
+    <li><a href="#tools">Tools</a></li>
+    <li><a href="#security">Security</a></li>
+    <li><a href="#release">Release</a></li>
+    <li><a href="#contact">Contact</a></li>
+  </ul>
+  <a class="nav-cta" href="https://otansystems.com">To Lobby</a>
+  <button class="nav-toggle" aria-label="Open menu">
+    <span></span><span></span><span></span>
+  </button>
+</nav>
+
+<section class="hero" id="top">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    By Otan Systems
+  </div>
+
+  <svg class="hero-logo" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="24" cy="24" r="4.5" fill="currentColor"/>
+    <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="1.6"/>
+    <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="1.6" transform="rotate(60 24 24)"/>
+    <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="1.6" transform="rotate(120 24 24)"/>
+  </svg>
+
+  <h1 class="hero-title">
+    <span class="line-white">ARDAK</span><br>
+    <span class="line-blue">AI</span>
+  </h1>
+
+  <div class="hero-tagline">Do Science</div>
+
+  <p class="hero-sub">
+    An agent built to be an expert in mathematics and physics — reasoning through problems, running the numbers, and plotting the result. Working under the Otan Systems aegis.
+  </p>
+
+  <div class="hero-actions">
+    <a class="btn-primary" href="mailto:otan-systems@proton.me">Contact Sales</a>
+    <a class="btn-ghost" href="https://otansystems.com">To Lobby</a>
+  </div>
+
+  <div class="scroll-cue">
+    <span>Scroll</span>
+    <span class="scroll-cue-line"></span>
+  </div>
+</section>
+
+<section id="scope">
+  <div class="section-eyebrow">Scope</div>
+  <h2 class="section-title">Two disciplines, one reasoning engine.</h2>
+  <p class="section-desc">Ardak AI covers the full span of mathematics and physics a student or researcher works through — from first principles to applied problem sets.</p>
+
+  <div class="scope-grid">
+    <div class="scope-card reveal">
+      <div class="scope-card-head">
+        <div class="scope-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M4 19L9 5H11L16 19M6.2 14H13.8M18 5V19M18 5L21 8M18 5L15 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+        <div class="scope-card-title">Mathematics</div>
+      </div>
+      <div class="scope-tags">
+        <span class="scope-tag">Arithmetic</span>
+        <span class="scope-tag">Calculus</span>
+        <span class="scope-tag">Algebra</span>
+        <span class="scope-tag">Trigonometry</span>
+        <span class="scope-tag">Geometry</span>
+        <span class="scope-tag">Function</span>
+      </div>
+    </div>
+
+    <div class="scope-card reveal">
+      <div class="scope-card-head">
+        <div class="scope-card-icon">
+          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="2" fill="currentColor"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8" transform="rotate(60 12 12)"/>
+            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8" transform="rotate(120 12 12)"/>
+          </svg>
+        </div>
+        <div class="scope-card-title">Physics</div>
+      </div>
+      <div class="scope-tags">
+        <span class="scope-tag">Mechanics</span>
+        <span class="scope-tag">Thermodynamics</span>
+        <span class="scope-tag">Electrostatics</span>
+        <span class="scope-tag">Electrodynamics</span>
+        <span class="scope-tag">Optics</span>
+        <span class="scope-tag">Magnetism</span>
+        <span class="scope-tag">Electricity</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="tools">
+  <div class="tools-lede">
+    <div>
+      <div class="section-eyebrow">Integrated Python Tools</div>
+      <h2 class="section-title">Calculation and plotting, in one GUI.</h2>
+    </div>
+    <p class="section-desc">Prepare to witness the finest calculation and algorithm tools with built-in graph plotting, all placed in a single interface.</p>
+  </div>
+
+  <div class="tools-grid">
+    <div class="tools-panel reveal">
+      <div class="tools-panel-label">Algorithms &amp; Calculation</div>
+      <ul class="tools-list">
+        <li><span class="tools-dot"></span>numpy<span>Array &amp; numerical computation</span></li>
+        <li><span class="tools-dot"></span>scipy<span>Scientific computing</span></li>
+        <li><span class="tools-dot"></span>sympy<span>Symbolic mathematics</span></li>
+      </ul>
+    </div>
+
+    <div class="tools-panel reveal">
+      <div class="tools-panel-label">Plotting Graphs</div>
+      <ul class="tools-list">
+        <li><span class="tools-dot"></span>plotly<span>Interactive graphs &amp; visualization</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section id="security">
+  <div class="section-eyebrow">Security</div>
+  <h2 class="section-title">Everything stays on your device.</h2>
+
+  <div class="security-wrap">
+    <div class="security-visual reveal">
+      <svg class="security-visual-icon" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M12 3L4 6.5V11C4 16 7.3 20.4 12 21.5C16.7 20.4 20 16 20 11V6.5L12 3Z" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/>
+        <path d="M9 12L11 14L15.5 9.5" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+      </svg>
+      <ul class="security-list">
+        <li>
+          <svg class="security-check" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12L10 17L19 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Chats
+        </li>
+        <li>
+          <svg class="security-check" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12L10 17L19 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Chats' content
+        </li>
+        <li>
+          <svg class="security-check" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5 12L10 17L19 8" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+          Downloaded files
+        </li>
+      </ul>
+      <div class="security-note">
+        <strong>Optional:</strong> it's highly recommended to back your data up to a cloud service or another device.
+      </div>
+    </div>
+    <p class="section-desc" style="margin-bottom: 0;">
+      Every client element Ardak AI produces — every chat, every message inside it, every file you download — is stored locally on your device. Nothing is uploaded to a server unless you choose to back it up yourself.
+    </p>
+  </div>
+</section>
+
+<section class="release-section" id="release">
+  <div class="release-card reveal">
+    <div class="release-label">Release Date</div>
+    <div class="release-status">Not Estimated</div>
+  </div>
+</section>
+
+<footer id="contact">
+  <div class="footer-inner">
+    <div>
+      <svg class="footer-brand-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="24" cy="24" r="4.5" fill="currentColor"/>
+        <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2"/>
+        <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2" transform="rotate(60 24 24)"/>
+        <ellipse cx="24" cy="24" rx="20" ry="8" stroke="currentColor" stroke-width="2" transform="rotate(120 24 24)"/>
+      </svg>
+      <div class="footer-brand-title">Ardak AI</div>
+      <p class="footer-brand-desc">An independent math and physics agent, built by Otan Systems.</p>
+      <a class="footer-contact" href="mailto:otan-systems@proton.me">otan-systems@proton.me</a>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Site</div>
+      <ul class="footer-links">
+        <li><a href="#scope">Scope</a></li>
+        <li><a href="#tools">Tools</a></li>
+        <li><a href="#security">Security</a></li>
+        <li><a href="#release">Release</a></li>
+      </ul>
+    </div>
+
+    <div>
+      <div class="footer-col-title">Contact</div>
+      <ul class="footer-links">
+        <li><a href="https://instagram.com/otansystems_official" target="_blank" rel="noopener">Instagram — @otansystems_official</a></li>
+        <li><a href="https://tiktok.com/@otan.systems" target="_blank" rel="noopener">TikTok — @otan.systems</a></li>
+        <li><a href="https://youtube.com/@OtanSystems" target="_blank" rel="noopener">YouTube — @OtanSystems</a></li>
+        <li><a href="https://github.com/Otan-Systems" target="_blank" rel="noopener">GitHub — @Otan-Systems</a></li>
+        <li><a href="https://linkedin.com/company/otan-systems" target="_blank" rel="noopener">LinkedIn — Otan Systems</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>© 2026 Otan Systems. All rights reserved.</span>
+    <span>Ardak AI</span>
+  </div>
+</footer>
+
+<script>
+  var revealEls = document.querySelectorAll('.reveal');
+  var revealObserver = new IntersectionObserver(function (entries) {
+    entries.forEach(function (entry) {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('is-visible');
+        revealObserver.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  revealEls.forEach(function (el) { revealObserver.observe(el); });
+
+  var navToggle = document.querySelector('.nav-toggle');
+  var navLinks = document.querySelector('.nav-links');
+  if (navToggle) {
+    navToggle.addEventListener('click', function () {
+      var open = navLinks.style.display === 'flex';
+      navLinks.style.display = open ? 'none' : 'flex';
+      navLinks.style.cssText += open ? '' : 'position:fixed;top:64px;left:0;right:0;flex-direction:column;background:rgba(10,22,40,0.96);padding:24px 20px;gap:20px;border-bottom:1px solid rgba(255,255,255,0.14);';
+    });
+  }
+</script>
+
+</body>
+</html>
