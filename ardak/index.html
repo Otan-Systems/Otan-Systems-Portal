@@ -257,27 +257,6 @@
     background: rgba(255,255,255,0.1);
   }
 
-  .scroll-cue {
-    position: absolute; bottom: 40px; left: 50%; transform: translateX(-50%);
-    display: flex; flex-direction: column; align-items: center; gap: 8px;
-    color: rgba(255,255,255,0.35);
-    font-size: 11px; letter-spacing: 2px; text-transform: uppercase;
-    animation: fadeUp 1s ease 0.5s both;
-  }
-
-  .scroll-cue-line {
-    width: 1px; height: 32px;
-    background: linear-gradient(180deg, rgba(255,255,255,0.4), transparent);
-    animation: scrollLine 2s ease-in-out infinite;
-  }
-
-  @keyframes scrollLine {
-    0% { transform: scaleY(0); transform-origin: top; }
-    50% { transform: scaleY(1); transform-origin: top; }
-    51% { transform-origin: bottom; }
-    100% { transform: scaleY(0); transform-origin: bottom; }
-  }
-
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(24px); }
     to { opacity: 1; transform: translateY(0); }
@@ -653,7 +632,6 @@
     <li><a href="#release">Release</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
-  <a class="nav-cta" href="https://otansystems.com">To Lobby</a>
   <button class="nav-toggle" aria-label="Open menu">
     <span></span><span></span><span></span>
   </button>
@@ -688,10 +666,6 @@
     <a class="btn-ghost" href="https://otansystems.com">To Lobby</a>
   </div>
 
-  <div class="scroll-cue">
-    <span>Scroll</span>
-    <span class="scroll-cue-line"></span>
-  </div>
 </section>
 
 <section id="scope">
@@ -702,11 +676,6 @@
   <div class="scope-grid">
     <div class="scope-card reveal">
       <div class="scope-card-head">
-        <div class="scope-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M4 19L9 5H11L16 19M6.2 14H13.8M18 5V19M18 5L21 8M18 5L15 8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-          </svg>
-        </div>
         <div class="scope-card-title">Mathematics</div>
       </div>
       <div class="scope-tags">
@@ -721,14 +690,6 @@
 
     <div class="scope-card reveal">
       <div class="scope-card-head">
-        <div class="scope-card-icon">
-          <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <circle cx="12" cy="12" r="2" fill="currentColor"/>
-            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8"/>
-            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8" transform="rotate(60 12 12)"/>
-            <ellipse cx="12" cy="12" rx="10" ry="4" stroke="currentColor" stroke-width="1.8" transform="rotate(120 12 12)"/>
-          </svg>
-        </div>
         <div class="scope-card-title">Physics</div>
       </div>
       <div class="scope-tags">
