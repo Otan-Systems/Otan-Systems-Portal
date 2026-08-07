@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="google" content="notranslate">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synapse AI — Video Generation · Otan Systems</title>
+
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --blue-deep: #0A1628;
+    --blue-mid: #0D3B7C;
+    --blue-bright: #1A6FD8;
+    --blue-electric: #2E9BFF;
+    --blue-pale: #9CC8FF;
+    --blue-ultra: #C8E4FF;
+    --white: #FFFFFF;
+    --glass: rgba(255,255,255,0.07);
+    --glass-border: rgba(255,255,255,0.14);
+    --glass-strong: rgba(255,255,255,0.12);
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    background: var(--blue-deep);
+    color: var(--white);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ─── BACKGROUND ─── */
+  .bg-layer {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background:
+      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,111,216,0.18) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(46,155,255,0.12) 0%, transparent 50%),
+      radial-gradient(ellipse 40% 50% at 50% 50%, rgba(13,59,124,0.25) 0%, transparent 70%);
+  }
+
+  .grid-overlay {
+    position: fixed; inset: 0; z-index: 0; pointer-events: none;
+    background-image:
+      linear-gradient(rgba(46,155,255,0.04) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(46,155,255,0.04) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    backdrop-filter: blur(20px);
+    background: rgba(10,22,40,0.7);
+    border-bottom: 1px solid var(--glass-border);
+  }
+
+  .nav-logo {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .nav-logo img, .nav-logo svg {
+  width: 32px;
+  height: 32px;
+  object-fit: cover;
+  filter: drop-shadow(0 0 8px rgba(46,155,255,0.6));
+  }
+
+
+  .nav-logo-text {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 800; font-size: 20px;
+    letter-spacing: -0.5px;
+    background: linear-gradient(135deg, #fff 30%, var(--blue-electric));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .nav-links {
+    display: flex; gap: 36px; list-style: none;
+  }
+
+  .nav-links a {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; font-weight: 500;
+    color: rgba(255,255,255,0.65);
+    text-decoration: none;
+    letter-spacing: 0.5px;
+    transition: color 0.25s;
+  }
+
+  .nav-links a:hover { color: var(--white); }
+
+  .nav-cta {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 10px 24px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 0 20px rgba(46,155,255,0.35);
+    transition: box-shadow 0.25s, transform 0.2s;
+  }
+
+  .nav-cta:hover {
+    box-shadow: 0 0 32px rgba(46,155,255,0.55);
+    transform: translateY(-1px);
+  }
+
+  .nav-actions {
+    display: flex; align-items: center; gap: 14px;
+  }
+
+  .btn-lobby {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 600;
+    padding: 9px 20px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+    white-space: nowrap;
+  }
+
+  .btn-lobby:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  .lang-toggle {
+    display: flex; align-items: center;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    backdrop-filter: blur(12px);
+    padding: 3px;
+    cursor: pointer;
+    flex-shrink: 0;
+  }
+
+  .lang-toggle button {
+    all: unset;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 12px; font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 6px 13px;
+    border-radius: 100px;
+    color: rgba(255,255,255,0.45);
+    cursor: pointer;
+    transition: color 0.25s, background 0.25s;
+  }
+
+  .lang-toggle button.active {
+    color: #fff;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
+    box-shadow: 0 0 14px rgba(46,155,255,0.4);
+  }
+
+  /* ─── HERO ─── */
+  .hero {
+    position: relative; z-index: 1;
+    min-height: 100vh;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 20px;
+    border-radius: 100px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
+    color: var(--blue-pale);
+    text-transform: uppercase;
+    margin-bottom: 36px;
+    animation: fadeUp 0.8s ease both;
+  }
+
+  .badge-dot {
+    width: 6px; height: 6px; border-radius: 50%;
+    background: var(--blue-electric);
+    box-shadow: 0 0 8px var(--blue-electric);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .hero-logo {
+    width: 120px; height: 120px;
+    object-fit: contain;
+    filter: drop-shadow(0 0 30px rgba(46,155,255,0.5)) drop-shadow(0 0 60px rgba(26,111,216,0.3));
+    margin-bottom: 40px;
+    animation: fadeUp 0.9s ease 0.1s both, float 4s ease-in-out infinite 1s;
+    border-radius: 16px
+  }
+
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+
+  .hero-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(52px, 8vw, 100px);
+    font-weight: 800;
+    line-height: 0.95;
+    letter-spacing: -3px;
+    margin-bottom: 12px;
+    animation: fadeUp 1s ease 0.15s both;
+  }
+
+  .hero-title .line-white { color: var(--white); }
+  .hero-title .line-blue {
+    background: linear-gradient(90deg, var(--blue-electric), var(--blue-pale));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .hero-sub {
+    font-size: clamp(14px, 2vw, 18px);
+    font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    letter-spacing: 0.5px;
+    max-width: 480px;
+    line-height: 1.7;
+    margin: 24px auto 48px;
+    animation: fadeUp 1s ease 0.25s both;
+  }
+
+  .hero-actions {
+    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 1s ease 0.35s both;
+  }
+
+  .btn-primary {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 700; font-size: 15px;
+    padding: 16px 40px;
+    border-radius: 100px;
+    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
+    color: #fff;
+    text-decoration: none;
+    box-shadow: 0 0 40px rgba(46,155,255,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
+    transition: box-shadow 0.3s, transform 0.2s;
+  }
+
+  .btn-primary:hover {
+    box-shadow: 0 0 60px rgba(46,155,255,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+    transform: translateY(-2px);
+  }
+
+  .btn-ghost {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 600; font-size: 15px;
+    padding: 16px 40px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: rgba(255,255,255,0.8);
+    text-decoration: none;
+    backdrop-filter: blur(12px);
+    transition: border-color 0.25s, color 0.25s, background 0.25s;
+  }
+
+  .btn-ghost:hover {
+    border-color: rgba(255,255,255,0.3);
+    color: #fff;
+    background: rgba(255,255,255,0.1);
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* ─── STATS BAR ─── */
+  .stats-bar {
+    position: relative; z-index: 1;
+    display: flex; justify-content: center; gap: 0;
+    padding: 0 24px;
+    margin: -20px 0 80px;
+  }
+
+  .stats-inner {
+    display: flex;
+    gap: 0;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(20px);
+    border-radius: 20px;
+    overflow: hidden;
+    animation: fadeUp 1s ease 0.45s both;
+  }
+
+  .stat-item {
+    padding: 28px 48px;
+    text-align: center;
+    border-right: 1px solid var(--glass-border);
+    position: relative;
+  }
+
+  .stat-item:last-child { border-right: none; }
+
+  .stat-value {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--white);
+    line-height: 1;
+    margin-bottom: 6px;
+  }
+
+  .stat-value span {
+    color: var(--blue-electric);
+    font-size: 14px; font-weight: 600;
+    margin-left: 2px;
+  }
+
+  .stat-label {
+    font-size: 11px; font-weight: 500;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  /* ─── SECTIONS ─── */
+  section {
+    position: relative; z-index: 1;
+    max-width: 1200px; margin: 0 auto;
+    padding: 80px 48px;
+  }
+
+  .section-label {
+    font-size: 11px; font-weight: 600;
+    letter-spacing: 2px; text-transform: uppercase;
+    color: var(--blue-electric);
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(32px, 4vw, 52px);
+    font-weight: 800;
+    letter-spacing: -1.5px;
+    line-height: 1.05;
+    margin-bottom: 5px
+  }
+
+  .section-desc {
+    font-size: 16px; font-weight: 300;
+    color: rgba(255,255,255,0.5);
+    line-height: 1.75;
+    max-width: 520px;
+  }
+
+  /* ─── WHY CARDS ─── */
+  .why-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 20px;
+    margin-top: 60px;
+  }
+
+  .why-card {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 36px 32px;
+    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+    position: relative;
+    overflow: hidden;
+    margin-top: 30px
+  }
+
+  .why-card::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: linear-gradient(135deg, rgba(46,155,255,0.08) 0%, transparent 60%);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .why-card:hover::before { opacity: 1; }
+
+  .why-card:hover {
+    border-color: rgba(46,155,255,0.35);
+    transform: translateY(-4px);
+    background: rgba(255,255,255,0.09);
+  }
+
+  .why-title {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 18px; font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--white);
+  }
+
+  .why-desc {
+    font-size: 14px; font-weight: 300;
+    color: rgba(255,255,255,0.55);
+    line-height: 1.7;
+  }
+
+  .why-stat {
+    margin-top: 20px;
+    padding: 10px 16px;
+    background: rgba(46,155,255,0.1);
+    border: 1px solid rgba(46,155,255,0.2);
+    border-radius: 10px;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 700;
+    color: var(--blue-pale);
+  }
+
+  .modes-compare { margin-top: 0; margin-bottom: 60px; }
+
+  /* ─── SPECIALIZATION ─── */
+  .spec-section {
+    background: rgba(13,59,124,0.12);
+    border-top: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    padding: 80px 0;
+    max-width: 100%;
+  }
+
+  .spec-inner {
+    max-width: 1200px; margin: 0 auto; padding: 0 48px;
+  }
+
+  .spec-layout {
+    display: grid;
+    grid-template-columns: 1fr 2fr;
+    gap: 80px;
+    align-items: start;
+    margin-top: 60px;
+  }
+
+  .spec-tags {
+    display: flex; flex-wrap: wrap; gap: 10px;
+  }
+
+  .tag {
+    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px; font-weight: 500;
+    padding: 8px 16px;
+    border-radius: 100px;
+    border: 1px solid var(--glass-border);
+    background: var(--glass);
+    color: rgba(255,255,255,0.75);
+    backdrop-filter: blur(8px);
+    transition: all 0.2s;
+    cursor: default;
+  }
+
+  .tag:hover, .tag.featured {
+    border-color: rgba(46,155,255,0.5);
+    background: rgba(46,155,255,0.12);
+    color: var(--blue-pale);
+  }
+
+  /* ─── CONTEXT METER ─── */
+  .context-block {
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(16px);
+    border-radius: 20px;
+    padding: 36px;
+  }
+
+  .context-header {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: rgba(255,255,255,0.4);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .context-bar-wrap {
+    background: rgba(255,255,255,0.06);
+    border-radius: 100px;
+    height: 8px; overflow: hidden;
+    margin-bottom: 12px;
+  }
+
+  .context-bar-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue-bright), var(--blue-electric), var(--blue-pale));
+    border-radius: 100px;
+    width: 0%;
+    transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
+    box-shadow: 0 0 12px rgba(46,155,255,0.5);
+  }
+
+  .context-nums {
+    display: flex; justify-content: space-between;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 13px;
+    color: rgba(255,255,255,0.4);
+    margin-bottom: 32px;
+  }
+
+  .context-nums strong {
+    color: var(--blue-electric);
+  }
+
+  .context-detail {
+    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
+  }
+
+  .cd-item {
+    padding: 16px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+  }
+
+  .cd-label {
+    font-size: 11px; color: rgba(255,255,255,0.4);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 6px;
+  }
+
+  .cd-val {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 17px; font-weight: 700;
+    color: var(--white);
+  }
+
+  /* ─── RELEASE ─── */
+  .release-section {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 40px;
+  }
+
+  .release-date-block {
+    display: flex; flex-direction: column;
+  }
+
+  .release-big {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(42px, 5.5vw, 80px);
+    font-weight: 800;
+    letter-spacing: -3px;
+    line-height: 0.9;
+    background: linear-gradient(135deg, var(--white) 40%, var(--blue-electric));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .release-note {
+    font-size: 13px;
+    color: rgba(255,255,255,0.35);
+    margin-top: 10px;
+    font-style: italic;
+  }
+
+  .release-info {
+    flex: 1; min-width: 280px;
+  }
+
+  /* ─── CONTACT ─── */
+  .contact-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 16px;
+    margin-top: 50px;
+  }
+
+  .contact-card {
+    display: flex; align-items: center; gap: 16px;
+    padding: 24px 28px;
+    background: var(--glass);
+    border: 1px solid var(--glass-border);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    text-decoration: none;
+    color: inherit;
+    transition: all 0.25s;
+  }
+
+  .contact-card:hover {
+    border-color: rgba(46,155,255,0.4);
+    background: rgba(46,155,255,0.08);
+    transform: translateY(-2px);
+  }
+
+  .contact-icon {
+    font-size: 24px; flex-shrink: 0;
+  }
+
+  .contact-info { min-width: 0; }
+
+  .contact-platform {
+    font-size: 11px; font-weight: 600;
+    color: rgba(255,255,255,0.35);
+    text-transform: uppercase; letter-spacing: 1px;
+    margin-bottom: 4px;
+  }
+
+  .contact-handle {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--white);
+    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative; z-index: 1;
+    border-top: 1px solid var(--glass-border);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+  }
+
+  .footer-left {
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .footer-left img {
+    width: 28px; height: 28px; object-fit: contain;
+    filter: drop-shadow(0 0 6px rgba(46,155,255,0.5));
+  }
+
+  .footer-copy {
+    font-size: 13px;
+    color: rgba(255,255,255,0.3);
+  }
+
+  /* ─── DIVIDER ─── */
+  .divider {
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    margin: 0 48px;
+  }
+
+  /* ─── SCROLL ANIMATION ─── */
+  .reveal {
+    opacity: 0; transform: translateY(30px);
+    transition: opacity 0.7s ease, transform 0.7s ease;
+  }
+
+  .reveal.visible {
+    opacity: 1; transform: translateY(0);
+  }
+
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    section { padding: 60px 24px; }
+    .spec-layout { grid-template-columns: 1fr; gap: 40px; }
+    .stats-inner { flex-direction: column; }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .stat-item:last-child { border-bottom: none; }
+    footer { flex-direction: column; align-items: flex-start; }
+    .release-section { flex-direction: column; }
+  }
+</style>
+
+</head>
+<body>
+
+<div class="bg-layer"></div>
+<div class="grid-overlay"></div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <defs>
+        <linearGradient id="synGrad" x1="0" y1="0" x2="1" y2="1">
+          <stop offset="0" stop-color="#2E9BFF"/>
+          <stop offset="1" stop-color="#0D3B7C"/>
+        </linearGradient>
+      </defs>
+      <circle cx="50" cy="50" r="46" fill="none" stroke="url(#synGrad)" stroke-width="4" opacity="0.5"/>
+      <circle cx="50" cy="20" r="7" fill="#2E9BFF"/>
+      <circle cx="80" cy="68" r="7" fill="#9CC8FF"/>
+      <circle cx="20" cy="68" r="7" fill="#9CC8FF"/>
+      <line x1="50" y1="20" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <line x1="50" y1="20" x2="20" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <line x1="20" y1="68" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <path d="M43 40 L43 60 L64 50 Z" fill="#fff"/>
+    </svg>
+    <span class="nav-logo-text">Synapse AI</span>
+  </div>
+  <ul class="nav-links">
+    <li><a href="#why" data-i18n="nav_why">Why Synapse</a></li>
+    <li><a href="#modes" data-i18n="nav_modes">Modes</a></li>
+    <li><a href="#release" data-i18n="nav_release">Release</a></li>
+    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+  </ul>
+  <div class="nav-actions">
+    <div class="lang-toggle" id="langToggle">
+      <button type="button" data-lang="en" class="active">EN</button>
+      <button type="button" data-lang="ru">RU</button>
+    </div>
+    <a class="btn-lobby" href="https://otansystems.com" data-i18n="nav_lobby">To Lobby</a>
+    <a class="nav-cta" href="mailto:otan-systems@proton.me" data-i18n="nav_sales">Sales</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">
+    <span class="badge-dot"></span>
+    <span data-i18n="hero_badge">AI Video Generation</span>
+  </div>
+
+  <svg class="hero-logo" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <circle cx="50" cy="50" r="46" fill="none" stroke="url(#synGrad)" stroke-width="3" opacity="0.5"/>
+    <circle cx="50" cy="20" r="6" fill="#2E9BFF"/>
+    <circle cx="80" cy="68" r="6" fill="#9CC8FF"/>
+    <circle cx="20" cy="68" r="6" fill="#9CC8FF"/>
+    <line x1="50" y1="20" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2"/>
+    <line x1="50" y1="20" x2="20" y2="68" stroke="url(#synGrad)" stroke-width="2"/>
+    <line x1="20" y1="68" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2"/>
+    <path d="M43 40 L43 60 L64 50 Z" fill="#fff"/>
+  </svg>
+
+  <h1 class="hero-title">
+    <span class="line-white" data-i18n="hero_title_1">Your idea.</span><br>
+    <span class="line-blue" data-i18n="hero_title_2">Already video.</span>
+  </h1>
+
+  <p class="hero-sub" data-i18n="hero_sub">Text, image, or reference — Synapse turns it into finished 1080p video in minutes.</p>
+
+  <div class="hero-actions">
+    <a href="#modes" class="btn-primary" data-i18n="hero_cta_primary">Explore modes</a>
+    <a href="mailto:otan-systems@proton.me" class="btn-ghost" data-i18n="hero_cta_ghost">Talk to sales</a>
+  </div>
+</section>
+
+<!-- STATS -->
+<div class="stats-bar">
+  <div class="stats-inner">
+    <div class="stat-item">
+      <div class="stat-value">1080<span>p</span></div>
+      <div class="stat-label" data-i18n="stat_res">Resolution</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">30<span>fps</span></div>
+      <div class="stat-label" data-i18n="stat_fps">Frame rate</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">$0.1<span data-i18n="stat_sec_unit">/sec</span></div>
+      <div class="stat-label" data-i18n="stat_price">Flat rate</div>
+    </div>
+    <div class="stat-item">
+      <div class="stat-value">5<span data-i18n="stat_ratios_unit">ratios</span></div>
+      <div class="stat-label" data-i18n="stat_ratios">Aspect ratios</div>
+    </div>
+  </div>
+</div>
+
+<!-- WHY -->
+<section id="why">
+  <div class="section-label" data-i18n="why_label">Why Synapse</div>
+  <h2 class="section-title" data-i18n="why_title">Built for creators who don't wait</h2>
+  <p class="section-desc" data-i18n="why_desc">No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.</p>
+
+  <div class="why-grid">
+    <div class="why-card reveal">
+      <div class="why-title" data-i18n="why1_title">Three ways in</div>
+      <div class="why-desc" data-i18n="why1_desc">Start from a text prompt, a still image, or a reference clip — whichever fits the shot.</div>
+      <div class="why-stat" data-i18n="why1_stat">Text · Image · Reference</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-title" data-i18n="why2_title">One flat rate</div>
+      <div class="why-desc" data-i18n="why2_desc">No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.</div>
+      <div class="why-stat" data-i18n="why2_stat">$0.1 / sec, always</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-title" data-i18n="why3_title">Studio-grade output</div>
+      <div class="why-desc" data-i18n="why3_desc">1080p at 30 FPS in five aspect ratios — ready for any platform, no re-export needed.</div>
+      <div class="why-stat" data-i18n="why3_stat">1080p · 30 FPS</div>
+    </div>
+    <div class="why-card reveal">
+      <div class="why-title" data-i18n="why4_title">Audio built in</div>
+      <div class="why-desc" data-i18n="why4_desc">Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.</div>
+      <div class="why-stat" data-i18n="why4_stat">Synapse Studio Pro</div>
+    </div>
+  </div>
+</section>
+
+<!-- MODES -->
+<div class="spec-section" id="modes">
+  <div class="spec-inner">
+    <div class="section-label" data-i18n="modes_label">Modes</div>
+    <h2 class="section-title" data-i18n="modes_title">Video Pro. Studio Pro.</h2>
+    <p class="section-desc" data-i18n="modes_desc">Same engine, same price. Choose whether sound comes with it.</p>
+
+    <div class="why-grid modes-compare">
+      <div class="why-card reveal">
+        <div class="why-title">Synapse Video Pro</div>
+        <div class="why-desc" data-i18n="mode_video_desc">Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.</div>
+      </div>
+      <div class="why-card reveal">
+        <div class="why-title">Synapse Studio Pro</div>
+        <div class="why-desc" data-i18n="mode_studio_desc">Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.</div>
+      </div>
+    </div>
+
+    <div class="spec-layout">
+      <div class="spec-tags">
+        <span class="tag featured">16:9</span>
+        <span class="tag featured">9:16</span>
+        <span class="tag">3:4</span>
+        <span class="tag">4:3</span>
+        <span class="tag">1:1</span>
+      </div>
+
+      <div class="context-block reveal">
+        <div class="context-header" data-i18n="limits_header">Generation limits</div>
+        <div class="context-detail">
+          <div class="cd-item">
+            <div class="cd-label" data-i18n="limit_ttv">Text-to-Video</div>
+            <div class="cd-val">512 <span data-i18n="tokens_word">tokens</span></div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-label" data-i18n="limit_itv">Image-to-Video</div>
+            <div class="cd-val">1024 <span data-i18n="tokens_word">tokens</span></div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-label" data-i18n="limit_rtv">Reference-to-Video</div>
+            <div class="cd-val">1024 <span data-i18n="tokens_word">tokens</span></div>
+          </div>
+          <div class="cd-item">
+            <div class="cd-label" data-i18n="limit_res">Output</div>
+            <div class="cd-val">1080p · 30 FPS</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- RELEASE -->
+<section id="release">
+  <div class="section-label" data-i18n="release_label">Release</div>
+  <div class="release-section">
+    <div class="release-date-block reveal">
+      <div class="release-big" data-i18n="release_big">Not Estimated</div>
+      <div class="release-note" data-i18n="release_note">No fixed date yet — check back, or reach out and we'll keep you posted.</div>
+    </div>
+    <div class="release-info reveal">
+      <p class="section-desc" data-i18n="release_info">Synapse AI is in active development. Video Pro and Studio Pro will ship for Windows, macOS, Linux, and Android — all builds distributed through GitHub Releases.</p>
+      <div class="hero-actions" style="justify-content:flex-start; margin-top:24px;">
+        <a href="mailto:otan-systems@proton.me" class="btn-ghost" data-i18n="release_cta">Get notified</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label" data-i18n="contact_label">Contact</div>
+  <h2 class="section-title" data-i18n="contact_title">Let's talk</h2>
+  <p class="section-desc" data-i18n="contact_desc">Questions, partnerships, or just curious — reach us directly.</p>
+
+  <div class="contact-grid">
+    <a class="contact-card reveal" href="mailto:otan-systems@proton.me">
+      <div class="contact-icon">✉️</div>
+      <div class="contact-info">
+        <div class="contact-platform" data-i18n="contact_email_label">Email · Sales</div>
+        <div class="contact-handle">otan-systems@proton.me</div>
+      </div>
+    </a>
+    <a class="contact-card reveal" href="https://otansystems.com">
+      <div class="contact-icon">🌐</div>
+      <div class="contact-info">
+        <div class="contact-platform" data-i18n="contact_lobby_label">Website · To Lobby</div>
+        <div class="contact-handle">otansystems.com</div>
+      </div>
+    </a>
+  </div>
+</section>
+
+<div class="divider"></div>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-left">
+    <svg width="28" height="28" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+      <circle cx="50" cy="50" r="46" fill="none" stroke="url(#synGrad)" stroke-width="4" opacity="0.5"/>
+      <circle cx="50" cy="20" r="7" fill="#2E9BFF"/>
+      <circle cx="80" cy="68" r="7" fill="#9CC8FF"/>
+      <circle cx="20" cy="68" r="7" fill="#9CC8FF"/>
+      <line x1="50" y1="20" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <line x1="50" y1="20" x2="20" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <line x1="20" y1="68" x2="80" y2="68" stroke="url(#synGrad)" stroke-width="2.5"/>
+      <path d="M43 40 L43 60 L64 50 Z" fill="#fff"/>
+    </svg>
+    <span class="footer-copy" data-i18n="footer_copy">© 2026 Otan Systems. All rights reserved.</span>
+  </div>
+  <div class="footer-copy">Synapse AI</div>
+</footer>
+
+<script>
+(function(){
+  var dict = {
+    en: {
+      nav_why: "Why Synapse", nav_modes: "Modes", nav_release: "Release", nav_contact: "Contact",
+      nav_lobby: "To Lobby", nav_sales: "Sales",
+      hero_badge: "AI Video Generation",
+      hero_title_1: "Your idea.", hero_title_2: "Already video.",
+      hero_sub: "Text, image, or reference — Synapse turns it into finished 1080p video in minutes.",
+      hero_cta_primary: "Explore modes", hero_cta_ghost: "Talk to sales",
+      stat_res: "Resolution", stat_fps: "Frame rate", stat_price: "Flat rate", stat_ratios: "Aspect ratios",
+      stat_sec_unit: "/sec", stat_ratios_unit: "ratios",
+      why_label: "Why Synapse", why_title: "Built for creators who don't wait",
+      why_desc: "No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.",
+      why1_title: "Three ways in", why1_desc: "Start from a text prompt, a still image, or a reference clip — whichever fits the shot.", why1_stat: "Text · Image · Reference",
+      why2_title: "One flat rate", why2_desc: "No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.", why2_stat: "$0.1 / sec, always",
+      why3_title: "Studio-grade output", why3_desc: "1080p at 30 FPS in five aspect ratios — ready for any platform, no re-export needed.", why3_stat: "1080p · 30 FPS",
+      why4_title: "Audio built in", why4_desc: "Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.", why4_stat: "Synapse Studio Pro",
+      modes_label: "Modes", modes_title: "Video Pro. Studio Pro.", modes_desc: "Same engine, same price. Choose whether sound comes with it.",
+      mode_video_desc: "Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.",
+      mode_studio_desc: "Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.",
+      limits_header: "Generation limits", tokens_word: "tokens",
+      limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Output",
+      release_label: "Release", release_big: "Not Estimated",
+      release_note: "No fixed date yet — check back, or reach out and we'll keep you posted.",
+      release_info: "Synapse AI is in active development. Video Pro and Studio Pro will ship for Windows, macOS, Linux, and Android — all builds distributed through GitHub Releases.",
+      release_cta: "Get notified",
+      contact_label: "Contact", contact_title: "Let's talk", contact_desc: "Questions, partnerships, or just curious — reach us directly.",
+      contact_email_label: "Email · Sales", contact_lobby_label: "Website · To Lobby",
+      footer_copy: "© 2026 Otan Systems. All rights reserved."
+    },
+    ru: {
+      nav_why: "Почему Synapse", nav_modes: "Режимы", nav_release: "Релиз", nav_contact: "Контакты",
+      nav_lobby: "To Lobby", nav_sales: "Sales",
+      hero_badge: "ИИ-генерация видео",
+      hero_title_1: "Ваша идея.", hero_title_2: "Уже видео.",
+      hero_sub: "Текст, изображение или референс — Synapse превращает это в готовое видео 1080p за минуты.",
+      hero_cta_primary: "Смотреть режимы", hero_cta_ghost: "Связаться с продажами",
+      stat_res: "Разрешение", stat_fps: "Частота кадров", stat_price: "Единый тариф", stat_ratios: "Форматов кадра",
+      stat_sec_unit: "/сек", stat_ratios_unit: "форматов",
+      why_label: "Почему Synapse", why_title: "Для тех, кто не хочет ждать",
+      why_desc: "Без таймлайнов, без рендер-ферм, без обучения — опишите кадр и получите готовое видео.",
+      why1_title: "Три точки входа", why1_desc: "Начните с текстового описания, изображения или референса — как удобнее для кадра.", why1_stat: "Текст · Изображение · Референс",
+      why2_title: "Единый тариф", why2_desc: "Без пакетов, без уровней, без сгорающих кредитов. Платите ровно за сгенерированные секунды.", why2_stat: "$0.1 / сек, всегда",
+      why3_title: "Качество студии", why3_desc: "1080p при 30 FPS в пяти форматах кадра — готово под любую площадку, без переэкспорта.", why3_stat: "1080p · 30 FPS",
+      why4_title: "Звук из коробки", why4_desc: "Включите Studio Pro — и звуковая дорожка генерируется вместе с картинкой, одним запросом.", why4_stat: "Synapse Studio Pro",
+      modes_label: "Режимы", modes_title: "Video Pro. Studio Pro.", modes_desc: "Один движок, одна цена. Вы выбираете, нужен ли звук.",
+      mode_video_desc: "Генерация видео без звука — Text-to-Video, Image-to-Video и Reference-to-Video.",
+      mode_studio_desc: "Всё то же самое, что в Video Pro, плюс сгенерированная звуковая дорожка — видео и аудио за один проход.",
+      limits_header: "Лимиты генерации", tokens_word: "токенов",
+      limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Вывод",
+      release_label: "Релиз", release_big: "Не определена",
+      release_note: "Точной даты пока нет — загляните позже или напишите нам, и мы вас предупредим.",
+      release_info: "Synapse AI в активной разработке. Video Pro и Studio Pro выйдут для Windows, macOS, Linux и Android — все сборки будут доступны в GitHub Releases.",
+      release_cta: "Сообщить о релизе",
+      contact_label: "Контакты", contact_title: "Свяжемся", contact_desc: "Вопросы, партнёрство или просто интересно — пишите напрямую.",
+      contact_email_label: "Почта · Sales", contact_lobby_label: "Сайт · To Lobby",
+      footer_copy: "© 2026 Otan Systems. Все права защищены."
+    }
+  };
+
+  function setLang(lang){
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(function(el){
+      var key = el.getAttribute('data-i18n');
+      if (dict[lang][key] !== undefined) el.textContent = dict[lang][key];
+    });
+    document.querySelectorAll('#langToggle button').forEach(function(btn){
+      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
+    });
+  }
+
+  document.getElementById('langToggle').addEventListener('click', function(e){
+    var btn = e.target.closest('button[data-lang]');
+    if (!btn) return;
+    setLang(btn.getAttribute('data-lang'));
+  });
+
+  // scroll reveal
+  var io = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        entry.target.classList.add('visible');
+        io.unobserve(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+  document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  // release progress-free init, context bar removed intentionally (no fake progress for an unreleased product)
+})();
+</script>
+
+</body>
+</html>
