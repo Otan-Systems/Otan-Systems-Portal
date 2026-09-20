@@ -1,4 +1,4 @@
-<?php
+<php
 $telegramUrl = 'https://t.me/+DSjKMfmx6yM4NDZi';
 $lobbyUrl    = 'https://otansystems.com';
 $mailTo      = 'otansystems@gmail.com';
@@ -51,8 +51,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $sent = @mail($mailTo, $subject, $body, implode("\r\n", $headers));
 
     respond((bool) $sent, $sent ? 'Sent.' : 'Could not send the message. Please try again later.');
-}
-?>
+}>
 <!DOCTYPE html>
 <html lang="en">
 <head>
