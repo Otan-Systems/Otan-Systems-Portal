@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>404 Not Found</title>
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Arial', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background-color: #ffffff;
+        }
+
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 40px;
+        }
+
+        .circle {
+            width: 320px;
+            height: 320px;
+            border: 5px solid #1400FF;
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .error-code {
+            font-size: 72px;
+            font-weight: 900;
+            color: #1400FF;
+            line-height: 1;
+            letter-spacing: 1px;
+        }
+
+        .error-text {
+            font-size: 22px;
+            font-weight: 800;
+            color: #1400FF;
+            text-transform: uppercase;
+            margin-top: 5px;
+            letter-spacing: 0.5px;
+        }
+
+        .btn-lobby {
+            display: inline-block;
+            background-color: #1400FF;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 20px;
+            font-weight: 800;
+            text-transform: uppercase;
+            padding: 15px 45px;
+            border-radius: 25px;
+            letter-spacing: 0.5px;
+            transition: background-color 0.2s ease, transform 0.1s ease;
+        }
+
+        .btn-lobby:hover {
+            background-color: #1000CC;
+        }
+
+        .btn-lobby:active {
+            transform: scale(0.98);
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="circle">
+            <div class="error-code">404</div>
+            <div class="error-text">Not Found</div>
+        </div>
+
+        <a href="https://otansystems.com" target="_self" class="btn-lobby">To Lobby</a>
+    </div>
+
+</body>
+</html>
