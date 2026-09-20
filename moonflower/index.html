@@ -229,8 +229,8 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
 <header class="topbar">
   <div class="topbar-inner">
     <a class="pill pill-light" href="<?php echo htmlspecialchars($lobbyUrl); ?>">To Lobby</a>
-    <span class="brand">Moonflower</span>
-    <a class="pill pill-light" href="<?php echo htmlspecialchars($telegramUrl); ?>" target="_blank" rel="noopener">Join us</a>
+    <span class="brand">MoonFlower</span>
+    <a class="pill pill-light" href="<php echo htmlspecialchars($telegramUrl);>" target="_blank" rel="noopener">Join us</a>
   </div>
 </header>
 
@@ -262,7 +262,7 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
       <h1>Moonflower</h1>
       <div class="hero-actions">
         <a href="#apply" class="btn btn-primary">Fill out the form</a>
-        <a href="mailto:<?php echo htmlspecialchars($mailTo); ?>" class="btn btn-secondary">Contact us</a>
+        <a href="mailto:<php echo htmlspecialchars($mailTo);>" class="btn btn-secondary">Contact us</a>
       </div>
     </div>
   </div>
@@ -274,7 +274,7 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
   <div class="container">
     <div class="invite-row">
       <button type="button" class="pill btn-copy" id="copyBtn">Copy</button>
-      <a class="invite-link" id="inviteLink" href="<?php echo htmlspecialchars($telegramUrl); ?>" target="_blank" rel="noopener"><?php echo htmlspecialchars($telegramUrl); ?></a>
+      <a class="invite-link" id="inviteLink" href="<php echo htmlspecialchars($telegramUrl);>" target="_blank" rel="noopener"><?php echo htmlspecialchars($telegramUrl); ?></a>
     </div>
     <p class="copy-note" id="copyNote"></p>
   </div>
@@ -334,7 +334,7 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
   </div>
 </section>
 
-<footer>&copy; <?php echo date('Y'); ?> Moonflower &middot; Otan Systems</footer>
+<footer>&copy; <php echo date('Y'); ?> Moonflower &middot; Otan Systems</footer>
 
 <script>
 document.addEventListener('DOMContentLoaded', function () {
