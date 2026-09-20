@@ -1,63 +1,3 @@
-<?php
-// ---------------------------------------------------------------
-// Moonflower — single-file page (HTML + CSS + JS + PHP)
-// Handles both the page render (GET) and the form submission (POST)
-// ---------------------------------------------------------------
-
-$telegramUrl = 'https://t.me/+DSjKMfmx6yM4NDZi';
-$lobbyUrl    = 'https://otansystems.com';
-$mailTo      = 'otansystems@gmail.com';
-
-// ---- Handle form submission (AJAX POST) ----
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    header('Content-Type: application/json; charset=utf-8');
-
-    function respond($ok, $message = '') {
-        echo json_encode(['ok' => $ok, 'message' => $message]);
-        exit;
-    }
-
-    $firstName   = trim($_POST['first_name']  ?? '');
-    $lastName    = trim($_POST['last_name']   ?? '');
-    $phone       = trim($_POST['phone']       ?? '');
-    $description = trim($_POST['description'] ?? '');
-    $telegram    = trim($_POST['telegram']    ?? '');
-
-    if ($firstName === '' || mb_strlen($firstName) > 100) {
-        respond(false, 'Please enter your first name.');
-    }
-    if ($lastName === '' || mb_strlen($lastName) > 100) {
-        respond(false, 'Please enter your last name.');
-    }
-    if (!preg_match('/^\+\d\s\(\d{3}\)-\d{3}\s\d{2}\s\d{2}$/', $phone)) {
-        respond(false, 'Phone number must look like +X (XXX)-XXX XX XX.');
-    }
-    if ($description === '' || mb_strlen($description) > 150) {
-        respond(false, 'Description must be 1-150 characters.');
-    }
-    if (!in_array($telegram, ['Installed', 'Not installed'], true)) {
-        respond(false, 'Please tell us whether you installed Telegram.');
-    }
-
-    $subject = 'Moonflower application: ' . $firstName . ' ' . $lastName;
-
-    $body  = "### First name\n{$firstName}\n\n";
-    $body .= "### Last name\n{$lastName}\n\n";
-    $body .= "### Phone No.\n{$phone}\n\n";
-    $body .= "### Description\n{$description}\n\n";
-    $body .= "### Telegram App\n{$telegram}\n";
-
-    $headers   = [];
-    $headers[] = 'From: Moonflower Form <no-reply@' . ($_SERVER['SERVER_NAME'] ?? 'moonflower.local') . '>';
-    $headers[] = 'Reply-To: no-reply@' . ($_SERVER['SERVER_NAME'] ?? 'moonflower.local');
-    $headers[] = 'MIME-Version: 1.0';
-    $headers[] = 'Content-Type: text/plain; charset=UTF-8';
-
-    $sent = @mail($mailTo, $subject, $body, implode("\r\n", $headers));
-
-    respond((bool) $sent, $sent ? 'Sent.' : 'Could not send the message. Please try again later.');
-}
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -234,9 +174,9 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
 
 <header class="topbar">
   <div class="topbar-inner">
-    <a class="pill pill-light" href="<?php echo htmlspecialchars($lobbyUrl); ?>">To Lobby</a>
+    <a class="pill pill-light" href="https://otansystems.com">To Lobby</a>
     <span class="brand">Moonflower</span>
-    <a class="pill pill-light" href="<?php echo htmlspecialchars($telegramUrl); ?>" target="_blank" rel="noopener">Join us</a>
+    <a class="pill pill-light" href="https://t.me/+DSjKMfmx6yM4NDZi" target="_blank" rel="noopener">Join us</a>
   </div>
 </header>
 
@@ -268,7 +208,7 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
       <h1>Moonflower</h1>
       <div class="hero-actions">
         <a href="#apply" class="btn btn-primary">Fill out the form</a>
-        <a href="mailto:<?php echo htmlspecialchars($mailTo); ?>" class="btn btn-secondary">Contact us</a>
+        <a href="mailto:otansystems@gmail.com" class="btn btn-secondary">Contact us</a>
       </div>
     </div>
   </div>
