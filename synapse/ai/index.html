@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Synapse AI · Otan Systems</title>
+<style>
+
+  :root {
+    --cyan: #38d6f0;
+    --green: #a6f24a;
+    --green-dim: rgba(166,242,74,0.55);
+    --cyan-dim: rgba(56,214,240,0.55);
+    --panel-black: #050506;
+    --grad: linear-gradient(115deg, #1e3fb8 0%, #6b3fd4 55%, #c65bd6 100%);
+    --font: 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', Arial, sans-serif;
+  }
+
+  * { box-sizing: border-box; }
+
+  html, body {
+    margin: 0; padding: 0;
+    height: 100%;
+    font-family: var(--font);
+    background: var(--grad);
+    color: #fff;
+    overflow: hidden;
+  }
+
+  #app { height: 100vh; width: 100vw; position: relative; }
+
+  .screen {
+    position: absolute; inset: 0;
+    display: none;
+    flex-direction: column;
+  }
+  .screen.active { display: flex; }
+
+  /* ───────── shared: double-press buttons ───────── */
+  .btn2 {
+    cursor: pointer;
+    user-select: none;
+    border: 1px solid transparent;
+    background: #000;
+    color: #fff;
+    font-weight: 700;
+    font-family: var(--font);
+    border-radius: 10px;
+    transition: border-color .12s ease, box-shadow .12s ease;
+  }
+  .btn2.armed {
+    border-color: #fff;
+    box-shadow: 0 0 6px rgba(255,255,255,0.5);
+  }
+  .btn2[disabled] {
+    pointer-events: none;
+    opacity: 0.4;
+    position: relative;
+  }
+  .btn2.cyan { color: var(--cyan); border: 1px solid transparent; }
+  .btn2.cyan.armed { border-color: #fff; }
+  .btn2.green { color: var(--green); }
+  .btn2.chosen { border: 1px solid var(--green-dim); }
+
+  /* ───────── TOP BAR ───────── */
+  .topbar {
+    height: 56px;
+    background: #000;
+    border-bottom: 1px solid var(--cyan-dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px;
+    flex-shrink: 0;
+  }
+  .topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
+  .topbar .icon-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1px solid var(--cyan-dim); border-radius: 8px;
+    color: var(--cyan); background: #000;
+    font-size: 16px;
+  }
+  .topbar .logo {
+    font-family: 'Courier New', monospace;
+    letter-spacing: 6px;
+    font-size: 20px;
+    color: var(--cyan);
+    text-shadow: 0 0 10px rgba(56,214,240,0.5);
+  }
+  .lang-switch { display: flex; gap: 6px; }
+  .lang-switch .btn2 {
+    font-size: 11px; padding: 6px 10px;
+    color: var(--green);
+  }
+
+  /* ───────── MAIN SCREEN ───────── */
+  #screen-main { padding: 16px; gap: 12px; }
+
+  .video-frame {
+    flex: 1;
+    min-height: 0;
+    background: #000;
+    border: 1px solid var(--green-dim);
+    border-radius: 14px;
+    margin: 0 auto;
+    display: flex; align-items: center; justify-content: center;
+    position: relative;
+    overflow: hidden;
+    max-width: 100%;
+    max-height: 100%;
+  }
+  .video-frame video { width: 100%; height: 100%; object-fit: contain; display: none; }
+  .video-frame .placeholder {
+    color: rgba(255,255,255,0.25);
+    font-size: 13px;
+  }
+  .video-frame .status {
+    color: var(--cyan);
+    font-size: 13px;
+    display: none;
+  }
+  .video-frame .status.show { display: block; }
+
+  .toolbar-row {
+    display: flex; align-items: center; justify-content: space-between;
+    flex-shrink: 0;
+  }
+  .toolbar-left { display: flex; gap: 10px; }
+  .toolbar-left .btn2 { padding: 10px 18px; font-size: 14px; }
+
+  #btn-send { padding: 10px 26px; font-size: 14px; }
+  #btn-send[disabled] { background: #000; }
+  #btn-send[disabled]::after {
+    content: "";
+    position: absolute; inset: 0;
+    background: rgba(120,120,120,0.45);
+    border-radius: 10px;
+  }
+
+  .type-row { position: relative; flex-shrink: 0; }
+  #prompt-input {
+    width: 100%;
+    background: #000;
+    border: 1px solid var(--cyan);
+    border-radius: 14px;
+    color: #fff;
+    font-size: 15px;
+    padding: 16px 18px;
+    font-family: var(--font);
+    resize: none;
+    outline: none;
+    box-shadow: 0 0 10px rgba(56,214,240,0.25);
+  }
+  #prompt-input::placeholder { color: rgba(255,255,255,0.35); }
+  #char-count {
+    position: absolute; right: 16px; bottom: -18px;
+    font-size: 11px; color: rgba(255,255,255,0.4);
+  }
+
+  /* ───────── MODE PANEL (overlay) ───────── */
+  .overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.45);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 20;
+  }
+  .overlay.show { display: flex; }
+
+  .mode-panel {
+    background: #000;
+    border: 1px solid var(--green);
+    border-radius: 16px;
+    padding: 22px 24px;
+    width: min(92vw, 460px);
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 0 30px rgba(166,242,74,0.15);
+  }
+  .mode-opt {
+    background: var(--green);
+    color: #000;
+    font-weight: 800;
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .mode-opt.selected { border-color: #fff; }
+  .mode-desc {
+    color: var(--cyan);
+    font-size: 11.5px;
+    margin: 0 0 14px 2px;
+    line-height: 1.4;
+  }
+  .mode-row {
+    display: flex; align-items: center; justify-content: space-between;
+    margin-bottom: 10px;
+  }
+  .mode-row .label { background: var(--green); color: #000; font-weight: 800; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+  .mode-row .controls { display: flex; align-items: center; gap: 6px; }
+  .pill {
+    background: var(--cyan);
+    color: #000;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .pill.selected { border-color: #fff; }
+  .pill.arrow { padding: 7px 10px; }
+  #confirm-mode {
+    display: block; margin: 16px 0 0 auto;
+    padding: 9px 24px; font-size: 14px;
+  }
+  .field-locked { opacity: 0.35; pointer-events: none; position: relative; }
+
+  /* ───────── SETTINGS SCREEN ───────── */
+  #screen-settings { padding: 20px 20px 0; align-items: center; }
+  .balance-card, .topup-card {
+    background: #000;
+    border: 1px solid var(--green);
+    border-radius: 14px;
+    width: min(92vw, 520px);
+    padding: 18px 22px;
+  }
+  .balance-card { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+  .balance-card .lbl { font-weight: 800; font-size: 17px; }
+  .balance-card .val { color: var(--green); font-weight: 800; font-size: 17px; }
+  .warn-text { text-align: center; font-size: 13px; color: rgba(255,255,255,0.8); margin: 14px 0; }
+  .topup-card { margin-top: 6px; }
+  .topup-title { color: var(--green); font-weight: 800; font-size: 15px; margin-bottom: 14px; }
+  .topup-row { display: flex; align-items: center; justify-content: space-between; }
+  .topup-row input {
+    width: 70px; background: #000; border: 1px solid var(--cyan-dim);
+    color: #fff; font-weight: 800; font-size: 16px; border-radius: 8px;
+    padding: 6px 8px; text-align: center; font-family: var(--font);
+  }
+  .topup-mid { color: var(--cyan); font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  #confirm-topup { display: block; margin: 18px auto 0; padding: 10px 30px; font-size: 14px; }
+
+  .settings-footer {
+    margin-top: auto;
+    padding: 16px 20px;
+    display: flex; align-items: center; justify-content: center; gap: 30px;
+    flex-wrap: wrap;
+    font-size: 13px;
+    color: var(--green);
+  }
+  .settings-footer a {
+    color: var(--green); text-decoration: none;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .settings-footer .ic {
+    width: 26px; height: 26px; border-radius: 50%;
+    background: var(--green); color: #000;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 13px; flex-shrink: 0;
+  }
+
+  /* ───────── ENTRY SCREEN ───────── */
+  #screen-entry { align-items: center; justify-content: center; gap: 22px; }
+  .entry-title-bar {
+    border: 1px solid var(--green);
+    border-radius: 14px;
+    padding: 16px 26px;
+    display: flex; align-items: baseline; gap: 12px;
+    flex-wrap: wrap; justify-content: center;
+  }
+  .entry-title-bar .intro { color: var(--cyan); font-size: 13px; letter-spacing: 2px; }
+  .entry-title-bar .brand { font-size: 30px; font-weight: 800; color: var(--cyan); font-family: 'Courier New', monospace; }
+  .entry-title-bar .sub { font-size: 13px; color: rgba(255,255,255,0.6); }
+  .entry-buttons { display: flex; flex-direction: column; gap: 10px; align-items: center; }
+  .entry-row { display: flex; gap: 10px; }
+  .entry-row .btn2 { padding: 14px 40px; font-size: 15px; color: var(--green); }
+  .entry-row.small .btn2 { padding: 12px 20px; font-size: 14px; color: #fff; }
+  .provider-github { color: #fff; }
+  .provider-google { color: var(--cyan); }
+  .provider-bitbucket { color: #f0975f; }
+
+</style>
+</head>
+<body>
+
+<div id="app">
+
+  <!-- ═══════════ ENTRY SCREEN ═══════════ -->
+  <section class="screen active" id="screen-entry">
+    <div class="entry-title-bar">
+      <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
+      <span class="brand">SYNAPSE AI</span>
+      <span class="sub">Otan Systems</span>
+    </div>
+
+    <div class="lang-switch">
+      <button type="button" class="btn2 green lang-btn chosen" data-lang="en">English</button>
+      <button type="button" class="btn2 green lang-btn" data-lang="ru">Русский</button>
+    </div>
+
+    <div class="entry-buttons">
+      <div class="entry-row">
+        <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
+        <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
+      </div>
+      <div class="entry-row small">
+        <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
+        <button type="button" class="btn2 auth-btn provider-google">Google</button>
+        <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
+      </div>
+    </div>
+
+    <div class="settings-footer">
+      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
+      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
+      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+    </div>
+  </section>
+
+  <!-- ═══════════ MAIN SCREEN ═══════════ -->
+  <section class="screen" id="screen-main">
+    <div class="topbar">
+      <div class="side">
+        <div class="icon-btn btn2 armable" id="btn-gear" title="Settings">&#9881;</div>
+      </div>
+      <div class="logo">SYNAPSE</div>
+      <div class="side" style="justify-content:flex-end;">
+        <div class="lang-switch">
+          <button type="button" class="btn2 green lang-btn chosen" data-lang="en">EN</button>
+          <button type="button" class="btn2 green lang-btn" data-lang="ru">RU</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="video-frame" id="videoFrame" style="aspect-ratio: 16/9;">
+      <div class="placeholder" id="videoPlaceholder" data-i18n="video_placeholder">Your generated video will appear here</div>
+      <div class="status" id="videoStatus" data-i18n="video_generating">Generating…</div>
+      <video id="videoPlayer" controls playsinline></video>
+    </div>
+
+    <div class="toolbar-row">
+      <div class="toolbar-left">
+        <button type="button" class="btn2 armable" id="btn-addfiles" data-i18n="btn_addfiles">Add files</button>
+        <button type="button" class="btn2 cyan armable" id="btn-mode" data-i18n="btn_mode">Mode</button>
+        <input type="file" id="fileInput" multiple hidden>
+      </div>
+      <button type="button" class="btn2 green armable" id="btn-send" disabled data-i18n="btn_send">Send</button>
+    </div>
+
+    <div class="type-row">
+      <textarea id="prompt-input" rows="2" maxlength="5000" data-i18n-placeholder="type_here" placeholder="Type here..."></textarea>
+      <div id="char-count">0 / 5000</div>
+    </div>
+
+    <!-- MODE OVERLAY -->
+    <div class="overlay" id="modeOverlay">
+      <div class="mode-panel">
+        <div class="mode-opt" data-mode="text" data-i18n="mode_text">Text &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_text_desc">5000 symbols max. No additional files supported.</div>
+
+        <div class="mode-opt" data-mode="text-image" data-i18n="mode_ti">Text &amp; Image &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_ti_desc">5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), &lt;20MB each.</div>
+
+        <div class="mode-opt" data-mode="fullstack" data-i18n="mode_fs">Full-Stack &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_fs_desc">5000 symbols max. Up to 5 elements: images or video (&lt;10s, &lt;100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.</div>
+
+        <div class="mode-row">
+          <span class="label" data-i18n="mode_audio">Audio-generation</span>
+          <div class="controls">
+            <button type="button" class="pill" id="audioToggle" data-val="O">ON/OFF</button>
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <span class="label" data-i18n="mode_duration">Duration</span>
+          <div class="controls">
+            <button type="button" class="pill arrow" id="durMinus">&lt;</button>
+            <span class="pill" id="durVal" style="min-width:64px;text-align:center;">15 sec</span>
+            <button type="button" class="pill arrow" id="durPlus">&gt;</button>
+          </div>
+        </div>
+
+        <div class="mode-row" style="align-items:flex-start;">
+          <span class="label" data-i18n="mode_ratio">Ratio</span>
+          <div class="controls" style="flex-wrap:wrap; justify-content:flex-end; max-width:260px;">
+            <button type="button" class="pill ratio-opt" data-ratio="16/9">16:9</button>
+            <button type="button" class="pill ratio-opt" data-ratio="9/16">9:16</button>
+            <button type="button" class="pill ratio-opt" data-ratio="4/3">4:3</button>
+            <button type="button" class="pill ratio-opt" data-ratio="3/4">3:4</button>
+            <button type="button" class="pill ratio-opt" data-ratio="1/1">1:1</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn2 green armable" id="confirm-mode" data-i18n="btn_confirm">Confirm</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════ SETTINGS SCREEN ═══════════ -->
+  <section class="screen" id="screen-settings">
+    <div class="topbar">
+      <div class="side">
+        <div class="icon-btn btn2 armable" id="btn-back" title="Back">&#8630;</div>
+      </div>
+      <div class="logo">SYNAPSE</div>
+      <div class="side"></div>
+    </div>
+
+    <div class="balance-card">
+      <span class="lbl" data-i18n="balance_label">Your Balance:</span>
+      <span class="val" id="balanceVal">0 sec</span>
+    </div>
+
+    <div class="warn-text" data-i18n="balance_warn">Warning! Payment works in and goes to OpenRouter.</div>
+
+    <div class="topup-card">
+      <div class="topup-title" id="topupTitle" data-i18n-template="topup_title">Wanna top up? ---------- $0.1 per second</div>
+      <div class="topup-row">
+        <input type="number" id="topupX" min="1" value="10">
+        <span class="topup-mid"><span data-i18n="topup_unit_sec">s</span>&#10148;$</span>
+        <input type="text" id="topupY" readonly value="1.0">
+      </div>
+      <button type="button" class="btn2 green armable" id="confirm-topup" data-i18n="btn_confirm">Confirm</button>
+    </div>
+
+    <div class="settings-footer">
+      <a href="#" id="browseVideos"><span class="ic">&#128193;</span><span data-i18n="footer_browse">Browse all videos</span></a>
+      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
+      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
+      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+    </div>
+  </section>
+
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>
