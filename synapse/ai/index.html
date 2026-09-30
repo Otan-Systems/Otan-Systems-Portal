@@ -28,6 +28,7 @@
   }
 
   #app { height: 100vh; width: 100vw; position: relative; }
+  #app { height: 100dvh; }
 
   .screen {
     position: absolute; inset: 0;
@@ -279,6 +280,8 @@
   .entry-buttons { display: flex; flex-direction: column; gap: 10px; align-items: center; }
   .entry-row { display: flex; gap: 10px; }
   .entry-row .btn2 { padding: 14px 40px; font-size: 15px; color: var(--green); }
+  .entry-row .btn2.auth-primary { border: 1px solid var(--green); }
+  .entry-row .btn2.auth-primary.armed { border-color: #fff; }
   .entry-row.small .btn2 { padding: 12px 20px; font-size: 14px; color: #fff; }
   .provider-github { color: #fff; }
   .provider-google { color: var(--cyan); }
@@ -305,8 +308,8 @@
 
     <div class="entry-buttons">
       <div class="entry-row">
-        <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
-        <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
+        <button type="button" class="btn2 auth-btn auth-primary" data-i18n="entry_signup">Sign Up</button>
+        <button type="button" class="btn2 auth-btn auth-primary" data-i18n="entry_signin">Sign In</button>
       </div>
       <div class="entry-row small">
         <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
