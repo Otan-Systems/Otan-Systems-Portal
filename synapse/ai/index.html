@@ -37,7 +37,6 @@
   }
   .screen.active { display: flex; }
 
-  /* ───────── Кнопки ───────── */
   .btn2 {
     cursor: pointer;
     user-select: none;
@@ -82,7 +81,6 @@
     margin: auto 0;
   }
 
-  /* 1. Верхняя карточка */
   .entry-title-bar {
     background: #000000;
     border: 2px solid var(--green);
@@ -116,7 +114,6 @@
     letter-spacing: 1px;
   }
 
-  /* 2. Переключатель языка (Между карточкой и кнопками) */
   .lang-switch {
     background: #000000;
     border: 2px solid var(--green);
@@ -136,7 +133,6 @@
     box-shadow: none !important;
   }
 
-  /* 3. Блок кнопок (Симметричная сетка) */
   .entry-buttons {
     display: flex;
     flex-direction: column;
@@ -172,7 +168,6 @@
   .provider-google { color: var(--cyan); }
   .provider-bitbucket { color: #f0975f; }
 
-  /* 4. Обрезанный подвал (Только 3 иконки) */
   .settings-footer {
     background: #000000;
     border: 2px solid var(--green);
@@ -258,19 +253,16 @@
   <section class="screen active" id="screen-entry">
     <div class="entry-content">
       
-      <!-- 1. Верхняя шапка -->
       <div class="entry-title-bar">
         <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
         <span class="brand">SYNAPSE AI</span>
         <span class="sub">OTAN SYSTEMS</span>
       </div>
 
-      <!-- 2. Переключатель языка -->
       <div class="lang-switch">
         <button type="button" class="btn2 lang-btn" id="langToggle">English/Русский</button>
       </div>
 
-      <!-- 3. Блок авторизации -->
       <div class="entry-buttons">
         <div class="entry-row-2">
           <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
@@ -283,7 +275,6 @@
         </div>
       </div>
 
-      <!-- 4. Обрезанная нижняя карточка (только 3 иконки) -->
       <div class="settings-footer">
         <a href="https://otansystems.com/synapse" target="_blank" title="Visit our website"><span class="ic">&#127760;</span></a>
         <a href="mailto:otan-systems@proton.me" title="Contact Sales & Support"><span class="ic">&#9993;</span></a>
