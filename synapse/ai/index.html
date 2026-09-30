@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ru">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -63,12 +63,26 @@
 
   /* ───────── ENTRY SCREEN ───────── */
   #screen-entry {
+    display: flex;
+    flex-direction: column;
     align-items: center;
-    justify-content: space-between;
-    padding: 20px 14px;
+    justify-content: center;
+    padding: 24px 16px;
+    overflow-y: auto;
   }
 
-  /* Шапка */
+  .entry-content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 28px; /* Компактный и естественный отступ между всеми элементами */
+    width: 100%;
+    max-width: 760px;
+    margin: auto 0;
+  }
+
+  /* 1. Верхняя карточка */
   .entry-title-bar {
     background: #000000;
     border: 2px solid var(--green);
@@ -78,9 +92,9 @@
     align-items: center;
     justify-content: center;
     gap: 8px;
-    width: min(94vw, 760px);
+    width: min(92vw, 760px);
     white-space: nowrap;
-    margin-top: 4px;
+    box-shadow: 0 0 12px rgba(166, 242, 74, 0.2);
   }
   .entry-title-bar .intro {
     color: #ffffff;
@@ -102,15 +116,16 @@
     letter-spacing: 1px;
   }
 
-  /* Оригинальный переключатель языка */
+  /* 2. Переключатель языка (Между карточкой и кнопками) */
   .lang-switch {
     background: #000000;
     border: 2px solid var(--green);
     border-radius: 10px;
-    padding: 6px 16px;
+    padding: 6px 18px;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 0 8px rgba(166, 242, 74, 0.15);
   }
   .lang-switch .btn2 {
     background: transparent;
@@ -121,16 +136,14 @@
     box-shadow: none !important;
   }
 
-  /* ───────── СИММЕТРИЧНЫЙ БЛОК КНОПКИ (2 КНОПКИ = 3 КНОПКИ) ───────── */
+  /* 3. Блок кнопок (Симметричная сетка) */
   .entry-buttons {
     display: flex;
     flex-direction: column;
     gap: 10px;
-    width: min(90vw, 360px); /* Единая общая ширина для обоих рядов */
-    margin: 0 auto;
+    width: min(90vw, 360px);
   }
 
-  /* Ряд из 2 кнопок (Sign Up, Sign In) */
   .entry-row-2 {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -138,7 +151,6 @@
     width: 100%;
   }
 
-  /* Ряд из 3 кнопок (GitHub, Google, BitBucket) */
   .entry-row-3 {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr;
@@ -160,36 +172,38 @@
   .provider-google { color: var(--cyan); }
   .provider-bitbucket { color: #f0975f; }
 
-  /* Подвал (Footer) */
+  /* 4. Обрезанный подвал (Только 3 иконки) */
   .settings-footer {
-    background: #000;
+    background: #000000;
     border: 2px solid var(--green);
     border-radius: 14px;
-    padding: 10px 14px;
+    padding: 8px 24px;
     display: flex;
     align-items: center;
-    justify-content: space-around;
-    gap: 10px;
-    width: min(94vw, 760px);
+    justify-content: center;
+    gap: 28px;
+    width: fit-content;
+    box-shadow: 0 0 10px rgba(166, 242, 74, 0.2);
   }
   .settings-footer a {
-    color: #ffffff;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 6px;
-    font-size: clamp(10px, 2.6vw, 13px);
-    font-weight: 600;
-    white-space: nowrap;
+    justify-content: center;
   }
   .settings-footer .ic {
-    width: 22px; height: 22px;
+    width: 30px; height: 30px;
     border-radius: 50%;
     background: var(--green);
     color: #000;
     display: flex; align-items: center; justify-content: center;
-    font-size: 11px; font-weight: 800;
+    font-size: 14px; font-weight: 800;
     flex-shrink: 0;
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .settings-footer a:hover .ic {
+    transform: scale(1.1);
+    box-shadow: 0 0 10px rgba(166, 242, 74, 0.6);
   }
 
   /* ───────── MAIN SCREEN ───────── */
@@ -226,17 +240,6 @@
   }
   #char-count { position: absolute; right: 16px; bottom: -18px; font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* MODE OVERLAY */
-  .overlay {
-    position: absolute; inset: 0; background: rgba(0,0,0,0.45);
-    display: none; align-items: center; justify-content: center; z-index: 20;
-  }
-  .overlay.show { display: flex; }
-  .mode-panel {
-    background: #000; border: 1px solid var(--green); border-radius: 16px;
-    padding: 22px 24px; width: min(92vw, 460px); max-height: 88vh; overflow-y: auto;
-  }
-
   /* SETTINGS SCREEN */
   #screen-settings { padding: 20px 20px 0; align-items: center; border: 2px solid var(--cyan); }
   .balance-card {
@@ -253,34 +256,40 @@
 
   <!-- ═══════════ ENTRY SCREEN ═══════════ -->
   <section class="screen active" id="screen-entry">
-    <div class="entry-title-bar">
-      <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
-      <span class="brand">SYNAPSE AI</span>
-      <span class="sub">OTAN SYSTEMS</span>
-    </div>
-
-    <!-- Переключатель языка -->
-    <div class="lang-switch">
-      <button type="button" class="btn2 lang-btn" id="langToggle">English/Русский</button>
-    </div>
-
-    <!-- Единый блок кнопок с подгонкой ширины -->
-    <div class="entry-buttons">
-      <div class="entry-row-2">
-        <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
-        <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
+    <div class="entry-content">
+      
+      <!-- 1. Верхняя шапка -->
+      <div class="entry-title-bar">
+        <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
+        <span class="brand">SYNAPSE AI</span>
+        <span class="sub">OTAN SYSTEMS</span>
       </div>
-      <div class="entry-row-3">
-        <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
-        <button type="button" class="btn2 auth-btn provider-google">Google</button>
-        <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
-      </div>
-    </div>
 
-    <div class="settings-footer">
-      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
-      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
-      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+      <!-- 2. Переключатель языка -->
+      <div class="lang-switch">
+        <button type="button" class="btn2 lang-btn" id="langToggle">English/Русский</button>
+      </div>
+
+      <!-- 3. Блок авторизации -->
+      <div class="entry-buttons">
+        <div class="entry-row-2">
+          <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
+          <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
+        </div>
+        <div class="entry-row-3">
+          <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
+          <button type="button" class="btn2 auth-btn provider-google">Google</button>
+          <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
+        </div>
+      </div>
+
+      <!-- 4. Обрезанная нижняя карточка (только 3 иконки) -->
+      <div class="settings-footer">
+        <a href="https://otansystems.com/synapse" target="_blank" title="Visit our website"><span class="ic">&#127760;</span></a>
+        <a href="mailto:otan-systems@proton.me" title="Contact Sales & Support"><span class="ic">&#9993;</span></a>
+        <a href="https://otansystems.com/synapse/reference" target="_blank" title="Terms of Use & Policy"><span class="ic">?</span></a>
+      </div>
+
     </div>
   </section>
 
