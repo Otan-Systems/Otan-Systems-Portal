@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Synapse AI · Otan Systems</title>
+<title>Synapse AI<title>
 <style>
 
   :root {
@@ -11,8 +11,7 @@
     --green: #a6f24a;
     --green-dim: rgba(166, 242, 74, 0.55);
     --cyan-dim: rgba(56, 214, 240, 0.55);
-    --panel-black: #000000;
-    --grad: linear-gradient(105deg, #014ec8 0%, #1736c5 35%, #7a22cd 70%, #c92cd3 100%);
+    --grad: linear-gradient(110deg, #0243be 0%, #1732be 30%, #6e20c4 70%, #ba28ca 100%);
     --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
   }
 
@@ -38,7 +37,7 @@
   }
   .screen.active { display: flex; }
 
-  /* ───────── Shared double-press / action buttons ───────── */
+  /* ───────── Кнопки ───────── */
   .btn2 {
     cursor: pointer;
     user-select: none;
@@ -48,10 +47,10 @@
     font-weight: 700;
     font-family: var(--font);
     border-radius: 10px;
-    transition: border-color .12s ease, box-shadow .12s ease, transform .1s ease;
+    transition: border-color .12s ease, box-shadow .12s ease;
   }
   .btn2:hover {
-    box-shadow: 0 0 10px rgba(166, 242, 74, 0.4);
+    box-shadow: 0 0 8px rgba(166, 242, 74, 0.4);
   }
   .btn2.armed {
     border-color: #fff;
@@ -60,178 +59,162 @@
   .btn2[disabled] {
     pointer-events: none;
     opacity: 0.4;
-    position: relative;
   }
 
-  /* ───────── TOP BAR (MAIN & SETTINGS) ───────── */
-  .topbar {
-    height: 56px;
-    background: #000;
-    border-bottom: 1px solid var(--cyan-dim);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 16px;
-    flex-shrink: 0;
-  }
-  .topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
-  .topbar .icon-btn {
-    width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
-    border: 1px solid var(--cyan-dim); border-radius: 8px;
-    color: var(--cyan); background: #000;
-    font-size: 16px;
-  }
-  .topbar .logo {
-    font-family: 'Courier New', monospace;
-    letter-spacing: 6px;
-    font-size: 20px;
-    color: var(--cyan);
-    text-shadow: 0 0 10px rgba(56,214,240,0.5);
-  }
-
-  /* ───────── ENTRY SCREEN (Соответствие макету) ───────── */
+  /* ───────── ENTRY SCREEN ───────── */
   #screen-entry {
     align-items: center;
     justify-content: space-between;
-    padding: 24px 16px;
+    padding: 20px 14px;
   }
 
-  /* Верхняя плашка с заголовком */
+  /* Шапка */
   .entry-title-bar {
     background: #000000;
     border: 2px solid var(--green);
     border-radius: 12px;
-    padding: 10px 28px;
+    padding: 12px 18px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 12px;
-    box-shadow: 0 0 12px rgba(166, 242, 74, 0.2);
-    width: min(92vw, 820px);
-    margin-top: 8px;
+    gap: 8px;
+    width: min(94vw, 760px);
+    white-space: nowrap;
+    margin-top: 4px;
   }
   .entry-title-bar .intro {
     color: #ffffff;
-    font-size: 15px;
+    font-size: clamp(10px, 2.8vw, 14px);
     font-weight: 700;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+    letter-spacing: 1px;
   }
   .entry-title-bar .brand {
-    font-size: 24px;
+    font-size: clamp(14px, 4.2vw, 22px);
     font-weight: 800;
     color: var(--cyan);
     font-family: 'Courier New', monospace;
-    letter-spacing: 3px;
-    text-shadow: 0 0 8px rgba(56, 214, 240, 0.4);
+    letter-spacing: 2px;
   }
   .entry-title-bar .sub {
-    font-size: 15px;
+    font-size: clamp(10px, 2.8vw, 14px);
     font-weight: 700;
     color: #ffffff;
-    letter-spacing: 1.5px;
-    text-transform: uppercase;
+    letter-spacing: 1px;
   }
 
-  /* Переключатель языка */
-  .lang-switch { display: flex; gap: 4px; justify-content: center; }
-  .lang-switch-pill {
-    background: #000;
+  /* Оригинальный переключатель языка */
+  .lang-switch {
+    background: #000000;
     border: 2px solid var(--green);
-    border-radius: 12px;
-    padding: 5px 16px;
-    display: flex; align-items: center; gap: 6px;
-    color: #fff;
-    font-size: 13px;
-    font-weight: 700;
+    border-radius: 10px;
+    padding: 6px 16px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
   }
-  .lang-btn {
+  .lang-switch .btn2 {
     background: transparent;
     border: none;
-    color: #fff;
-    font-weight: 700;
-    cursor: pointer;
     padding: 0;
-    font-size: 13px;
+    font-size: 14px;
+    color: var(--green);
+    box-shadow: none !important;
   }
-  .lang-btn.chosen { color: var(--green); }
 
-  /* Блок кнопок в центре */
+  /* ───────── СИММЕТРИЧНЫЙ БЛОК КНОПКИ (2 КНОПКИ = 3 КНОПКИ) ───────── */
   .entry-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
-    align-items: center;
+    gap: 10px;
+    width: min(90vw, 360px); /* Единая общая ширина для обоих рядов */
+    margin: 0 auto;
   }
-  .entry-row { display: flex; gap: 12px; }
-  .entry-row .btn2 {
-    padding: 10px 32px;
-    font-size: 16px;
-    min-width: 130px;
-    text-align: center;
+
+  /* Ряд из 2 кнопок (Sign Up, Sign In) */
+  .entry-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    width: 100%;
   }
-  .entry-row.small .btn2 {
-    padding: 10px 20px;
+
+  /* Ряд из 3 кнопок (GitHub, Google, BitBucket) */
+  .entry-row-3 {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 8px;
+    width: 100%;
+  }
+
+  .entry-buttons .btn2 {
+    width: 100%;
+    padding: 12px 0;
     font-size: 15px;
-    min-width: 105px;
+    text-align: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
   }
 
-  .provider-github { color: #ffffff !important; }
-  .provider-google { color: var(--cyan) !important; }
-  .provider-bitbucket { color: #f0975f !important; }
+  .provider-github { color: #ffffff; }
+  .provider-google { color: var(--cyan); }
+  .provider-bitbucket { color: #f0975f; }
 
-  /* Футер внизу экрана */
+  /* Подвал (Footer) */
   .settings-footer {
     background: #000;
     border: 2px solid var(--green);
     border-radius: 14px;
-    padding: 10px 20px;
+    padding: 10px 14px;
     display: flex;
     align-items: center;
     justify-content: space-around;
-    gap: 20px;
-    flex-wrap: wrap;
-    width: min(92vw, 820px);
-    box-shadow: 0 0 12px rgba(166, 242, 74, 0.15);
+    gap: 10px;
+    width: min(94vw, 760px);
   }
   .settings-footer a {
     color: #ffffff;
     text-decoration: none;
     display: flex;
     align-items: center;
-    gap: 8px;
-    font-size: 13px;
+    gap: 6px;
+    font-size: clamp(10px, 2.6vw, 13px);
     font-weight: 600;
-  }
-  .settings-footer a:hover {
-    color: var(--green);
+    white-space: nowrap;
   }
   .settings-footer .ic {
-    width: 24px; height: 24px;
+    width: 22px; height: 22px;
     border-radius: 50%;
     background: var(--green);
     color: #000;
     display: flex; align-items: center; justify-content: center;
-    font-size: 12px; font-weight: 800;
+    font-size: 11px; font-weight: 800;
     flex-shrink: 0;
   }
 
   /* ───────── MAIN SCREEN ───────── */
+  .topbar {
+    height: 56px; background: #000;
+    border-bottom: 1px solid var(--cyan-dim);
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 0 16px; flex-shrink: 0;
+  }
+  .topbar .logo {
+    font-family: 'Courier New', monospace; letter-spacing: 6px;
+    font-size: 20px; color: var(--cyan);
+  }
   #screen-main { padding: 16px; gap: 12px; border: 2px solid var(--cyan); }
   .video-frame {
     flex: 1; min-height: 0; background: #000;
     border: 1px solid var(--green-dim); border-radius: 14px;
-    margin: 0 auto; display: flex; align-items: center; justify-content: center;
+    display: flex; align-items: center; justify-content: center;
     position: relative; overflow: hidden; width: 100%;
   }
   .video-frame video { width: 100%; height: 100%; object-fit: contain; display: none; }
   .video-frame .placeholder { color: rgba(255,255,255,0.25); font-size: 13px; }
-  .video-frame .status { color: var(--cyan); font-size: 13px; display: none; }
-  .video-frame .status.show { display: block; }
-
   .toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .toolbar-left { display: flex; gap: 10px; }
   .toolbar-left .btn2 { padding: 10px 18px; font-size: 14px; }
-
   #btn-send { padding: 10px 26px; font-size: 14px; }
 
   .type-row { position: relative; flex-shrink: 0; }
@@ -240,9 +223,7 @@
     border: 1px solid var(--cyan); border-radius: 14px;
     color: #fff; font-size: 15px; padding: 16px 18px;
     font-family: var(--font); resize: none; outline: none;
-    box-shadow: 0 0 10px rgba(56,214,240,0.25);
   }
-  #prompt-input::placeholder { color: rgba(255,255,255,0.35); }
   #char-count { position: absolute; right: 16px; bottom: -18px; font-size: 11px; color: rgba(255,255,255,0.4); }
 
   /* MODE OVERLAY */
@@ -255,43 +236,14 @@
     background: #000; border: 1px solid var(--green); border-radius: 16px;
     padding: 22px 24px; width: min(92vw, 460px); max-height: 88vh; overflow-y: auto;
   }
-  .mode-opt {
-    background: var(--green); color: #000; font-weight: 800; font-size: 14px;
-    border-radius: 8px; padding: 9px 12px; margin-bottom: 6px; cursor: pointer; border: 2px solid transparent;
-  }
-  .mode-opt.selected { border-color: #fff; }
-  .mode-desc { color: var(--cyan); font-size: 11.5px; margin: 0 0 14px 2px; line-height: 1.4; }
-  .mode-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .mode-row .label { background: var(--green); color: #000; font-weight: 800; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
-  .mode-row .controls { display: flex; align-items: center; gap: 6px; }
-  .pill {
-    background: var(--cyan); color: #000; font-weight: 800; font-size: 13px;
-    padding: 7px 12px; border-radius: 8px; cursor: pointer; border: 2px solid transparent;
-  }
-  .pill.selected { border-color: #fff; }
-  .pill.arrow { padding: 7px 10px; }
-  #confirm-mode { display: block; margin: 16px 0 0 auto; padding: 9px 24px; font-size: 14px; }
 
   /* SETTINGS SCREEN */
   #screen-settings { padding: 20px 20px 0; align-items: center; border: 2px solid var(--cyan); }
-  .balance-card, .topup-card {
+  .balance-card {
     background: #000; border: 1px solid var(--green); border-radius: 14px;
     width: min(92vw, 520px); padding: 18px 22px;
+    display: flex; justify-content: space-between; align-items: center; margin-top: 28px;
   }
-  .balance-card { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-  .balance-card .lbl { font-weight: 800; font-size: 17px; }
-  .balance-card .val { color: var(--green); font-weight: 800; font-size: 17px; }
-  .warn-text { text-align: center; font-size: 13px; color: rgba(255,255,255,0.8); margin: 14px 0; }
-  .topup-card { margin-top: 6px; }
-  .topup-title { color: var(--green); font-weight: 800; font-size: 15px; margin-bottom: 14px; }
-  .topup-row { display: flex; align-items: center; justify-content: space-between; }
-  .topup-row input {
-    width: 70px; background: #000; border: 1px solid var(--cyan-dim);
-    color: #fff; font-weight: 800; font-size: 16px; border-radius: 8px;
-    padding: 6px 8px; text-align: center; font-family: var(--font);
-  }
-  .topup-mid { color: var(--cyan); font-weight: 800; display: flex; align-items: center; gap: 6px; }
-  #confirm-topup { display: block; margin: 18px auto 0; padding: 10px 30px; font-size: 14px; }
 
 </style>
 </head>
@@ -304,21 +256,21 @@
     <div class="entry-title-bar">
       <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
       <span class="brand">SYNAPSE AI</span>
-      <span class="sub">Otan Systems</span>
+      <span class="sub">OTAN SYSTEMS</span>
     </div>
 
-    <div class="lang-switch-pill">
-      <button type="button" class="lang-btn chosen" data-lang="en">English</button>
-      <span>/</span>
-      <button type="button" class="lang-btn" data-lang="ru">Русский</button>
+    <!-- Переключатель языка -->
+    <div class="lang-switch">
+      <button type="button" class="btn2 lang-btn" id="langToggle">English/Русский</button>
     </div>
 
+    <!-- Единый блок кнопок с подгонкой ширины -->
     <div class="entry-buttons">
-      <div class="entry-row">
-        <button type="button" class="btn2 auth-btn auth-primary" data-i18n="entry_signup">Sign Up</button>
-        <button type="button" class="btn2 auth-btn auth-primary" data-i18n="entry_signin">Sign In</button>
+      <div class="entry-row-2">
+        <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
+        <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
       </div>
-      <div class="entry-row small">
+      <div class="entry-row-3">
         <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
         <button type="button" class="btn2 auth-btn provider-google">Google</button>
         <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
@@ -339,12 +291,7 @@
         <div class="icon-btn btn2 armable" id="btn-gear" title="Settings">&#9881;</div>
       </div>
       <div class="logo">SYNAPSE</div>
-      <div class="side" style="justify-content:flex-end;">
-        <div class="lang-switch">
-          <button type="button" class="btn2 green lang-btn chosen" data-lang="en">EN</button>
-          <button type="button" class="btn2 green lang-btn" data-lang="ru">RU</button>
-        </div>
-      </div>
+      <div class="side"></div>
     </div>
 
     <div class="video-frame" id="videoFrame" style="aspect-ratio: 16/9;">
@@ -366,49 +313,6 @@
       <textarea id="prompt-input" rows="2" maxlength="5000" data-i18n-placeholder="type_here" placeholder="Type here..."></textarea>
       <div id="char-count">0 / 5000</div>
     </div>
-
-    <!-- MODE OVERLAY -->
-    <div class="overlay" id="modeOverlay">
-      <div class="mode-panel">
-        <div class="mode-opt" data-mode="text" data-i18n="mode_text">Text &rarr; Video</div>
-        <div class="mode-desc" data-i18n="mode_text_desc">5000 symbols max. No additional files supported.</div>
-
-        <div class="mode-opt" data-mode="text-image" data-i18n="mode_ti">Text &amp; Image &rarr; Video</div>
-        <div class="mode-desc" data-i18n="mode_ti_desc">5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), &lt;20MB each.</div>
-
-        <div class="mode-opt" data-mode="fullstack" data-i18n="mode_fs">Full-Stack &rarr; Video</div>
-        <div class="mode-desc" data-i18n="mode_fs_desc">5000 symbols max. Up to 5 elements: images or video (&lt;10s, &lt;100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.</div>
-
-        <div class="mode-row">
-          <span class="label" data-i18n="mode_audio">Audio-generation</span>
-          <div class="controls">
-            <button type="button" class="pill" id="audioToggle" data-val="O">ON/OFF</button>
-          </div>
-        </div>
-
-        <div class="mode-row">
-          <span class="label" data-i18n="mode_duration">Duration</span>
-          <div class="controls">
-            <button type="button" class="pill arrow" id="durMinus">&lt;</button>
-            <span class="pill" id="durVal" style="min-width:64px;text-align:center;">15 sec</span>
-            <button type="button" class="pill arrow" id="durPlus">&gt;</button>
-          </div>
-        </div>
-
-        <div class="mode-row" style="align-items:flex-start;">
-          <span class="label" data-i18n="mode_ratio">Ratio</span>
-          <div class="controls" style="flex-wrap:wrap; justify-content:flex-end; max-width:260px;">
-            <button type="button" class="pill ratio-opt" data-ratio="16/9">16:9</button>
-            <button type="button" class="pill ratio-opt" data-ratio="9/16">9:16</button>
-            <button type="button" class="pill ratio-opt" data-ratio="4/3">4:3</button>
-            <button type="button" class="pill ratio-opt" data-ratio="3/4">3:4</button>
-            <button type="button" class="pill ratio-opt" data-ratio="1/1">1:1</button>
-          </div>
-        </div>
-
-        <button type="button" class="btn2 green armable" id="confirm-mode" data-i18n="btn_confirm">Confirm</button>
-      </div>
-    </div>
   </section>
 
   <!-- ═══════════ SETTINGS SCREEN ═══════════ -->
@@ -424,25 +328,6 @@
     <div class="balance-card">
       <span class="lbl" data-i18n="balance_label">Your Balance:</span>
       <span class="val" id="balanceVal">0 sec</span>
-    </div>
-
-    <div class="warn-text" data-i18n="balance_warn">Warning! Payment works in and goes to OpenRouter.</div>
-
-    <div class="topup-card">
-      <div class="topup-title" id="topupTitle" data-i18n-template="topup_title">Wanna top up? ---------- $0.1 per second</div>
-      <div class="topup-row">
-        <input type="number" id="topupX" min="1" value="10">
-        <span class="topup-mid"><span data-i18n="topup_unit_sec">s</span>&#10148;$</span>
-        <input type="text" id="topupY" readonly value="1.0">
-      </div>
-      <button type="button" class="btn2 green armable" id="confirm-topup" data-i18n="btn_confirm">Confirm</button>
-    </div>
-
-    <div class="settings-footer">
-      <a href="#" id="browseVideos"><span class="ic">&#128193;</span><span data-i18n="footer_browse">Browse all videos</span></a>
-      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
-      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
-      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
     </div>
   </section>
 
