@@ -24,7 +24,6 @@
     font-family: var(--font);
     background: var(--grad);
     color: #fff;
-    overflow: hidden;
   }
 
   #app { height: 100vh; width: 100vw; position: relative; }
@@ -35,8 +34,11 @@
     display: none;
     flex-direction: column;
     box-sizing: border-box;
+    background: var(--grad);
+    z-index: 1;
+    visibility: hidden;
   }
-  .screen.active { display: flex; }
+  .screen.active { display: flex; z-index: 2; visibility: visible; }
 
   .btn2 {
     cursor: pointer;
@@ -467,7 +469,10 @@
           </div>
         </div>
 
-        <button type="button" class="btn2 green armable" id="confirm-mode" data-i18n="btn_confirm">Confirm</button>
+        <div style="display:flex; gap:10px; margin-top:16px; justify-content:flex-end;">
+          <button type="button" class="btn2 armable" id="reset-mode" style="padding:9px 20px; font-size:14px; border-color: var(--cyan-dim); color: var(--cyan);" data-i18n="btn_reset">Reset</button>
+          <button type="button" class="btn2 green armable" id="confirm-mode" style="margin:0; padding:9px 24px; font-size:14px;" data-i18n="btn_confirm">Confirm</button>
+        </div>
       </div>
     </div>
   </section>
@@ -527,6 +532,7 @@
       mode_ti: "Text & Image → Video", mode_ti_desc: "5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), <20MB each.",
       mode_fs: "Full-Stack → Video", mode_fs_desc: "5000 symbols max. Up to 5 elements: images or video (<10s, <100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.",
       mode_audio: "Audio-generation", mode_duration: "Duration", mode_ratio: "Ratio",
+      btn_reset: "Reset",
       balance_label: "Your Balance:", balance_warn: "Warning! Payment works in and goes to OpenRouter.",
       topup_title: "Wanna top up? ---------- $0.1 per second", topup_unit_sec: "s"
     },
@@ -542,6 +548,7 @@
       mode_ti: "Текст и изображение → Видео", mode_ti_desc: "До 5000 символов. До 2 изображений (PNG, JPG, JPEG, WEBP), <20MB каждое.",
       mode_fs: "Full-Stack → Видео", mode_fs_desc: "До 5000 символов. До 5 элементов: изображения или видео (<10с, <100MB). Форматы: PNG, JPG, JPEG, WEBP, MP4, MOV.",
       mode_audio: "Генерация звука", mode_duration: "Длительность", mode_ratio: "Соотношение",
+      btn_reset: "Сбросить",
       balance_label: "Ваш баланс:", balance_warn: "Внимание! Оплата проходит и уходит напрямую в OpenRouter.",
       topup_title: "Пополнить баланс? ---------- $0.1 за секунду", topup_unit_sec: "с"
     }
@@ -681,6 +688,20 @@
     });
   });
 
+  wireArmable(document.getElementById("reset-mode"), function () {
+    state.mode = null;
+    state.audio = "O";
+    state.duration = 15;
+    state.ratio = "16/9";
+    document.querySelectorAll(".mode-opt").forEach(function (o) { o.classList.remove("selected"); });
+    document.querySelectorAll(".ratio-opt").forEach(function (o) { o.classList.remove("selected"); });
+    audioToggle.textContent = "ON/OFF";
+    audioToggle.classList.remove("selected");
+    durVal.textContent = "15 sec";
+    updateModeFieldLocks();
+    updateSendState();
+  });
+
   wireArmable(document.getElementById("confirm-mode"), function () {
     if (!state.mode) return; // nothing chosen — panel just stays open
     modeOverlay.classList.remove("show");
@@ -779,8 +800,7 @@
   topupX.addEventListener("input", syncTopup);
 
   wireArmable(document.getElementById("confirm-topup"), function () {
-    // Stub: real build redirects to OpenRouter's checkout with this
-    // amount, then reflects the confirmed balance OpenRouter returns.
+
     var sec = Math.max(0, parseInt(topupX.value, 10) || 0);
     state.balanceSec += sec;
     renderBalance();
@@ -788,8 +808,7 @@
 
   document.getElementById("browseVideos").addEventListener("click", function (e) {
     e.preventDefault();
-    // No filesystem access from a browser tab — point users at their
-    // browser's own downloads list instead of a Results/ folder.
+
     alert(state.lang === "ru"
       ? "Все скачанные видео находятся в папке загрузок вашего браузера."
       : "All downloaded videos are in your browser's downloads folder.");
