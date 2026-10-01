@@ -75,7 +75,7 @@
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 28px; /* Компактный и естественный отступ между всеми элементами */
+    gap: 28px;
     width: 100%;
     max-width: 760px;
     margin: auto 0;
@@ -122,16 +122,25 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    gap: 6px;
     box-shadow: 0 0 8px rgba(166, 242, 74, 0.15);
   }
-  .lang-switch .btn2 {
+  .lang-switch .lang-btn {
     background: transparent;
     border: none;
-    padding: 0;
+    padding: 2px 4px;
     font-size: 14px;
-    color: var(--green);
+    font-weight: 700;
+    font-family: var(--font);
+    color: rgba(166, 242, 74, 0.45);
+    cursor: pointer;
     box-shadow: none !important;
   }
+  .lang-switch .lang-btn.chosen {
+    color: var(--green);
+    text-shadow: 0 0 6px rgba(166,242,74,0.6);
+  }
+  .lang-switch .sep { color: rgba(255,255,255,0.3); font-size: 14px; }
 
   .entry-buttons {
     display: flex;
@@ -172,12 +181,14 @@
     background: #000000;
     border: 2px solid var(--green);
     border-radius: 14px;
-    padding: 8px 24px;
+    padding: 10px 24px;
     display: flex;
     align-items: center;
     justify-content: center;
-    gap: 28px;
+    gap: 26px;
     width: fit-content;
+    max-width: 94vw;
+    flex-wrap: wrap;
     box-shadow: 0 0 10px rgba(166, 242, 74, 0.2);
   }
   .settings-footer a {
@@ -185,14 +196,19 @@
     display: flex;
     align-items: center;
     justify-content: center;
+    gap: 8px;
+    color: var(--green);
+    font-size: 12.5px;
+    font-weight: 700;
+    white-space: nowrap;
   }
   .settings-footer .ic {
-    width: 30px; height: 30px;
+    width: 26px; height: 26px;
     border-radius: 50%;
     background: var(--green);
     color: #000;
     display: flex; align-items: center; justify-content: center;
-    font-size: 14px; font-weight: 800;
+    font-size: 13px; font-weight: 800;
     flex-shrink: 0;
     transition: transform 0.15s ease, box-shadow 0.15s ease;
   }
@@ -208,10 +224,19 @@
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 16px; flex-shrink: 0;
   }
+  .topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
+  .topbar .icon-btn {
+    width: 34px; height: 34px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+  }
   .topbar .logo {
     font-family: 'Courier New', monospace; letter-spacing: 6px;
     font-size: 20px; color: var(--cyan);
   }
+  .topbar .lang-switch { padding: 4px 12px; }
+  .topbar .lang-switch .lang-btn { font-size: 11px; }
+
   #screen-main { padding: 16px; gap: 12px; border: 2px solid var(--cyan); }
   .video-frame {
     flex: 1; min-height: 0; background: #000;
@@ -221,10 +246,19 @@
   }
   .video-frame video { width: 100%; height: 100%; object-fit: contain; display: none; }
   .video-frame .placeholder { color: rgba(255,255,255,0.25); font-size: 13px; }
+  .video-frame .status { color: var(--cyan); font-size: 13px; display: none; }
+  .video-frame .status.show { display: block; }
+
   .toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .toolbar-left { display: flex; gap: 10px; }
   .toolbar-left .btn2 { padding: 10px 18px; font-size: 14px; }
-  #btn-send { padding: 10px 26px; font-size: 14px; }
+  #btn-send { padding: 10px 26px; font-size: 14px; position: relative; }
+  #btn-send[disabled]::after {
+    content: "";
+    position: absolute; inset: -2px;
+    background: rgba(120,120,120,0.55);
+    border-radius: 10px;
+  }
 
   .type-row { position: relative; flex-shrink: 0; }
   #prompt-input {
@@ -233,15 +267,86 @@
     color: #fff; font-size: 15px; padding: 16px 18px;
     font-family: var(--font); resize: none; outline: none;
   }
+  #prompt-input::placeholder { color: rgba(255,255,255,0.35); }
   #char-count { position: absolute; right: 16px; bottom: -18px; font-size: 11px; color: rgba(255,255,255,0.4); }
 
-  /* SETTINGS SCREEN */
+  /* ───────── MODE PANEL (overlay) ───────── */
+  .overlay {
+    position: absolute; inset: 0;
+    background: rgba(0,0,0,0.5);
+    display: none;
+    align-items: center; justify-content: center;
+    z-index: 20;
+  }
+  .overlay.show { display: flex; }
+
+  .mode-panel {
+    background: #000;
+    border: 2px solid var(--green);
+    border-radius: 16px;
+    padding: 22px 24px;
+    width: min(92vw, 460px);
+    max-height: 88vh;
+    overflow-y: auto;
+    box-shadow: 0 0 24px rgba(166,242,74,0.2);
+  }
+  .mode-opt {
+    background: var(--green);
+    color: #000;
+    font-weight: 800;
+    font-size: 14px;
+    border-radius: 8px;
+    padding: 9px 12px;
+    margin-bottom: 6px;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .mode-opt.selected { border-color: #fff; }
+  .mode-desc {
+    color: var(--cyan);
+    font-size: 11.5px;
+    margin: 0 0 14px 2px;
+    line-height: 1.4;
+  }
+  .mode-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .mode-row .label { background: var(--green); color: #000; font-weight: 800; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
+  .mode-row .controls { display: flex; align-items: center; gap: 6px; }
+  .pill {
+    background: var(--cyan);
+    color: #000;
+    font-weight: 800;
+    font-size: 13px;
+    padding: 7px 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    border: 2px solid transparent;
+  }
+  .pill.selected { border-color: #fff; }
+  .pill.arrow { padding: 7px 10px; }
+  #confirm-mode { display: block; margin: 16px 0 0 auto; padding: 9px 24px; font-size: 14px; }
+
+  /* ───────── SETTINGS SCREEN ───────── */
   #screen-settings { padding: 20px 20px 0; align-items: center; border: 2px solid var(--cyan); }
-  .balance-card {
+  .balance-card, .topup-card {
     background: #000; border: 1px solid var(--green); border-radius: 14px;
     width: min(92vw, 520px); padding: 18px 22px;
-    display: flex; justify-content: space-between; align-items: center; margin-top: 28px;
   }
+  .balance-card { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
+  .balance-card .lbl { font-weight: 800; font-size: 17px; }
+  .balance-card .val { color: var(--green); font-weight: 800; font-size: 17px; }
+  .warn-text { text-align: center; font-size: 13px; color: rgba(255,255,255,0.8); margin: 14px 0; }
+  .topup-card { margin-top: 6px; }
+  .topup-title { color: var(--green); font-weight: 800; font-size: 15px; margin-bottom: 14px; }
+  .topup-row { display: flex; align-items: center; justify-content: space-between; }
+  .topup-row input {
+    width: 70px; background: #000; border: 1px solid var(--cyan-dim);
+    color: #fff; font-weight: 800; font-size: 16px; border-radius: 8px;
+    padding: 6px 8px; text-align: center; font-family: var(--font);
+  }
+  .topup-mid { color: var(--cyan); font-weight: 800; display: flex; align-items: center; gap: 6px; }
+  #confirm-topup { display: block; margin: 18px auto 0; padding: 10px 30px; font-size: 14px; }
+
+  #screen-settings .settings-footer { margin-top: auto; margin-bottom: 20px; }
 
 </style>
 </head>
@@ -252,7 +357,7 @@
   <!-- ═══════════ ENTRY SCREEN ═══════════ -->
   <section class="screen active" id="screen-entry">
     <div class="entry-content">
-      
+
       <div class="entry-title-bar">
         <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
         <span class="brand">SYNAPSE AI</span>
@@ -260,7 +365,9 @@
       </div>
 
       <div class="lang-switch">
-        <button type="button" class="btn2 lang-btn" id="langToggle">English/Русский</button>
+        <button type="button" class="lang-btn chosen" data-lang="en">English</button>
+        <span class="sep">/</span>
+        <button type="button" class="lang-btn" data-lang="ru">Русский</button>
       </div>
 
       <div class="entry-buttons">
@@ -276,9 +383,9 @@
       </div>
 
       <div class="settings-footer">
-        <a href="https://otansystems.com/synapse" target="_blank" title="Visit our website"><span class="ic">&#127760;</span></a>
-        <a href="mailto:otan-systems@proton.me" title="Contact Sales & Support"><span class="ic">&#9993;</span></a>
-        <a href="https://otansystems.com/synapse/reference" target="_blank" title="Terms of Use & Policy"><span class="ic">?</span></a>
+        <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
+        <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
+        <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
       </div>
 
     </div>
@@ -291,7 +398,13 @@
         <div class="icon-btn btn2 armable" id="btn-gear" title="Settings">&#9881;</div>
       </div>
       <div class="logo">SYNAPSE</div>
-      <div class="side"></div>
+      <div class="side" style="justify-content:flex-end;">
+        <div class="lang-switch">
+          <button type="button" class="lang-btn chosen" data-lang="en">EN</button>
+          <span class="sep">/</span>
+          <button type="button" class="lang-btn" data-lang="ru">RU</button>
+        </div>
+      </div>
     </div>
 
     <div class="video-frame" id="videoFrame" style="aspect-ratio: 16/9;">
@@ -313,6 +426,49 @@
       <textarea id="prompt-input" rows="2" maxlength="5000" data-i18n-placeholder="type_here" placeholder="Type here..."></textarea>
       <div id="char-count">0 / 5000</div>
     </div>
+
+    <!-- MODE OVERLAY -->
+    <div class="overlay" id="modeOverlay">
+      <div class="mode-panel">
+        <div class="mode-opt" data-mode="text" data-i18n="mode_text">Text &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_text_desc">5000 symbols max. No additional files supported.</div>
+
+        <div class="mode-opt" data-mode="text-image" data-i18n="mode_ti">Text &amp; Image &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_ti_desc">5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), &lt;20MB each.</div>
+
+        <div class="mode-opt" data-mode="fullstack" data-i18n="mode_fs">Full-Stack &rarr; Video</div>
+        <div class="mode-desc" data-i18n="mode_fs_desc">5000 symbols max. Up to 5 elements: images or video (&lt;10s, &lt;100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.</div>
+
+        <div class="mode-row">
+          <span class="label" data-i18n="mode_audio">Audio-generation</span>
+          <div class="controls">
+            <button type="button" class="pill" id="audioToggle" data-val="O">ON/OFF</button>
+          </div>
+        </div>
+
+        <div class="mode-row">
+          <span class="label" data-i18n="mode_duration">Duration</span>
+          <div class="controls">
+            <button type="button" class="pill arrow" id="durMinus">&lt;</button>
+            <span class="pill" id="durVal" style="min-width:64px;text-align:center;">15 sec</span>
+            <button type="button" class="pill arrow" id="durPlus">&gt;</button>
+          </div>
+        </div>
+
+        <div class="mode-row" style="align-items:flex-start;">
+          <span class="label" data-i18n="mode_ratio">Ratio</span>
+          <div class="controls" style="flex-wrap:wrap; justify-content:flex-end; max-width:260px;">
+            <button type="button" class="pill ratio-opt" data-ratio="16/9">16:9</button>
+            <button type="button" class="pill ratio-opt" data-ratio="9/16">9:16</button>
+            <button type="button" class="pill ratio-opt" data-ratio="4/3">4:3</button>
+            <button type="button" class="pill ratio-opt" data-ratio="3/4">3:4</button>
+            <button type="button" class="pill ratio-opt" data-ratio="1/1">1:1</button>
+          </div>
+        </div>
+
+        <button type="button" class="btn2 green armable" id="confirm-mode" data-i18n="btn_confirm">Confirm</button>
+      </div>
+    </div>
   </section>
 
   <!-- ═══════════ SETTINGS SCREEN ═══════════ -->
@@ -328,6 +484,25 @@
     <div class="balance-card">
       <span class="lbl" data-i18n="balance_label">Your Balance:</span>
       <span class="val" id="balanceVal">0 sec</span>
+    </div>
+
+    <div class="warn-text" data-i18n="balance_warn">Warning! Payment works in and goes to OpenRouter.</div>
+
+    <div class="topup-card">
+      <div class="topup-title" id="topupTitle" data-i18n-template="topup_title">Wanna top up? ---------- $0.1 per second</div>
+      <div class="topup-row">
+        <input type="number" id="topupX" min="1" value="10">
+        <span class="topup-mid"><span data-i18n="topup_unit_sec">s</span>&#10148;$</span>
+        <input type="text" id="topupY" readonly value="1.0">
+      </div>
+      <button type="button" class="btn2 green armable" id="confirm-topup" data-i18n="btn_confirm">Confirm</button>
+    </div>
+
+    <div class="settings-footer">
+      <a href="#" id="browseVideos"><span class="ic">&#128193;</span><span data-i18n="footer_browse">Browse all videos</span></a>
+      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
+      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
+      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
     </div>
   </section>
 
