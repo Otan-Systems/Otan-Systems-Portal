@@ -563,9 +563,33 @@
     files: [],
     balanceSec: 0
   };
+  
+  var STORAGE_KEY = "synapse_state_v1";
+
+  function saveState() {
+    try {
+      var toSave = {
+        lang: state.lang,
+        mode: state.mode,
+        audio: state.audio,
+        duration: state.duration,
+        ratio: state.ratio,
+        balanceSec: state.balanceSec,
+        screen: document.querySelector(".screen.active").id,
+        prompt: document.getElementById("prompt-input").value
+      };
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
+    } catch (e) { /* storage unavailable — fail silently */ }
+  }
+
+  function loadSavedState() {
+    try {
+      var raw = localStorage.getItem(STORAGE_KEY);
+      return raw ? JSON.parse(raw) : null;
+    } catch (e) { return null; }
+  }
 
   function t(key) { return dict[state.lang][key] || key; }
-
   function applyI18n() {
     document.documentElement.lang = state.lang;
     document.querySelectorAll("[data-i18n]").forEach(function (el) {
@@ -589,6 +613,7 @@
     btn.addEventListener("click", function () {
       state.lang = btn.getAttribute("data-lang");
       applyI18n();
+      saveState();
     });
   });
 
@@ -622,6 +647,7 @@
   function showScreen(id) {
     document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
     document.getElementById(id).classList.add("active");
+    saveState();
   }
 
   function goToApp() {
@@ -707,6 +733,7 @@
     modeOverlay.classList.remove("show");
     document.getElementById("videoFrame").style.aspectRatio = state.ratio.replace("/", " / ");
     updateSendState();
+    saveState();
   });
 
   /* ───────── send / prompt ───────── */
@@ -800,10 +827,10 @@
   topupX.addEventListener("input", syncTopup);
 
   wireArmable(document.getElementById("confirm-topup"), function () {
-
     var sec = Math.max(0, parseInt(topupX.value, 10) || 0);
     state.balanceSec += sec;
     renderBalance();
+    saveState();
   });
 
   document.getElementById("browseVideos").addEventListener("click", function (e) {
@@ -815,6 +842,32 @@
   });
 
   /* ───────── init ───────── */
+(function restore() {
+    var saved = loadSavedState();
+    if (saved) {
+      state.lang = saved.lang || state.lang;
+      state.mode = saved.mode || null;
+      state.audio = saved.audio || "O";
+      state.duration = saved.duration || 15;
+      state.ratio = saved.ratio || "16/9";
+      state.balanceSec = saved.balanceSec || 0;
+
+      document.getElementById("prompt-input").value = saved.prompt || "";
+
+      if (state.mode) {
+        document.querySelector('.mode-opt[data-mode="' + state.mode + '"]').classList.add("selected");
+      }
+      audioToggle.textContent = state.audio === "I" ? "ON (I)" : "OFF (O)";
+      audioToggle.classList.toggle("selected", state.audio === "I");
+      durVal.textContent = state.duration + " sec";
+      var ratioBtn = document.querySelector('.ratio-opt[data-ratio="' + state.ratio + '"]');
+      if (ratioBtn) ratioBtn.classList.add("selected");
+      document.getElementById("videoFrame").style.aspectRatio = state.ratio.replace("/", " / ");
+
+      if (saved.screen) showScreen(saved.screen);
+    }
+  })();
+  
   applyI18n();
   updateModeFieldLocks();
   updateSendState();
