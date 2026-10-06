@@ -738,7 +738,7 @@
       <div class="stat-label" data-i18n="stat_price">Flat rate</div>
     </div>
     <div class="stat-item">
-      <div class="stat-value">5 <span data-i18n="stat_ratios_unit">ratios</span></div>
+      <div class="stat-value">5<span data-i18n="stat_ratios_unit">ratios</span></div>
       <div class="stat-label" data-i18n="stat_ratios">Aspect ratios</div>
     </div>
   </div>
@@ -806,19 +806,19 @@
         <div class="context-detail">
           <div class="cd-item">
             <div class="cd-label" data-i18n="limit_ttv">Text-to-Video</div>
-            <div class="cd-val">512 tokens</div>
+            <div class="cd-val">512 toks</div>
           </div>
           <div class="cd-item">
             <div class="cd-label" data-i18n="limit_itv">Image-to-Video</div>
-            <div class="cd-val">1024 tokens</div>
+            <div class="cd-val">1024 toks</div>
           </div>
           <div class="cd-item">
             <div class="cd-label" data-i18n="limit_rtv">Reference-to-Video</div>
-            <div class="cd-val">1024 tokens</div>
+            <div class="cd-val">1024 toks</div>
           </div>
           <div class="cd-item">
             <div class="cd-label" data-i18n="limit_res">Output</div>
-            <div class="cd-val">4K, 60FPS</div>
+            <div class="cd-val">4K&60FPS</div>
           </div>
         </div>
       </div>
@@ -831,8 +831,9 @@
   <div class="section-label" data-i18n="release_label">Release</div>
   <div class="release-section">
     <div class="release-date-block reveal">
-      <div class="release-big" data-i18n="release_big">Not Estimated</div>
-    </div>
+      <div class="release-big" data-i18n="release_big">
+        <a href="https://otansystems.com/synapse/ai" target="_self">Ready To Use!</a>
+      </div>
     </div>
   </div>
 </section>
@@ -961,7 +962,6 @@
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
 
-  // release progress-free init, context bar removed intentionally (no fake progress for an unreleased product)
 })();
 </script>
 
