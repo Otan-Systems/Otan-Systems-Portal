@@ -43,7 +43,14 @@ window.location.href = "https://otansystems.com/1259"
     z-index: 1;
     visibility: hidden;
   }
-  .screen.active { display: flex; z-index: 2; visibility: visible; }
+    .screen.active {
+    display: flex; z-index: 2; visibility: visible;
+    animation: screenFadeIn 0.28s ease;
+  }
+  @keyframes screenFadeIn {
+    from { opacity: 0; transform: translateY(8px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 
   .btn2 {
     cursor: pointer;
@@ -232,6 +239,12 @@ window.location.href = "https://otansystems.com/1259"
     display: flex; align-items: center; justify-content: space-between;
     padding: 0 16px; flex-shrink: 0;
   }
+    #screen-settings .topbar {
+    height: 64px;
+    border: 1px solid var(--cyan-dim);
+    border-radius: 16px;
+    margin-bottom: 4px;
+  }
   .topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
   .topbar .icon-btn {
     width: 34px; height: 34px;
@@ -286,7 +299,18 @@ window.location.href = "https://otansystems.com/1259"
     align-items: center; justify-content: center;
     z-index: 20;
   }
-  .overlay.show { display: flex; }
+    .overlay.show {
+    display: flex;
+    animation: overlayFadeIn 0.2s ease;
+  }
+  .overlay.show .mode-panel {
+    animation: panelPopIn 0.25s cubic-bezier(.2,.9,.3,1.2);
+  }
+  @keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
+  @keyframes panelPopIn {
+    from { opacity: 0; transform: scale(0.94) translateY(10px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
 
   .mode-panel {
     background: #000;
