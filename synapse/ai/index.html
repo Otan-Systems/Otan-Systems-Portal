@@ -97,18 +97,19 @@ window.location.href = "https://otansystems.com/1259"
   }
 
   .entry-title-bar {
-    background: #000000;
-    border: 2px solid var(--green);
-    border-radius: 12px;
-    padding: 12px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: min(92vw, 760px);
-    white-space: nowrap;
-    box-shadow: 0 0 12px rgba(166, 242, 74, 0.2);
+  background: #000000;
+  border: none;
+  border-bottom: 2px solid var(--green);
+  padding: 16px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  width: 100%;
+  flex-shrink: 0;
+  white-space: nowrap;
   }
+
   .entry-title-bar .intro {
     color: #ffffff;
     font-size: clamp(10px, 2.8vw, 14px);
@@ -162,20 +163,6 @@ window.location.href = "https://otansystems.com/1259"
     flex-direction: column;
     gap: 10px;
     width: min(90vw, 360px);
-  }
-
-  .entry-row-2 {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 10px;
-    width: 100%;
-  }
-
-  .entry-row-3 {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    width: 100%;
   }
 
   .entry-buttons .btn2 {
@@ -388,13 +375,13 @@ window.location.href = "https://otansystems.com/1259"
 
   <!-- ═══════════ ENTRY SCREEN ═══════════ -->
   <section class="screen active" id="screen-entry">
-    <div class="entry-content">
-
-      <div class="entry-title-bar">
+    <div class="entry-title-bar">
         <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
         <span class="brand">SYNAPSE AI</span>
         <span class="sub">OTAN SYSTEMS</span>
       </div>
+      
+    <div class="entry-content">
 
       <div class="lang-switch">
         <button type="button" class="lang-btn chosen" data-lang="en">English</button>
@@ -403,21 +390,17 @@ window.location.href = "https://otansystems.com/1259"
       </div>
 
       <div class="entry-buttons">
-        <div class="entry-row-2">
-          <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
-          <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
-        </div>
-        <div class="entry-row-3">
-          <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
-          <button type="button" class="btn2 auth-btn provider-google">Google</button>
-          <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
-        </div>
-      </div>
+    <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
+    <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
+    <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
+    <button type="button" class="btn2 auth-btn provider-google">Google</button>
+    <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
+   </div>
 
       <div class="settings-footer">
-        <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
-        <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
-        <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+        <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span></a>
+        <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span></a>
+        <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span></a>
       </div>
 
     </div>
