@@ -583,7 +583,7 @@
         prompt: document.getElementById("prompt-input").value
       };
       localStorage.setItem(STORAGE_KEY, JSON.stringify(toSave));
-    } catch (e) { /* storage unavailable — fail silently */ }
+    } catch (e) {}
   }
 
   function loadSavedState() {
@@ -621,10 +621,6 @@
     });
   });
 
-  /* ───────── double-press-to-activate ─────────
-     First tap arms the button (white stroke). Second tap, while armed,
-     fires the action. Tapping a different armable button re-arms that
-     one instead and disarms the previous one. */
   var armed = null;
 
   function wireArmable(el, action) {
@@ -646,6 +642,81 @@
   document.querySelectorAll(".armable").forEach(function (el) {
     if (el.dataset.wired) return;
   });
+  
+  /* ───────── OpenRouter login (PKCE) ───────── */
+  var KEY_STORAGE = "synapse_or_key";
+
+  function getApiKey() {
+    try { return localStorage.getItem(KEY_STORAGE); } catch (e) { return null; }
+  }
+  function setApiKey(k) {
+    try { localStorage.setItem(KEY_STORAGE, k); } catch (e) {}
+  }
+
+  function toBase64Url(bytes) {
+    var s = "";
+    for (var i = 0; i < bytes.length; i++) s += String.fromCharCode(bytes[i]);
+    return btoa(s).replace(/\+/g, "-").replace(/\//g, "_").replace(/=+$/, "");
+  }
+  function randomString() {
+    return toBase64Url(crypto.getRandomValues(new Uint8Array(32)));
+  }
+  async function sha256Base64Url(input) {
+    var hash = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(input));
+    return toBase64Url(new Uint8Array(hash));
+  }
+
+  async function startLogin() {
+    var verifier = randomString();
+    var challenge = await sha256Base64Url(verifier);
+    var st = randomString();
+    sessionStorage.setItem("synapse_pkce_verifier", verifier);
+    sessionStorage.setItem("synapse_pkce_state", st);
+
+    var callback = location.origin + location.pathname;
+    window.location.href = "https://openrouter.ai/auth"
+      + "?callback_url=" + encodeURIComponent(callback)
+      + "&code_challenge=" + challenge
+      + "&code_challenge_method=S256"
+      + "&state=" + st
+      + "&key_label=" + encodeURIComponent("Synapse AI");
+    }
+
+    async function handleAuthCallback() {
+    var params = new URLSearchParams(window.location.search);
+    var code = params.get("code");
+    if (!code) return;
+
+    history.replaceState(null, "", location.pathname);
+
+    var verifier = sessionStorage.getItem("synapse_pkce_verifier");
+    var expectedState = sessionStorage.getItem("synapse_pkce_state");
+    sessionStorage.removeItem("synapse_pkce_verifier");
+    sessionStorage.removeItem("synapse_pkce_state");
+
+    if (!verifier || params.get("state") !== expectedState) {
+      alert("Login failed. Please try again.");
+      return;
+    }
+
+    try {
+      var res = await fetch("https://openrouter.ai/api/v1/auth/keys", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          code: code,
+          code_verifier: verifier,
+          code_challenge_method: "S256"
+        })
+      });
+      if (!res.ok) throw new Error("exchange failed: " + res.status);
+      var data = await res.json();
+      setApiKey(data.key);
+    } catch (e) {
+      console.error(e);
+      alert("Login failed. Please try again.");
+    }
+  }
 
   /* ───────── screen navigation ───────── */
   function showScreen(id) {
@@ -655,8 +726,6 @@
   }
 
   function goToApp() {
-    // In production: this fires only after a verified OpenRouter OAuth
-    // redirect lands back on this origin with a valid session.
     showScreen("screen-main");
   }
 
@@ -664,11 +733,7 @@
   wireArmable(document.getElementById("btn-back"), function () { showScreen("screen-main"); });
 
   document.querySelectorAll(".auth-btn").forEach(function (b) {
-    wireArmable(b, function () {
-      // Stub: real build opens OpenRouter's OAuth page in a new tab/redirect.
-      // Kept as a no-op placeholder here since there's no live endpoint yet.
-      goToApp();
-    });
+  wireArmable(b, function () { startLogin(); });
   });
 
   /* ───────── mode panel ───────── */
@@ -877,6 +942,11 @@
   updateSendState();
   syncTopup();
   renderBalance();
+    handleAuthCallback().then(function () {
+    var active = document.querySelector(".screen.active").id;
+    if (getApiKey() && active === "screen-entry") showScreen("screen-main");
+    if (!getApiKey() && active !== "screen-entry") showScreen("screen-entry");
+  });
 })();
 
 </script>
