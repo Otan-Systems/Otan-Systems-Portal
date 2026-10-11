@@ -755,13 +755,11 @@
     });
   });
 
-  function updateModeFieldLocks() {
+    function updateModeFieldLocks() {
     var addFilesBtn = document.getElementById("btn-addfiles");
-    if (state.mode === "text") {
-      addFilesBtn.setAttribute("disabled", "disabled");
-    } else {
-      addFilesBtn.removeAttribute("disabled");
-    }
+    var locked = state.mode === "text" || state.files.length >= 2;
+    if (locked) addFilesBtn.setAttribute("disabled", "disabled");
+    else addFilesBtn.removeAttribute("disabled");
   }
 
   var audioToggle = document.getElementById("audioToggle");
@@ -799,12 +797,13 @@
     audioToggle.textContent = "ON/OFF";
     audioToggle.classList.remove("selected");
     durVal.textContent = "15 sec";
+    if (state.mode === "text") state.files = [];
     updateModeFieldLocks();
     updateSendState();
   });
 
   wireArmable(document.getElementById("confirm-mode"), function () {
-    if (!state.mode) return; // nothing chosen — panel just stays open
+    if (!state.mode) return;
     modeOverlay.classList.remove("show");
     document.getElementById("videoFrame").style.aspectRatio = state.ratio.replace("/", " / ");
     updateSendState();
@@ -832,18 +831,29 @@
     document.getElementById("fileInput").click();
   });
 
-  document.getElementById("fileInput").addEventListener("change", function (e) {
-    var max = state.mode === "text-image" ? 2 : state.mode === "fullstack" ? 5 : 0;
-    state.files = Array.from(e.target.files).slice(0, max);
-    if (state.files.length >= max) {
-      document.getElementById("fileInput").setAttribute("disabled", "disabled");
+    var ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"]; // .jpg и .jpeg — оба image/jpeg
+  var MAX_FILE_BYTES = 20 * 1024 * 1024;
+  var fileInput = document.getElementById("fileInput");
+  fileInput.setAttribute("accept", ".png,.jpg,.jpeg,.webp");
+
+  fileInput.addEventListener("change", function (e) {
+    var picked = Array.from(e.target.files);
+    e.target.value = ""; // чтобы тот же файл можно было выбрать повторно
+
+    var ok = picked.filter(function (f) {
+      return ALLOWED_TYPES.indexOf(f.type) !== -1 && f.size < MAX_FILE_BYTES;
+    });
+    if (ok.length < picked.length) {
+      alert(state.lang === "ru"
+        ? "Допустимы только PNG, JPG, JPEG, WEBP размером до 20MB."
+        : "Only PNG, JPG, JPEG, WEBP files under 20MB are allowed.");
     }
+
+    var room = 2 - state.files.length;
+    state.files = state.files.concat(ok.slice(0, room)); // 1-й файл = first frame, 2-й = last frame
+    updateModeFieldLocks();
   });
 
-  /* ───────── generation + video playback ─────────
-     Swap runGeneration()'s body for a real fetch() to OpenRouter once
-     the app is wired to a live account/session. This stub only proves
-     out the loading → play → error states in the UI. */
   function runGeneration() {
     var frame = document.getElementById("videoFrame");
     var placeholder = document.getElementById("videoPlaceholder");
