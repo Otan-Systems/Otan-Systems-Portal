@@ -564,6 +564,7 @@
       mode_fs: "Full-Stack → Video", mode_fs_desc: "5000 symbols max. Up to 5 elements: images or video (<10s, <100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.",
       mode_audio: "Audio-generation", mode_duration: "Duration", mode_ratio: "Ratio",
       btn_reset: "Reset",
+      auth_hint: "On the next page, keep the default settings and press Authorize.",
       balance_label: "Your Balance:", balance_warn: "Warning! Payment works in and goes to OpenRouter.",
       topup_title: "Wanna top up? ---------- $0.1 per second", topup_unit_sec: "s"
     },
@@ -580,6 +581,7 @@
       mode_fs: "Full-Stack → Видео", mode_fs_desc: "До 5000 символов. До 5 элементов: изображения или видео (<10с, <100MB). Форматы: PNG, JPG, JPEG, WEBP, MP4, MOV.",
       mode_audio: "Генерация звука", mode_duration: "Длительность", mode_ratio: "Соотношение",
       btn_reset: "Сбросить",
+      auth_hint: "На следующей странице оставьте настройки по умолчанию и нажмите Authorize.",
       balance_label: "Ваш баланс:", balance_warn: "Внимание! Оплата проходит и уходит напрямую в OpenRouter.",
       topup_title: "Пополнить баланс? ---------- $0.1 за секунду", topup_unit_sec: "с"
     }
@@ -799,6 +801,7 @@
         if (armed === chip) {
           armed = null;
           state.files.splice(i, 1);
+          updateModeFieldLocks();
         } else {
           if (armed) armed.classList.remove("armed");
           armed = chip;
@@ -988,9 +991,10 @@
 
       document.getElementById("prompt-input").value = saved.prompt || "";
 
-      if (state.mode) {
-        document.querySelector('.mode-opt[data-mode="' + state.mode + '"]').classList.add("selected");
-      }
+      var modeBtn = state.mode && document.querySelector('.mode-opt[data-mode="' + state.mode + '"]');
+      if (modeBtn) modeBtn.classList.add("selected");
+      else state.mode = null;
+
       audioToggle.textContent = state.audio === "I" ? "ON (I)" : "OFF (O)";
       audioToggle.classList.toggle("selected", state.audio === "I");
       durVal.textContent = state.duration + " sec";
@@ -1007,10 +1011,10 @@
   updateSendState();
   syncTopup();
   renderBalance();
-    handleAuthCallback().then(function () {
-    var active = document.querySelector(".screen.active").id;
-    if (getApiKey() && active === "screen-entry") showScreen("screen-main");
-    if (!getApiKey() && active !== "screen-entry") showScreen("screen-entry");
+  handleAuthCallback().then(function () {
+  var active = document.querySelector(".screen.active").id;
+  if (getApiKey() && active === "screen-entry") showScreen("screen-main");
+  if (!getApiKey() && active !== "screen-entry") showScreen("screen-entry");
   });
 })();
 
