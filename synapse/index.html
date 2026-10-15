@@ -8,141 +8,95 @@
 <title>Synapse AI</title>
 
 <style>
+
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
   :root {
-    --blue-deep: #0A1628;
-    --blue-mid: #0D3B7C;
-    --blue-bright: #1A6FD8;
-    --blue-electric: #2E9BFF;
-    --blue-pale: #9CC8FF;
-    --blue-ultra: #C8E4FF;
+    --black: #000000;
     --white: #FFFFFF;
-    --glass: rgba(255,255,255,0.07);
-    --glass-border: rgba(255,255,255,0.14);
-    --glass-strong: rgba(255,255,255,0.12);
   }
 
   html { scroll-behavior: smooth; }
 
   body {
     font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    background: var(--blue-deep);
-    color: var(--white);
+    background: var(--white);
+    color: var(--black);
     min-height: 100vh;
     overflow-x: hidden;
   }
 
-  /* ─── BACKGROUND ─── */
-  .bg-layer {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background:
-      radial-gradient(ellipse 80% 60% at 20% 10%, rgba(26,111,216,0.18) 0%, transparent 60%),
-      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(46,155,255,0.12) 0%, transparent 50%),
-      radial-gradient(ellipse 40% 50% at 50% 50%, rgba(13,59,124,0.25) 0%, transparent 70%);
-  }
+  /* ─── BACKGROUND (plain white, no decorations) ─── */
+  .bg-layer, .grid-overlay { display: none; }
 
-  .grid-overlay {
-    position: fixed; inset: 0; z-index: 0; pointer-events: none;
-    background-image:
-      linear-gradient(rgba(46,155,255,0.04) 1px, transparent 1px),
-      linear-gradient(90deg, rgba(46,155,255,0.04) 1px, transparent 1px);
-    background-size: 60px 60px;
-  }
-
-  /* ─── NAV ─── */
+  /* ─── NAV (black object) ─── */
   nav {
     position: fixed; top: 0; left: 0; right: 0; z-index: 100;
     display: flex; align-items: center; justify-content: space-between;
     padding: 20px 48px;
-    backdrop-filter: blur(20px);
-    background: rgba(10,22,40,0.7);
-    border-bottom: 1px solid var(--glass-border);
+    background: var(--black);
+    border-bottom: 1px solid var(--black);
   }
 
-  .nav-logo {
-    display: flex; align-items: center; gap: 12px;
-  }
-
-  .nav-logo img, .nav-logo svg {
-  width: 32px;
-  height: 32px;
-  object-fit: cover;
-  filter: drop-shadow(0 0 8px rgba(46,155,255,0.6));
-  }
-
+  .nav-logo { display: flex; align-items: center; gap: 12px; }
+  .nav-logo img, .nav-logo svg { width: 32px; height: 32px; object-fit: cover; }
 
   .nav-logo-text {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-weight: 800; font-size: 20px;
     letter-spacing: -0.5px;
-    background: linear-gradient(135deg, #fff 30%, var(--blue-electric));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--white);
   }
 
-  .nav-links {
-    display: flex; gap: 36px; list-style: none;
-  }
+  .nav-links { display: flex; gap: 36px; list-style: none; }
 
   .nav-links a {
     font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px; font-weight: 500;
-    color: rgba(255,255,255,0.65);
+    color: var(--white);
     text-decoration: none;
     letter-spacing: 0.5px;
-    transition: color 0.25s;
+    border-bottom: 2px solid transparent;
+    padding-bottom: 2px;
+    transition: border-color 0.2s;
   }
+  .nav-links a:hover { border-bottom-color: var(--white); }
 
-  .nav-links a:hover { color: var(--white); }
-
+  /* white objects on the black nav */
   .nav-cta {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 600;
     padding: 10px 24px;
     border-radius: 100px;
-    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
-    color: #fff;
+    background: var(--white);
+    border: 2px solid var(--white);
+    color: var(--black);
     text-decoration: none;
-    box-shadow: 0 0 20px rgba(46,155,255,0.35);
-    transition: box-shadow 0.25s, transform 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
   }
+  .nav-cta:hover { background: var(--black); color: var(--white); transform: translateY(-1px); }
 
-  .nav-cta:hover {
-    box-shadow: 0 0 32px rgba(46,155,255,0.55);
-    transform: translateY(-1px);
-  }
-
-  .nav-actions {
-    display: flex; align-items: center; gap: 14px;
-  }
+  .nav-actions { display: flex; align-items: center; gap: 14px; }
 
   .btn-lobby {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 600;
     padding: 9px 20px;
     border-radius: 100px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass);
-    color: rgba(255,255,255,0.8);
+    border: 2px solid var(--white);
+    background: var(--white);
+    color: var(--black);
     text-decoration: none;
-    backdrop-filter: blur(12px);
-    transition: border-color 0.25s, color 0.25s, background 0.25s;
+    transition: background 0.2s, color 0.2s;
     white-space: nowrap;
   }
-
-  .btn-lobby:hover {
-    border-color: rgba(255,255,255,0.3);
-    color: #fff;
-    background: rgba(255,255,255,0.1);
-  }
+  .btn-lobby:hover { background: var(--black); color: var(--white); }
 
   .lang-toggle {
     display: flex; align-items: center;
     border-radius: 100px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass);
-    backdrop-filter: blur(12px);
+    border: 2px solid var(--white);
+    background: var(--white);
     padding: 3px;
     cursor: pointer;
     flex-shrink: 0;
@@ -155,15 +109,14 @@
     letter-spacing: 0.5px;
     padding: 6px 13px;
     border-radius: 100px;
-    color: rgba(255,255,255,0.45);
+    color: var(--black);
     cursor: pointer;
-    transition: color 0.25s, background 0.25s;
+    transition: color 0.2s, background 0.2s;
   }
 
   .lang-toggle button.active {
-    color: #fff;
-    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
-    box-shadow: 0 0 14px rgba(46,155,255,0.4);
+    color: var(--white);
+    background: var(--black);
   }
 
   /* ─── HERO ─── */
@@ -179,11 +132,9 @@
     display: inline-flex; align-items: center; gap: 8px;
     padding: 8px 20px;
     border-radius: 100px;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
+    background: var(--black);
+    color: var(--white);
     font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
-    color: var(--blue-pale);
     text-transform: uppercase;
     margin-bottom: 36px;
     animation: fadeUp 0.8s ease both;
@@ -191,8 +142,7 @@
 
   .badge-dot {
     width: 6px; height: 6px; border-radius: 50%;
-    background: var(--blue-electric);
-    box-shadow: 0 0 8px var(--blue-electric);
+    background: var(--white);
     animation: pulse 2s ease-in-out infinite;
   }
 
@@ -204,7 +154,6 @@
   .hero-logo {
     width: 120px; height: 120px;
     object-fit: contain;
-    filter: drop-shadow(0 0 30px rgba(46,155,255,0.5)) drop-shadow(0 0 60px rgba(26,111,216,0.3));
     margin-bottom: 40px;
     animation: fadeUp 0.9s ease 0.1s both, float 4s ease-in-out infinite 1s;
     border-radius: 16px
@@ -222,20 +171,17 @@
     line-height: 0.95;
     letter-spacing: -3px;
     margin-bottom: 12px;
+    color: var(--black);
     animation: fadeUp 1s ease 0.15s both;
   }
 
-  .hero-title .line-white { color: var(--white); }
-  .hero-title .line-blue {
-    background: linear-gradient(90deg, var(--blue-electric), var(--blue-pale));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
-  }
+  .hero-title .line-white { color: var(--black); }
+  .hero-title .line-blue { color: var(--black); }
 
   .hero-sub {
     font-size: clamp(14px, 2vw, 18px);
-    font-weight: 300;
-    color: rgba(255,255,255,0.5);
+    font-weight: 400;
+    color: var(--black);
     letter-spacing: 0.5px;
     max-width: 480px;
     line-height: 1.7;
@@ -248,40 +194,24 @@
     animation: fadeUp 1s ease 0.35s both;
   }
 
-  .btn-primary {
+  .btn-primary, .btn-ghost {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 700; font-size: 15px;
+    font-size: 15px;
     padding: 16px 40px;
     border-radius: 100px;
-    background: linear-gradient(135deg, var(--blue-bright), var(--blue-electric));
-    color: #fff;
+    background: var(--black);
+    border: 2px solid var(--black);
+    color: var(--white);
     text-decoration: none;
-    box-shadow: 0 0 40px rgba(46,155,255,0.4), inset 0 1px 0 rgba(255,255,255,0.15);
-    transition: box-shadow 0.3s, transform 0.2s;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
   }
+  .btn-primary { font-weight: 700; }
+  .btn-ghost { font-weight: 600; }
 
-  .btn-primary:hover {
-    box-shadow: 0 0 60px rgba(46,155,255,0.6), inset 0 1px 0 rgba(255,255,255,0.2);
+  .btn-primary:hover, .btn-ghost:hover {
+    background: var(--white);
+    color: var(--black);
     transform: translateY(-2px);
-  }
-
-  .btn-ghost {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 600; font-size: 15px;
-    padding: 16px 40px;
-    border-radius: 100px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass);
-    color: rgba(255,255,255,0.8);
-    text-decoration: none;
-    backdrop-filter: blur(12px);
-    transition: border-color 0.25s, color 0.25s, background 0.25s;
-  }
-
-  .btn-ghost:hover {
-    border-color: rgba(255,255,255,0.3);
-    color: #fff;
-    background: rgba(255,255,255,0.1);
   }
 
   @keyframes fadeUp {
@@ -300,9 +230,8 @@
   .stats-inner {
     display: flex;
     gap: 0;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(20px);
+    background: var(--black);
+    border: 2px solid var(--black);
     border-radius: 20px;
     overflow: hidden;
     animation: fadeUp 1s ease 0.45s both;
@@ -311,7 +240,7 @@
   .stat-item {
     padding: 28px 48px;
     text-align: center;
-    border-right: 1px solid var(--glass-border);
+    border-right: 1px solid var(--white);
     position: relative;
   }
 
@@ -326,14 +255,14 @@
   }
 
   .stat-value span {
-    color: var(--blue-electric);
+    color: var(--white);
     font-size: 14px; font-weight: 600;
     margin-left: 2px;
   }
 
   .stat-label {
     font-size: 11px; font-weight: 500;
-    color: rgba(255,255,255,0.4);
+    color: var(--white);
     letter-spacing: 1px;
     text-transform: uppercase;
   }
@@ -346,9 +275,9 @@
   }
 
   .section-label {
-    font-size: 11px; font-weight: 600;
+    font-size: 11px; font-weight: 700;
     letter-spacing: 2px; text-transform: uppercase;
-    color: var(--blue-electric);
+    color: var(--black);
     margin-bottom: 16px;
   }
 
@@ -358,17 +287,18 @@
     font-weight: 800;
     letter-spacing: -1.5px;
     line-height: 1.05;
+    color: var(--black);
     margin-bottom: 12px
   }
 
   .section-desc {
-    font-size: 16px; font-weight: 300;
-    color: rgba(255,255,255,0.5);
+    font-size: 16px; font-weight: 400;
+    color: var(--black);
     line-height: 1.75;
     max-width: 520px;
   }
 
-  /* ─── WHY CARDS ─── */
+  /* ─── WHY CARDS (black objects) ─── */
   .why-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
@@ -377,32 +307,17 @@
   }
 
   .why-card {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(16px);
+    background: var(--black);
+    border: 2px solid var(--black);
     border-radius: 20px;
     padding: 36px 32px;
-    transition: border-color 0.3s, transform 0.3s, background 0.3s;
+    transition: transform 0.3s;
     position: relative;
     overflow: hidden;
     margin-top: 30px
   }
 
-  .why-card::before {
-    content: '';
-    position: absolute; inset: 0;
-    background: linear-gradient(135deg, rgba(46,155,255,0.08) 0%, transparent 60%);
-    opacity: 0;
-    transition: opacity 0.3s;
-  }
-
-  .why-card:hover::before { opacity: 1; }
-
-  .why-card:hover {
-    border-color: rgba(46,155,255,0.35);
-    transform: translateY(-4px);
-    background: rgba(255,255,255,0.09);
-  }
+  .why-card:hover { transform: translateY(-4px); }
 
   .why-title {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
@@ -412,36 +327,35 @@
   }
 
   .why-desc {
-    font-size: 14px; font-weight: 300;
-    color: rgba(255,255,255,0.55);
+    font-size: 14px; font-weight: 400;
+    color: var(--white);
     line-height: 1.7;
   }
 
+  /* white object on the black card */
   .why-stat {
     margin-top: 20px;
     padding: 10px 16px;
-    background: rgba(46,155,255,0.1);
-    border: 1px solid rgba(46,155,255,0.2);
+    background: var(--white);
+    border: 2px solid var(--white);
     border-radius: 10px;
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 700;
-    color: var(--blue-pale);
+    color: var(--black);
   }
 
   .modes-compare { margin-top: 0; margin-bottom: 60px; }
 
   /* ─── SPECIALIZATION ─── */
   .spec-section {
-    background: rgba(13,59,124,0.12);
-    border-top: 1px solid var(--glass-border);
-    border-bottom: 1px solid var(--glass-border);
+    background: var(--white);
+    border-top: 2px solid var(--black);
+    border-bottom: 2px solid var(--black);
     padding: 80px 0;
     max-width: 100%;
   }
 
-  .spec-inner {
-    max-width: 1200px; margin: 0 auto; padding: 0 48px;
-  }
+  .spec-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
 
   .spec-layout {
     display: grid;
@@ -451,34 +365,31 @@
     margin-top: 60px;
   }
 
-  .spec-tags {
-    display: flex; flex-wrap: wrap; gap: 10px;
-  }
+  .spec-tags { display: flex; flex-wrap: wrap; gap: 10px; }
 
   .tag {
     font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px; font-weight: 500;
     padding: 8px 16px;
     border-radius: 100px;
-    border: 1px solid var(--glass-border);
-    background: var(--glass);
-    color: rgba(255,255,255,0.75);
-    backdrop-filter: blur(8px);
+    border: 2px solid var(--black);
+    background: var(--black);
+    color: var(--white);
     transition: all 0.2s;
     cursor: default;
   }
 
+  /* featured / hover = inverted */
   .tag:hover, .tag.featured {
-    border-color: rgba(46,155,255,0.5);
-    background: rgba(46,155,255,0.12);
-    color: var(--blue-pale);
+    background: var(--white);
+    color: var(--black);
   }
+  .tag.featured:hover { background: var(--black); color: var(--white); }
 
-  /* ─── CONTEXT METER ─── */
+  /* ─── CONTEXT / LIMITS BLOCK (black object) ─── */
   .context-block {
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(16px);
+    background: var(--black);
+    border: 2px solid var(--black);
     border-radius: 20px;
     padding: 36px;
   }
@@ -486,14 +397,14 @@
   .context-header {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 14px; font-weight: 700;
-    color: rgba(255,255,255,0.4);
+    color: var(--white);
     letter-spacing: 1px;
     text-transform: uppercase;
     margin-bottom: 24px;
   }
 
   .context-bar-wrap {
-    background: rgba(255,255,255,0.06);
+    background: var(--white);
     border-radius: 100px;
     height: 8px; overflow: hidden;
     margin-bottom: 12px;
@@ -501,38 +412,34 @@
 
   .context-bar-fill {
     height: 100%;
-    background: linear-gradient(90deg, var(--blue-bright), var(--blue-electric), var(--blue-pale));
+    background: var(--black);
     border-radius: 100px;
     width: 0%;
     transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
-    box-shadow: 0 0 12px rgba(46,155,255,0.5);
   }
 
   .context-nums {
     display: flex; justify-content: space-between;
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 13px;
-    color: rgba(255,255,255,0.4);
+    color: var(--white);
     margin-bottom: 32px;
   }
 
-  .context-nums strong {
-    color: var(--blue-electric);
-  }
+  .context-nums strong { color: var(--white); }
 
-  .context-detail {
-    display: grid; grid-template-columns: 1fr 1fr; gap: 16px;
-  }
+  .context-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
+  /* white objects on the black block */
   .cd-item {
     padding: 16px;
-    background: rgba(255,255,255,0.04);
-    border: 1px solid rgba(255,255,255,0.06);
+    background: var(--white);
+    border: 2px solid var(--white);
     border-radius: 12px;
   }
 
   .cd-label {
-    font-size: 11px; color: rgba(255,255,255,0.4);
+    font-size: 11px; color: var(--black);
     text-transform: uppercase; letter-spacing: 1px;
     margin-bottom: 6px;
   }
@@ -540,7 +447,7 @@
   .cd-val {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
     font-size: 17px; font-weight: 700;
-    color: var(--white);
+    color: var(--black);
   }
 
   /* ─── RELEASE ─── */
@@ -549,9 +456,7 @@
     flex-wrap: wrap; gap: 40px;
   }
 
-  .release-date-block {
-    display: flex; flex-direction: column;
-  }
+  .release-date-block { display: flex; flex-direction: column; }
 
   .release-big {
     font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
@@ -559,22 +464,34 @@
     font-weight: 800;
     letter-spacing: -3px;
     line-height: 0.9;
-    background: linear-gradient(135deg, var(--white) 40%, var(--blue-electric));
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    background-clip: text;
+    color: var(--black);
     margin-top: 50px;
   }
+  .btn-release {
+    display: inline-block;
+    margin-top: 50px;
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: clamp(20px, 2.5vw, 28px);
+    font-weight: 800;
+    letter-spacing: -0.5px;
+    padding: 22px 56px;
+    border-radius: 100px;
+    background: var(--black);
+    border: 2px solid var(--black);
+    color: var(--white);
+    text-decoration: none;
+    transition: background 0.2s, color 0.2s, transform 0.2s;
+  }
+  .btn-release:hover { background: var(--white); color: var(--black); transform: translateY(-2px); }
 
   .release-note {
     font-size: 13px;
-    color: rgba(255,255,255,0.35);
+    color: var(--black);
     margin-top: 10px;
     font-style: italic;
   }
 
-  .release-info {
-    flex: 1; min-width: 280px;
-  }
+  .release-info { flex: 1; min-width: 280px; }
 
   /* ─── CONTACT ─── */
   .contact-grid {
@@ -587,30 +504,31 @@
   .contact-card {
     display: flex; align-items: center; gap: 16px;
     padding: 24px 28px;
-    background: var(--glass);
-    border: 1px solid var(--glass-border);
-    backdrop-filter: blur(12px);
+    background: var(--black);
+    border: 2px solid var(--black);
     border-radius: 16px;
     text-decoration: none;
-    color: inherit;
-    transition: all 0.25s;
+    color: var(--white);
+    transition: transform 0.25s;
   }
 
-  .contact-card:hover {
-    border-color: rgba(46,155,255,0.4);
-    background: rgba(46,155,255,0.08);
-    transform: translateY(-2px);
-  }
+  .contact-card:hover { transform: translateY(-2px); }
 
+  /* white tile on the black card, emoji forced to grayscale */
   .contact-icon {
-    font-size: 24px; flex-shrink: 0;
+    font-size: 22px; flex-shrink: 0;
+    width: 44px; height: 44px;
+    display: flex; align-items: center; justify-content: center;
+    background: var(--white);
+    border-radius: 12px;
+    filter: grayscale(1);
   }
 
   .contact-info { min-width: 0; }
 
   .contact-platform {
     font-size: 11px; font-weight: 600;
-    color: rgba(255,255,255,0.35);
+    color: var(--white);
     text-transform: uppercase; letter-spacing: 1px;
     margin-bottom: 4px;
   }
@@ -625,30 +543,24 @@
   /* ─── FOOTER ─── */
   footer {
     position: relative; z-index: 1;
-    border-top: 1px solid var(--glass-border);
+    border-top: 2px solid var(--black);
     padding: 40px 48px;
     display: flex; align-items: center; justify-content: space-between;
     flex-wrap: wrap; gap: 20px;
   }
 
-  .footer-left {
-    display: flex; align-items: center; gap: 12px;
-  }
+  .footer-left { display: flex; align-items: center; gap: 12px; }
 
   .footer-left img {
     width: 28px; height: 28px; border-radius: 16px; object-fit: contain;
-    filter: drop-shadow(0 0 6px rgba(46,155,255,0.5));
   }
 
-  .footer-copy {
-    font-size: 13px;
-    color: rgba(255,255,255,0.3);
-  }
+  .footer-copy { font-size: 13px; color: var(--black); }
 
   /* ─── DIVIDER ─── */
   .divider {
-    height: 1px;
-    background: linear-gradient(90deg, transparent, var(--glass-border), transparent);
+    height: 2px;
+    background: var(--black);
     margin: 0 48px;
   }
 
@@ -658,9 +570,7 @@
     transition: opacity 0.7s ease, transform 0.7s ease;
   }
 
-  .reveal.visible {
-    opacity: 1; transform: translateY(0);
-  }
+  .reveal.visible { opacity: 1; transform: translateY(0); }
 
   @media (max-width: 768px) {
     nav { padding: 16px 24px; }
@@ -668,7 +578,7 @@
     section { padding: 60px 24px; }
     .spec-layout { grid-template-columns: 1fr; gap: 40px; }
     .stats-inner { flex-direction: column; }
-    .stat-item { border-right: none; border-bottom: 1px solid var(--glass-border); }
+    .stat-item { border-right: none; border-bottom: 1px solid var(--white); }
     .stat-item:last-child { border-bottom: none; }
     footer { flex-direction: column; align-items: flex-start; }
     .release-section { flex-direction: column; }
@@ -831,9 +741,7 @@
   <div class="section-label" data-i18n="release_label">Release</div>
   <div class="release-section">
     <div class="release-date-block reveal">
-      <div class="release-big" data-i18n="release_big">
-        <a href="https://otansystems.com/synapse/ai" target="_self">Ready To Use!</a>
-      </div>
+      <a class="btn-release" href="https://otansystems.com/synapse/ai" target="_self" data-i18n="release_btn">Ready To Use!</a>
     </div>
   </div>
 </section>
@@ -896,7 +804,7 @@
       mode_studio_desc: "Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.",
       limits_header: "Generation limits", tokens_word: "tokens",
       limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Output",
-      release_label: "Release", release_big: "Not Estimated",
+      release_label: "Release", release_btn: "Ready To Use!", release_big: "Not Estimated",
       release_note: "No fixed date yet — check back, or reach out and we'll keep you posted.",
       release_info: "Synapse AI is in active development. Video Pro and Studio Pro will ship for Windows, macOS, Linux, and Android — all builds distributed through GitHub Releases.",
       release_cta: "Get notified",
@@ -924,7 +832,7 @@
       mode_studio_desc: "Всё то же самое, что в Video Pro, плюс сгенерированная звуковая дорожка — видео и аудио за один проход.",
       limits_header: "Лимиты генерации", tokens_word: "токенов",
       limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Вывод",
-      release_label: "Релиз", release_big: "Не определена",
+      release_label: "Релиз", release_btn: "Готово к использованию!", release_big: "Не определена",
       release_note: "Точной даты пока нет — загляните позже или напишите нам, и мы вас предупредим.",
       release_info: "Synapse AI в активной разработке. Video Pro и Studio Pro выйдут для Windows, macOS, Linux и Android — все сборки будут доступны в GitHub Releases.",
       release_cta: "Сообщить о релизе",
