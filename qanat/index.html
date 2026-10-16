@@ -9,24 +9,24 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-  :root {
-    --bg: #0d0d0f;
-    --surface: #16161a;
-    --surface2: #1e1e24;
+    :root {
+    --bg: #000000;
+    --surface: #000000;
+    --surface2: #000000;
     --border: rgba(255,255,255,0.08);
     --border-hover: rgba(255,255,255,0.18);
-    --accent: #00e5a0;
-    --accent-dim: rgba(0,229,160,0.12);
-    --accent-glow: rgba(0,229,160,0.25);
-    --text: #f0f0f2;
-    --text-muted: #6b6b7a;
-    --text-dim: #9494a4;
-    --danger: #ff5e6a;
-    --mono: 'JetBrains Mono', monospace;
-    --sans: 'Syne', sans-serif;
+    --accent: #ffffff;
+    --accent-dim: rgba(255,255,255,0.12);
+    --accent-glow: rgba(255,255,255,0.25);
+    --text: #ffffff;
+    --text-muted: rgba(255,255,255,0.5);
+    --text-dim: rgba(255,255,255,0.7);
+    --danger: #ffffff;
+    --mono: ui-monospace, SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    --sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
     --radius: 12px;
     --radius-sm: 7px;
-  }
+    }
 
   html, body {
     background: var(--bg);
@@ -445,7 +445,7 @@
 <div class="page">
   <header class="header">
     <h1>Image to <span>Base64</span></h1>
-    <p>// drop an image &rarr; get encoded output instantly</p>
+    <p>drop an image &rarr; get encoded output instantly</p>
   </header>
 
   <div class="drop-zone" id="drop-zone" tabindex="0" role="button" aria-label="Drop image or click to browse">
@@ -502,8 +502,6 @@
       </div>
     </div>
   </div>
-
-  <p class="footer">client-side only &nbsp;·&nbsp; no uploads &nbsp;·&nbsp; no server</p>
 </div>
 
 <script>
