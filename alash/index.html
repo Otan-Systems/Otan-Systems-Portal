@@ -10,15 +10,15 @@
 @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@600;700;800&family=Nunito:wght@500;700;800;900&display=swap');
 
 :root{
-  --navy-deep:   #0a0a3f;
-  --navy-mid:    #14149a;
-  --blue-bright: #1e6fee;
-  --blue-sky:    #29a9ff;
-  --violet:      #8a7bea;
-  --ink:         #14143a;
+  --navy-deep:   #000000;
+  --navy-mid:    #000000;
+  --blue-bright: #222222;
+  --blue-sky:    #000000;
+  --violet:      #888888;
+  --ink:         #000000;
   --paper:       #ffffff;
-  --mist:        #f4f6ff;
-  --green:       #7ed957;
+  --mist:        #ffffff;
+  --green:       #000000;
   --radius-pill: 999px;
 }
 
@@ -70,7 +70,7 @@ a{ text-decoration:none; color:inherit; }
 .hero-art{
   flex:0 0 auto; width:220px; height:220px; border-radius:36px;
   border:3px solid var(--blue-sky);
-  background:radial-gradient(circle at 50% 45%, #171753 0%, #050518 75%);
+  background:radial-gradient(circle at 50% 45%, #1c1c1c 0%, #000 75%);
   display:flex; align-items:center; justify-content:center;
   position:relative; overflow:hidden;
 }
@@ -93,7 +93,7 @@ a{ text-decoration:none; color:inherit; }
 }
 .btn:hover{ transform:translateY(-2px); filter:brightness(1.04); }
 .btn-primary{ background:linear-gradient(90deg, var(--navy-mid), var(--blue-bright)); color:#fff; }
-.btn-secondary{ background:#c9c2f5; color:var(--navy-deep); }
+.btn-secondary{ background:#fff; color:#000; border:2px solid #000; }
 
 .divider{ height:6px; background:linear-gradient(90deg, var(--navy-mid), var(--blue-sky)); }
 
@@ -107,7 +107,7 @@ a{ text-decoration:none; color:inherit; }
 }
 .copy-note{ font-size:14px; color:var(--blue-bright); font-weight:700; min-height:20px; }
 
-.form-section{ background:var(--mist); padding:64px 0 80px; }
+.form-section{ background:#fff; padding:64px 0 80px; border-top:2px solid #000; }
 .form-section h2{
   text-align:center; font-size:28px; letter-spacing:.06em; text-transform:uppercase;
   color:var(--navy-mid); margin:0 0 40px;
@@ -126,7 +126,7 @@ input[type=text], input[type=tel], textarea{
   font-family:'Nunito', sans-serif; font-size:16px; color:var(--ink);
   background:#fff; outline:none; transition:box-shadow .15s ease;
 }
-input[type=text]:focus, input[type=tel]:focus, textarea:focus{ box-shadow:0 0 0 4px rgba(30,111,238,.15); }
+input[type=text]:focus, input[type=tel]:focus, textarea:focus{ box-shadow:0 0 0 4px rgba(0,0,0,.15); }
 textarea{ border-radius:26px; min-height:260px; resize:vertical; line-height:1.5; }
 
 .char-count{ text-align:left; font-weight:800; color:var(--navy-mid); font-size:15px; margin-top:8px; }
@@ -154,12 +154,12 @@ textarea{ border-radius:26px; min-height:260px; resize:vertical; line-height:1.5
 }
 
 .submit-row{ display:flex; align-items:center; gap:18px; margin-top:8px; }
-.btn-submit{ background:var(--green); color:#123; padding:16px 40px; font-size:18px; border-radius:14px; }
+.btn-submit{ background:#000; color:#fff; padding:16px 40px; font-size:18px; border-radius:14px; }
 .form-status{ font-weight:800; font-size:15px; }
-.form-status.ok{ color:#1c8a3c; }
-.form-status.err{ color:#c62828; }
+.form-status.ok{ color:#000; }
+.form-status.err{ color:#000; }
 
-footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
+footer{ padding:28px 0; text-align:center; color:#666; font-size:14px; }
 
 @media (max-width: 760px){
   .hero-inner{ flex-direction:column; text-align:center; }
@@ -168,6 +168,40 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
   .topbar-inner{ flex-wrap:wrap; justify-content:center; }
   .brand{ order:-1; width:100%; text-align:center; margin-bottom:8px; }
   .field-row{ flex-direction:column; }
+}
+
+/* ---------- Hover animations ---------- */
+.hero-art{ transition:transform .4s ease, box-shadow .4s ease; }
+.hero-art:hover{ transform:rotate(-4deg) scale(1.05); box-shadow:0 12px 30px rgba(0,0,0,.35); }
+.hero-art svg{ transition:transform .8s ease; }
+.hero-art:hover svg{ transform:rotate(90deg); }
+
+.pill-light{ transition:background .2s ease, color .2s ease, box-shadow .2s ease, transform .15s ease; }
+.pill-light:hover{ background:#000; color:#fff; box-shadow:inset 0 0 0 2px #fff; }
+
+.btn-secondary:hover{ background:#000; color:#fff; }
+.btn-submit:hover{ box-shadow:0 8px 20px rgba(0,0,0,.3); }
+
+.invite-link{ transition:background .2s ease, transform .2s ease; }
+.invite-link:hover{ background:#222; transform:translateX(4px); }
+
+.radio-pill label:hover{ background:#000; color:#fff; }
+
+input:not(:focus):hover, textarea:not(:focus):hover{ box-shadow:0 4px 12px rgba(0,0,0,.12); }
+
+/* ---------- Load + scroll animations ---------- */
+@keyframes fadeUp{
+  from{ opacity:0; transform:translateY(24px); }
+  to{ opacity:1; transform:none; }
+}
+.hero-copy{ animation:fadeUp .8s ease both; }
+
+.reveal{ opacity:0; transform:translateY(28px); transition:opacity .7s ease, transform .7s ease; }
+.reveal.visible{ opacity:1; transform:none; }
+
+@media (prefers-reduced-motion: reduce){
+  .reveal{ opacity:1; transform:none; transition:none; }
+  *{ animation:none !important; }
 }
 </style>
 </head>
@@ -187,8 +221,8 @@ footer{ padding:28px 0; text-align:center; color:#8a8fb5; font-size:14px; }
       <svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
         <defs>
           <radialGradient id="petal" cx="50%" cy="35%" r="75%">
-            <stop offset="0%" stop-color="#c8bdfb"/>
-            <stop offset="100%" stop-color="#6a5bd6"/>
+            <stop offset="0%" stop-color="#ffffff"/>
+            <stop offset="100%" stop-color="#8c8c8c"/>
           </radialGradient>
           <radialGradient id="moon" cx="40%" cy="35%" r="70%">
             <stop offset="0%" stop-color="#f4f4f6"/>
@@ -352,6 +386,23 @@ document.addEventListener('DOMContentLoaded', function () {
       form.reset();
       count.textContent = '0';
     });
+  }
+  // Scroll reveal
+  var items = document.querySelectorAll('.invite-row, .form-section h2, #joinForm > *');
+  items.forEach(function (el) { el.classList.add('reveal'); });
+
+  if ('IntersectionObserver' in window) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (en.isIntersecting) {
+          en.target.classList.add('visible');
+          io.unobserve(en.target);
+        }
+      });
+    }, { threshold: 0.15 });
+    items.forEach(function (el) { io.observe(el); });
+  } else {
+    items.forEach(function (el) { el.classList.add('visible'); });
   }
 });
 </script>
