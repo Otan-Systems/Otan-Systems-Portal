@@ -374,6 +374,57 @@
     color: var(--white);
   }
 
+
+  /* ─── BENCHMARKS ─── */
+  .bench-block {
+    background: var(--black);
+    border-radius: 20px;
+    padding: 36px;
+    margin-top: 40px;
+    display: flex; flex-direction: column; gap: 32px;
+  }
+
+  .bench-head {
+    display: flex; align-items: baseline; justify-content: space-between;
+    gap: 16px; margin-bottom: 12px;
+  }
+
+  .bench-name {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 14px; font-weight: 700;
+    color: var(--white);
+    letter-spacing: 1px;
+    text-transform: uppercase;
+  }
+
+  .bench-score {
+    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
+    font-size: 28px; font-weight: 800;
+    color: var(--white);
+    line-height: 1;
+  }
+
+  .bench-track {
+    border: 1px solid var(--white);
+    border-radius: 100px;
+    height: 10px; overflow: hidden;
+  }
+
+  .bench-fill {
+    height: 100%;
+    background: var(--white);
+    border-radius: 100px;
+    width: 0%;
+    transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
+  }
+
+  .bench-ticks {
+    display: flex; justify-content: space-between;
+    margin-top: 8px;
+    font-size: 11px; color: var(--white);
+    letter-spacing: 1px;
+  }
+
   /* ─── RELEASE ─── */
   .release-section {
     display: flex; align-items: center; justify-content: space-between;
@@ -500,6 +551,7 @@
   <ul class="nav-links">
     <li><a href="#why">Why Azat</a></li>
     <li><a href="#spec">Stack</a></li>
+    <li><a href="#benchmarks">Benchmarks</a></li>
     <li><a href="#release">Release</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
@@ -629,6 +681,53 @@
     </div>
   </div>
 
+</div></div></div>
+
+<!-- BENCHMARKS -->
+<section id="benchmarks">
+  <div class="reveal">
+    <div class="section-label">Benchmarks</div>
+    <h2 class="section-title">Measured<br>results.</h2>
+  </div>
+  <div class="bench-block reveal">
+    <div class="bench-item">
+      <div class="bench-head">
+        <div class="bench-name">SWE-Bench-Verified</div>
+        <div class="bench-score">83.2%</div>
+      </div>
+      <div class="bench-track"><div class="bench-fill" data-value="83.2"></div></div>
+      <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+    </div>
+
+    <div class="bench-item">
+      <div class="bench-head">
+        <div class="bench-name">SWE-Bench-Pro</div>
+        <div class="bench-score">60.7%</div>
+      </div>
+      <div class="bench-track"><div class="bench-fill" data-value="60.7"></div></div>
+      <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+    </div>
+
+    <div class="bench-item">
+      <div class="bench-head">
+        <div class="bench-name">HumanEval</div>
+        <div class="bench-score">97%</div>
+      </div>
+      <div class="bench-track"><div class="bench-fill" data-value="97"></div></div>
+      <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+    </div>
+
+    <div class="bench-item">
+      <div class="bench-head">
+        <div class="bench-name">SimpleQA-Verified</div>
+        <div class="bench-score">78.9%</div>
+      </div>
+      <div class="bench-track"><div class="bench-fill" data-value="78.9"></div></div>
+      <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
+    </div>
+  </div>
+</section>
+
 <!-- RELEASE -->
 <section id="release">
   <div class="section-label reveal">Release Date:</div>
@@ -711,6 +810,19 @@
     });
   }, { threshold: 0.3 });
   ctxObs.observe(document.getElementById('ctxBar'));
+
+  // Benchmark bars animation
+  const benchObs = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.querySelectorAll('.bench-fill').forEach((b, i) => {
+          setTimeout(() => { b.style.width = b.dataset.value + '%'; }, 300 + i * 150);
+        });
+        benchObs.unobserve(e.target);
+      }
+    });
+  }, { threshold: 0.3 });
+  benchObs.observe(document.querySelector('.bench-block'));
 
 </script>
 
