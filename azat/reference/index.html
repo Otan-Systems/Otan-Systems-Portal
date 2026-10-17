@@ -553,7 +553,7 @@
     </p>
     <div class="hero-meta">
       <div class="meta-pill"><strong>Published:</strong> 20 May 2026</div>
-      <div class="meta-pill"><strong>Updated:</strong> 20 May 2026</div>
+      <div class="meta-pill"><strong>Updated:</strong> 17 October 2026</div>
       <div class="meta-pill"><strong>HQ:</strong> Astana, Kazakhstan</div>
       <div class="meta-pill"><strong>Scope:</strong> Global · GDPR · CCPA/CPRA</div>
     </div>
@@ -571,7 +571,7 @@
       <a class="toc-link" href="#s2"><span class="toc-num">2</span> Data Not Collected</a>
       <a class="toc-link" href="#s3"><span class="toc-num">3</span> Processing &amp; Auth</a>
       <a class="toc-link" href="#s4"><span class="toc-num">4</span> AI Inference Pipeline</a>
-      <a class="toc-link" href="#s5"><span class="toc-num">5</span> Web3 &amp; Payments</a>
+      <a class="toc-link" href="#s5"><span class="toc-num">5</span> API Key &amp; Billing</a>
       <a class="toc-link" href="#s6"><span class="toc-num">6</span> Global Rights</a>
       <a class="toc-link" href="#s7"><span class="toc-num">7</span> Technical Security</a>
       <a class="toc-link" href="#s8"><span class="toc-num">8</span> Contact</a>
@@ -587,12 +587,12 @@
         <div class="section-title">Core Philosophy &amp; Architecture</div>
       </div>
     </div>
-    <p>This Privacy Policy governs the processing of data within <strong>Azat AI</strong>, a specialised artificial intelligence language model application operated by <strong>Otan Systems</strong>.</p>
+    <p>This Privacy Policy governs the processing of data within <strong>Azat AI</strong>, a specialised artificial intelligence language model application operated by <strong>Otan Systems</strong>. Azat AI acts as a gateway: it relays your prompts to third-party AI infrastructure using an API key that you provide.</p>
     <div class="card-grid">
       <div class="card">
         <div class="card-label">Architecture</div>
-        <div class="card-value">Local-First</div>
-        <div class="card-desc">Minimises data collection and maximises user control at every layer.</div>
+        <div class="card-value">Pass-Through Gateway</div>
+        <div class="card-desc">Your prompts are relayed to the AI provider; conversation content is not stored on our servers.</div>
       </div>
       <div class="card">
         <div class="card-label">Data Sales</div>
@@ -619,10 +619,11 @@
         <div class="section-title">Data We Do Not Collect</div>
       </div>
     </div>
-    <p>Azat AI does not maintain traditional cloud-based user databases. The following data is <strong>never collected or stored</strong>:</p>
+    <p>Azat AI keeps only a minimal account record (described in Section 3). The following data is <strong>never collected or stored</strong>:</p>
     <ul class="no-list">
-      <li>Names, email addresses, or phone numbers</li>
+      <li>Names, email addresses, or phone numbers (we store only Google's account identifier)</li>
       <li>User passwords of any kind</li>
+      <li>Payment card, bank, or crypto wallet data (Azat AI does not process payments)</li>
       <li>Identity documents or biometric data</li>
       <li>Passports or driver's licences (Zero KYC)</li>
       <li>Web analytics or behavioural tracking</li>
@@ -645,28 +646,32 @@
 
     <div class="subsection">
       <div class="subsection-title">3.1 Authentication Layer</div>
-      <p>Access is managed via trusted third-party OAuth 2.0 providers. Supported methods:</p>
+      <p>Access is managed via a trusted third-party OAuth 2.0 provider. Supported method:</p>
       <div class="card-grid">
         <div class="card">
           <div class="card-label">Provider</div>
           <div class="card-value">Continue with Google</div>
         </div>
-        <div class="card">
-          <div class="card-label">Provider</div>
-          <div class="card-value">Continue with Microsoft</div>
-        </div>
       </div>
       <div class="highlight soft">
-        <strong>How it works:</strong> During login, authentication occurs on the provider's secure infrastructure. Otan Systems receives only a <strong>transient cryptographic session token</strong> to authorise your current session. This token is discarded at the end of your session and is never linked to any persistent identifier held by us.
+        <strong>How it works:</strong> During login, authentication occurs on Google's secure infrastructure. Otan Systems verifies the token Google issues and stores only Google's unique <strong>account identifier</strong>, which serves as your user ID, together with your session status and expiry. We do not store your name, email address, or password. Sessions expire after 30 days.
       </div>
       <div class="highlight">
-        <strong>GDPR Note:</strong> Even a transient session token may constitute personal data under the GDPR. Otan Systems processes this token solely on the legal basis of <strong>performance of contract</strong> (Article 6(1)(b) GDPR).
+        <strong>GDPR Note:</strong> The account identifier is personal data under the GDPR. Otan Systems processes it solely on the legal basis of <strong>performance of contract</strong> (Article 6(1)(b) GDPR).
       </div>
     </div>
 
     <div class="subsection">
-      <div class="subsection-title">3.2 Local-First Storage</div>
-      <p>All conversation histories, system prompts, configuration contexts, notes, and active project data are stored <strong>strictly on your local device</strong>. Otan Systems operates no server-side databases that log, sync, or retain your conversation data.</p>
+      <div class="subsection-title">3.2 Server-Side Account Record</div>
+      <p>Otan Systems keeps one minimal record per account in a managed cloud database. It contains: your user ID, your Azat API key, your <strong>OpenRouter API key</strong> (stored encrypted, see Section 5), and your session status and expiry time.</p>
+      <div class="highlight soft">
+        <strong>Important:</strong> This record contains no conversation content. It is kept until you delete your keys or ask us to delete your account.
+      </div>
+    </div>
+
+    <div class="subsection">
+      <div class="subsection-title">3.3 Local-First Conversation Storage</div>
+      <p>All conversation histories, system prompts, configuration contexts, notes, and active project data are stored <strong>strictly on your local device</strong>. Apart from the account record above, Otan Systems operates no server-side databases that log, sync, or retain your conversation data.</p>
       <div class="highlight soft">
         <strong>Important:</strong> Because your data resides entirely on your device, we are unable to recover, restore, or export it if you clear your browser storage or lose your device. To ensure complete erasure, clear your browser's site data for the Azat AI domain — clearing the cache alone may not be sufficient.
       </div>
@@ -681,10 +686,10 @@
       <div class="section-icon">⚙️</div>
       <div class="section-title-group">
         <div class="section-num">Section 4</div>
-        <div class="section-title">AI Inference Pipeline (Sub-Processors)</div>
+        <div class="section-title">AI Inference Pipeline (Third-Party Services)</div>
       </div>
     </div>
-    <p>To generate responses, your live prompts must be transmitted to the external infrastructure. This is necessary for the service to function. </p>
+    <p>To generate responses, your live prompts must be transmitted to external infrastructure. This is necessary for the service to function.</p>
 
     <div class="pipeline">
       <div class="pipeline-step">
@@ -704,9 +709,9 @@
           <div class="pipeline-line"></div>
         </div>
         <div class="pipeline-body">
-          <div class="pipeline-tag">Step 2 · Gateway</div>
-          <h4>OpenRouter (Sub-Processor)</h4>
-          <p>Your prompt is routed via a secure internal proxy to OpenRouter, bound by a Data Processing Agreement. It may not retain or train on your data. DeepSeek V4 Pro is used for drafting and planning, while Azat is an executing side.</p>
+          <div class="pipeline-tag">Step 2 · Azat Gateway</div>
+          <h4>Azat Backend (Otan Systems)</h4>
+          <p>Your prompt is sent over an encrypted connection to the Azat backend. A search over our knowledge base adds relevant reference material, and Azat's system instructions are attached. Your Azat key is then exchanged for your own stored OpenRouter key. Otan Systems does not store the content of your prompt.</p>
         </div>
       </div>
       <div class="pipeline-step">
@@ -715,9 +720,20 @@
           <div class="pipeline-line"></div>
         </div>
         <div class="pipeline-body">
-          <div class="pipeline-tag">Step 3 · Inference</div>
-          <h4>Novita AI</h4>
-          <p>OpenRouter routes to Novita AI enterprise infrastructure for model inference. Data transfers from the EEA are covered by Standard Contractual Clauses (SCCs).</p>
+          <div class="pipeline-tag">Step 3 · Third-Party Gateway</div>
+          <h4>OpenRouter (Third-Party Service)</h4>
+          <p>The enriched prompt is forwarded to OpenRouter using your own API key, under your own OpenRouter account. OpenRouter's terms, its privacy policy, and your account's data-handling settings govern what it retains. Responses are generated by the DeepSeek V4.1 Flash model.</p>
+        </div>
+      </div>
+      <div class="pipeline-step">
+        <div class="pipeline-left">
+          <div class="pipeline-dot"></div>
+          <div class="pipeline-line"></div>
+        </div>
+        <div class="pipeline-body">
+          <div class="pipeline-tag">Step 4 · Inference</div>
+          <h4>Inference Provider (e.g. Novita AI)</h4>
+          <p>OpenRouter routes your request to a model host such as Novita AI. Each provider handles data under its own terms. You can review and restrict provider routing in your OpenRouter account settings.</p>
         </div>
       </div>
       <div class="pipeline-step">
@@ -725,9 +741,9 @@
           <div class="pipeline-dot"></div>
         </div>
         <div class="pipeline-body">
-          <div class="pipeline-tag">Step 4 · Response</div>
-          <h4>Response Returned &amp; Discarded</h4>
-          <p>Your prompt exists in processing memory only for the duration of the active inference window. It is not persistently stored by Otan Systems.</p>
+          <div class="pipeline-tag">Step 5 · Response</div>
+          <h4>Response Filtered, Returned &amp; Discarded</h4>
+          <p>The response passes through a content filter that masks profane words and is then returned to you. It exists in our processing memory only for the duration of the active request and is not persistently stored by Otan Systems.</p>
         </div>
       </div>
     </div>
@@ -742,36 +758,34 @@
   <!-- SECTION 5 -->
   <section class="section" id="s5">
     <div class="section-header">
-      <div class="section-icon">⛓️</div>
+      <div class="section-icon">🔐</div>
       <div class="section-title-group">
         <div class="section-num">Section 5</div>
-        <div class="section-title">Web3 Financial Privacy &amp; Monetisation</div>
+        <div class="section-title">Your OpenRouter API Key &amp; Billing</div>
       </div>
     </div>
-    <p>Azat AI uses decentralised digital assets for premium features, avoiding the collection of traditional banking or payment card data entirely.</p>
+    <p>Azat AI does not sell AI usage. You connect your own OpenRouter account by saving your OpenRouter API key once in the dashboard, and Azat AI issues you its own Azat key in return.</p>
 
     <div class="card-grid">
       <div class="card">
-        <div class="card-label">Supported Currency</div>
-        <div class="card-value">USD Coin (USDC)</div>
-        <div class="card-desc">Stablecoin payments — no card details ever required.</div>
+        <div class="card-label">Billing</div>
+        <div class="card-value">Directly with OpenRouter</div>
+        <div class="card-desc">Usage is charged to your OpenRouter account. Otan Systems never receives payment from you for AI usage.</div>
       </div>
       <div class="card">
-        <div class="card-label">Payment Interface</div>
-        <div class="card-value">Jumper Widget (LI.FI)</div>
-        <div class="card-desc">Integrated non-custodial widget. Otan Systems never sees your keys.</div>
+        <div class="card-label">Key Handling</div>
+        <div class="card-value">Encrypted at Rest</div>
+        <div class="card-desc">Your OpenRouter key is used only to forward your own requests to OpenRouter.</div>
       </div>
     </div>
 
-    <div style="margin-bottom:12px;">
-      <div class="subsection-title">Supported Networks</div>
-      <div class="token-row">
-        <span class="token-chip">Base</span>
-      </div>
+    <div class="subsection">
+      <div class="subsection-title">5.1 Your Control</div>
+      <p>You can delete your stored keys at any time from the dashboard, or by writing to otan-systems@proton.me. To stop all use of your OpenRouter key immediately, you can also revoke it in your OpenRouter account.</p>
     </div>
 
     <div class="highlight">
-      <strong>Public Ledger Notice:</strong> Blockchain transactions are public and permanent by design. Otan Systems does not cross-reference or correlate your public wallet address with any personal identity information held by us. Jumper Exchange (LI.FI) is responsible for refunds due to technical malfunctions. All transactions are final. No refunds or reversals will be issued if you change your mind, make a mistake, or for any other personal reasons.
+      <strong>Responsibility Notice:</strong> You are solely responsible for the costs, rate limits, and security of your OpenRouter account. If you suspect your key has been exposed, revoke it at OpenRouter immediately and delete it from Azat AI. Otan Systems does not process payments, hold funds, or issue refunds. Billing questions and disputes must be directed to OpenRouter.
     </div>
   </section>
 
@@ -789,7 +803,7 @@
 
     <div class="subsection">
       <div class="subsection-title">6.1 EEA Residents — GDPR</div>
-      <p>Otan Systems acts as the <strong>Data Controller</strong> for personal data we process: (a) the transient session token via OAuth, and (b) prompt content transmitted during an active session. Legal basis: <strong>Performance of Contract</strong> (Art. 6(1)(b) GDPR).</p>
+      <p>Otan Systems acts as the <strong>Data Controller</strong> for personal data we process: (a) your account record (Google account identifier, session status, and your stored API key), and (b) prompt content transmitted during an active session. Legal basis: <strong>Performance of Contract</strong> (Art. 6(1)(b) GDPR).</p>
       <p>Your rights under GDPR:</p>
       <div class="rights-grid">
         <div class="right-card">
@@ -805,7 +819,7 @@
         <div class="right-card">
           <div class="right-icon">🗑️</div>
           <div class="right-name">Erasure</div>
-          <div class="right-desc">Delete locally stored data via browser site-data settings</div>
+          <div class="right-desc">Delete local data via browser settings; request deletion of your account record by email</div>
         </div>
         <div class="right-card">
           <div class="right-icon">⏸️</div>
@@ -868,6 +882,13 @@
           <p>Active sessions are validated using tamper-proof PASETO tokens to prevent client-side manipulation.</p>
         </div>
       </div>
+      <div class="sec-item">
+        <div class="sec-icon">🔐</div>
+        <div class="sec-text">
+          <h4>Encrypted Key Storage</h4>
+          <p>Your OpenRouter API key is encrypted at rest and is not shown again after you save it.</p>
+        </div>
+      </div>
     </div>
   </section>
 
@@ -902,7 +923,7 @@
 <!-- FOOTER -->
 <footer>
   <strong>Azat AI</strong> · Otan Systems · Astana, Republic of Kazakhstan
-  Originally published 20 May 2026 · Designed to comply with GDPR, CCPA/CPRA. 
+  Originally published 20 May 2026 · Last updated 17 October 2026 · Designed to comply with GDPR, CCPA/CPRA. 
 </footer>
 
 </body>
