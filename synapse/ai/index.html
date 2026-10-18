@@ -258,16 +258,59 @@
   .topbar .lang-switch .sep { color: var(--black); }
 
   #screen-main { padding: 16px; gap: 12px; border: 2px solid var(--black); }
+  .video-stage {
+    flex: 1; min-height: 0; width: 100%;
+    display: flex; align-items: center; justify-content: center;
+    container-type: size;
+  }
   .video-frame {
-    flex: 1; min-height: 0; background: var(--black);
+    --vr: 1.7778;
+    flex: none;
+    aspect-ratio: var(--vr);
+    width: min(100cqw, calc(100cqh * var(--vr)));
+    background: var(--black);
     border: 1px solid var(--black); border-radius: 14px;
     display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden; width: 100%;
+    position: relative; overflow: hidden;
   }
-  .video-frame video { width: 100%; height: 100%; object-fit: contain; display: none; }
+  .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; background: var(--black); }
   .video-frame .placeholder { color: var(--white); font-size: 13px; }
-  .video-frame .status { color: var(--white); font-size: 13px; display: none; }
-  .video-frame .status.show { display: block; }
+
+  /* generation status: bold, animated, prominent */
+  .video-frame .status {
+    display: none; flex-direction: column; align-items: center; gap: 14px;
+    color: var(--white); text-align: center; padding: 0 20px;
+  }
+  .video-frame .status.show { display: flex; }
+  .status .st-text {
+    font-size: clamp(22px, 4.2cqw, 40px); font-weight: 900; letter-spacing: 1.5px;
+    text-transform: uppercase;
+    animation: stPulse 1.6s ease-in-out infinite;
+  }
+  .status.static .st-text { animation: none; }
+  .status .st-dots { display: inline-block; width: 1.3em; text-align: left; }
+  .status .st-dots::after { content: ""; animation: stDots 1.4s steps(1, end) infinite; }
+  .status.static .st-dots { display: none; }
+  .status .st-count {
+    font-size: clamp(16px, 2.4cqw, 24px); font-weight: 800; letter-spacing: 3px;
+    font-family: 'Courier New', monospace; opacity: 0.95;
+  }
+  .status .st-bar {
+    width: min(320px, 70%); height: 6px; border-radius: 6px;
+    background: rgba(255,255,255,0.22); overflow: hidden;
+  }
+  .status .st-bar i { display: block; height: 100%; width: 0; background: var(--white); border-radius: 6px; }
+  .status.static .st-count, .status.static .st-bar { display: none; }
+  @keyframes stPulse {
+    0%, 100% { opacity: 0.55; text-shadow: 0 0 0 rgba(255,255,255,0); transform: scale(0.98); }
+    50%      { opacity: 1;    text-shadow: 0 0 18px rgba(255,255,255,0.85); transform: scale(1.03); }
+  }
+  @keyframes stDots {
+    0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .status .st-text, .status .st-dots::after { animation: none; }
+  }
 
   .toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .toolbar-left { min-width: 0; display: flex; gap: 10px; }
@@ -453,10 +496,16 @@
       </div>
     </div>
 
-    <div class="video-frame" id="videoFrame" style="aspect-ratio: 16/9;">
-      <div class="placeholder" id="videoPlaceholder" data-i18n="video_placeholder">Your generated video will appear here</div>
-      <div class="status" id="videoStatus" data-i18n="video_generating">Generating…</div>
-      <video id="videoPlayer" controls playsinline></video>
+    <div class="video-stage" id="videoStage">
+      <div class="video-frame" id="videoFrame">
+        <div class="placeholder" id="videoPlaceholder" data-i18n="video_placeholder">Your generated video will appear here</div>
+        <div class="status" id="videoStatus">
+          <div class="st-text"><span id="videoStatusText" data-i18n="video_generating">Generating</span><span class="st-dots"></span></div>
+          <div class="st-count" id="videoCount"></div>
+          <div class="st-bar"><i id="videoBar"></i></div>
+        </div>
+        <video id="videoPlayer" controls playsinline></video>
+      </div>
     </div>
 
       <div class="toolbar-row">
@@ -568,7 +617,7 @@
       btn_addfiles: "Add files", btn_mode: "Mode", btn_send: "Send", btn_confirm: "Confirm",
       type_here: "Type here...",
       video_placeholder: "Your generated video will appear here",
-      video_generating: "Generating…",
+      video_generating: "Generating", video_error: "Couldn't load this video", video_nosample: "Real generation is not connected yet",
       mode_text: "Text → Video", mode_text_desc: "5000 symbols max. No additional files supported.",
       mode_ti: "Text & Image → Video", mode_ti_desc: "5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), <20MB each.",
       mode_fs: "Full-Stack → Video", mode_fs_desc: "5000 symbols max. Up to 5 elements: images or video (<10s, <100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.",
@@ -585,7 +634,7 @@
       btn_addfiles: "Файлы", btn_mode: "Режим", btn_send: "Отправить", btn_confirm: "Подтвердить",
       type_here: "Введите текст...",
       video_placeholder: "Здесь появится сгенерированное видео",
-      video_generating: "Генерация…",
+      video_generating: "Генерация", video_error: "Не удалось загрузить видео", video_nosample: "Реальная генерация ещё не подключена",
       mode_text: "Текст → Видео", mode_text_desc: "До 5000 символов. Дополнительные файлы не поддерживаются.",
       mode_ti: "Текст и изображение → Видео", mode_ti_desc: "До 5000 символов. До 2 изображений (PNG, JPG, JPEG, WEBP), <20MB каждое.",
       mode_fs: "Full-Stack → Видео", mode_fs_desc: "До 5000 символов. До 5 элементов: изображения или видео (<10с, <100MB). Форматы: PNG, JPG, JPEG, WEBP, MP4, MOV.",
@@ -866,12 +915,11 @@
   wireArmable(document.getElementById("confirm-mode"), function () {
     if (!state.mode) return;
     modeOverlay.classList.remove("show");
-    document.getElementById("videoFrame").style.aspectRatio = state.ratio.replace("/", " / ");
+    setFrameRatio(state.ratio);
     updateSendState();
     saveState();
   });
 
-  /* ───────── send / prompt ───────── */
   var promptInput = document.getElementById("prompt-input");
   promptInput.addEventListener("input", function () {
     document.getElementById("char-count").textContent = promptInput.value.length + " / 5000";
@@ -893,14 +941,14 @@
     document.getElementById("fileInput").click();
   });
 
-    var ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"]; // .jpg и .jpeg — оба image/jpeg
+    var ALLOWED_TYPES = ["image/png", "image/jpeg", "image/webp"]; 
   var MAX_FILE_BYTES = 20 * 1024 * 1024;
   var fileInput = document.getElementById("fileInput");
   fileInput.setAttribute("accept", ".png,.jpg,.jpeg,.webp");
 
   fileInput.addEventListener("change", function (e) {
     var picked = Array.from(e.target.files);
-    e.target.value = ""; // чтобы тот же файл можно было выбрать повторно
+    e.target.value = ""; 
 
     var ok = picked.filter(function (f) {
       return ALLOWED_TYPES.indexOf(f.type) !== -1 && f.size < MAX_FILE_BYTES;
@@ -912,52 +960,98 @@
     }
 
     var room = 2 - state.files.length;
-    state.files = state.files.concat(ok.slice(0, room)); // 1-й файл = first frame, 2-й = last frame
+    state.files = state.files.concat(ok.slice(0, room)); 
     updateModeFieldLocks();
   });
 
-  function runGeneration() {
-    var frame = document.getElementById("videoFrame");
-    var placeholder = document.getElementById("videoPlaceholder");
-    var status = document.getElementById("videoStatus");
-    var player = document.getElementById("videoPlayer");
 
-    placeholder.style.display = "none";
-    player.style.display = "none";
-    status.classList.add("show");
-    status.textContent = t("video_generating");
-
-    // Placeholder timing only — replace with the real OpenRouter response.
-    setTimeout(function () {
-      status.classList.remove("show");
-      placeholder.style.display = "block";
-    }, 1500);
+  function setFrameRatio(r) {                       // r: "16/9" or number
+    var v = typeof r === "number" ? r : (function () { var p = String(r).split("/"); return p[0] / p[1]; })();
+    document.getElementById("videoFrame").style.setProperty("--vr", v);
   }
 
-  async function showGeneratedVideo(url) {
-    var player = document.getElementById("videoPlayer");
+  var statusTimer = null;
+  function setStatus(key, mode) {                   
     var status = document.getElementById("videoStatus");
-    status.classList.add("show");
-    status.textContent = t("video_generating");
-    player.style.display = "none";
+    var txt = document.getElementById("videoStatusText");
+    txt.setAttribute("data-i18n", key);
+    txt.textContent = t(key);
+    status.classList.toggle("show", mode !== "hide");
+    status.classList.toggle("static", mode === "static");
+  }
+  function stopCountdown() { if (statusTimer) { clearInterval(statusTimer); statusTimer = null; } }
 
-    try {
-      var res = await fetch(url);
-      if (!res.ok) throw new Error("bad response");
-      var blob = await res.blob();
-      var objectUrl = URL.createObjectURL(blob);
-      player.src = objectUrl;
-      player.load();
-      player.onloadedmetadata = function () {
-        status.classList.remove("show");
-        player.style.display = "block";
-      };
-      player.onerror = function () {
-        status.textContent = "Couldn't load this video";
-      };
-    } catch (e) {
-      status.textContent = "Couldn't load this video";
+  var SAMPLE_DELAY_SEC = 30;
+  var SAMPLES = [
+    { prompt: "a cozy rainforest cafe",                            file: "202004-916894674_medium.mov" },
+    { prompt: "a mysterious gradient mushroom in a forest",        file: "218309_medium.mov" },
+    { prompt: "arabic desert stunt: bmw flies above sitting man",  file: "IMG-3693.mov" }
+  ];
+  function normPrompt(x) {
+    return x.toLowerCase().replace(/\s+/g, " ").trim().replace(/[.!,;\s]+$/, "");
+  }
+  function findSample(text) {
+    var m = /^\/sample\s+([\s\S]+)$/i.exec(text.trim());
+    if (!m) return null;
+    var q = normPrompt(m[1]);
+    for (var i = 0; i < SAMPLES.length; i++) if (SAMPLES[i].prompt === q) return SAMPLES[i];
+    return null;
+  }
+
+  var generating = false;
+  function runGeneration() {
+    if (generating) return;
+    var placeholder = document.getElementById("videoPlaceholder");
+    var player = document.getElementById("videoPlayer");
+    var count = document.getElementById("videoCount");
+    var bar = document.getElementById("videoBar");
+    var sample = findSample(document.getElementById("prompt-input").value);
+
+    generating = true;
+    stopCountdown();
+    player.pause(); player.removeAttribute("src"); player.load();
+    player.style.display = "none";
+    placeholder.style.display = "none";
+    setFrameRatio(state.ratio);
+
+    if (!sample) {                                  
+      setStatus("video_nosample", "static");
+      setTimeout(function () {
+        setStatus("video_nosample", "hide");
+        placeholder.style.display = "block";
+        generating = false;
+      }, 1800);
+      return;
     }
+
+    var left = SAMPLE_DELAY_SEC, started = Date.now();
+    function tick() {
+      var elapsed = (Date.now() - started) / 1000;
+      left = Math.max(0, Math.ceil(SAMPLE_DELAY_SEC - elapsed));
+      count.textContent = "00:" + (left < 10 ? "0" : "") + left;
+      bar.style.width = Math.min(100, elapsed / SAMPLE_DELAY_SEC * 100) + "%";
+      if (elapsed >= SAMPLE_DELAY_SEC) { stopCountdown(); showGeneratedVideo(sample.file); }
+    }
+    setStatus("video_generating", "run");
+    tick();
+    statusTimer = setInterval(tick, 250);
+  }
+
+  function showGeneratedVideo(url) {               
+    var player = document.getElementById("videoPlayer");
+    player.onloadedmetadata = function () {
+      setFrameRatio(player.videoWidth / player.videoHeight);   l
+      setStatus("video_generating", "hide");
+      player.style.display = "block";
+      generating = false;
+      var pr = player.play(); if (pr && pr.catch) pr.catch(function () {});
+    };
+    player.onerror = function () {
+      setStatus("video_error", "static");
+      generating = false;
+    };
+    player.src = url;
+    player.load();
   }
 
   /* ───────── settings: balance / top-up ───────── */
@@ -1010,7 +1104,7 @@
       durVal.textContent = state.duration + " sec";
       var ratioBtn = document.querySelector('.ratio-opt[data-ratio="' + state.ratio + '"]');
       if (ratioBtn) ratioBtn.classList.add("selected");
-      document.getElementById("videoFrame").style.aspectRatio = state.ratio.replace("/", " / ");
+      setFrameRatio(state.ratio);
 
       if (saved.screen) showScreen(saved.screen);
     }
