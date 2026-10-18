@@ -1040,30 +1040,35 @@
     statusTimer = setInterval(tick, 250);
   }
 
-  function showGeneratedVideo(urls) {               
+    function showGeneratedVideo(urls) {
     var player = document.getElementById("videoPlayer");
     var list = urls.filter(Boolean), idx = 0;
+    function fail() {
+      if (idx + 1 < list.length) { idx++; load(); return; }
+      setStatus("video_error", "static");
+      document.getElementById("videoStatus").classList.add("err");
+      document.getElementById("videoCount").textContent = list.join(" / ");
+      generating = false;
+    }
     function load() {
-      player.src = list[idx];
+      while (player.firstChild) player.removeChild(player.firstChild);
+      player.removeAttribute("src");
+      var src = document.createElement("source");
+      src.src = list[idx];
+      src.type = "video/mp4";
+      src.addEventListener("error", fail);   // ошибки <source> приходят на него, а не на <video>
+      player.appendChild(src);
       player.load();
     }
     player.onloadedmetadata = function () {
-      setFrameRatio(player.videoWidth / player.videoHeight);   
+      setFrameRatio(player.videoWidth / player.videoHeight);
       setStatus("video_generating", "hide");
       document.getElementById("videoStatus").classList.remove("err");
       player.style.display = "block";
       generating = false;
       var pr = player.play(); if (pr && pr.catch) pr.catch(function () {});
     };
-    player.onerror = function () {
-      var code = player.error ? player.error.code : "?";
-      if (idx + 1 < list.length) { idx++; load(); return; }      
-      setStatus("video_error", "static");
-      var st = document.getElementById("videoStatus");
-      st.classList.add("err");
-      document.getElementById("videoCount").textContent = list.join(" / ") + " · code " + code;
-      generating = false;
-    };
+    player.onerror = fail;
     load();
   }
 
