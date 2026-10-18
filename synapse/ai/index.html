@@ -1059,9 +1059,9 @@
       while (player.firstChild) player.removeChild(player.firstChild);
       player.removeAttribute("src");
       var src = document.createElement("source");
-      src.src = list[idx];
+      src.src = new URL(list[idx], location.origin + "/synapse/ai/").href;
       src.type = "video/mp4";
-      src.addEventListener("error", fail);   // ошибки <source> приходят на него, а не на <video>
+      src.addEventListener("error", fail);   
       player.appendChild(src);
       player.load();
     }
