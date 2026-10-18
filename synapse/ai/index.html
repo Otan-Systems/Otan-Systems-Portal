@@ -301,6 +301,7 @@
   }
   .status .st-bar i { display: block; height: 100%; width: 0; background: var(--white); border-radius: 6px; }
   .status.static .st-count, .status.static .st-bar { display: none; }
+  .status.static.err .st-count { display: block; font-size: 13px; letter-spacing: 1px; word-break: break-all; }
   @keyframes stPulse {
     0%, 100% { opacity: 0.55; text-shadow: 0 0 0 rgba(255,255,255,0); transform: scale(0.98); }
     50%      { opacity: 1;    text-shadow: 0 0 18px rgba(255,255,255,0.85); transform: scale(1.03); }
@@ -920,6 +921,7 @@
     saveState();
   });
 
+  /* ───────── send / prompt ───────── */
   var promptInput = document.getElementById("prompt-input");
   promptInput.addEventListener("input", function () {
     document.getElementById("char-count").textContent = promptInput.value.length + " / 5000";
@@ -964,14 +966,14 @@
     updateModeFieldLocks();
   });
 
-
+  /* ───────── video frame + status helpers ───────── */
   function setFrameRatio(r) {                       // r: "16/9" or number
     var v = typeof r === "number" ? r : (function () { var p = String(r).split("/"); return p[0] / p[1]; })();
     document.getElementById("videoFrame").style.setProperty("--vr", v);
   }
 
   var statusTimer = null;
-  function setStatus(key, mode) {                   
+  function setStatus(key, mode) {                   // mode: "run" (animated + countdown) | "static" | "hide"
     var status = document.getElementById("videoStatus");
     var txt = document.getElementById("videoStatusText");
     txt.setAttribute("data-i18n", key);
@@ -981,11 +983,12 @@
   }
   function stopCountdown() { if (statusTimer) { clearInterval(statusTimer); statusTimer = null; } }
 
+  /* ───────── demo samples: /sample <prompt> → local file after 30 s ───────── */
   var SAMPLE_DELAY_SEC = 30;
   var SAMPLES = [
     { prompt: "a cozy rainforest cafe",                            file: "202004-916894674_medium.mov" },
     { prompt: "a mysterious gradient mushroom in a forest",        file: "218309_medium.mov" },
-    { prompt: "arabic desert stunt: bmw flies above sitting man",  file: "IMG-3693.mov" }
+    { prompt: "arabic desert stunt: bmw flies above sitting man",  file: "IMG-3693.mov", alt: "IMG-3692.mov" }
   ];
   function normPrompt(x) {
     return x.toLowerCase().replace(/\s+/g, " ").trim().replace(/[.!,;\s]+$/, "");
@@ -1030,28 +1033,38 @@
       left = Math.max(0, Math.ceil(SAMPLE_DELAY_SEC - elapsed));
       count.textContent = "00:" + (left < 10 ? "0" : "") + left;
       bar.style.width = Math.min(100, elapsed / SAMPLE_DELAY_SEC * 100) + "%";
-      if (elapsed >= SAMPLE_DELAY_SEC) { stopCountdown(); showGeneratedVideo(sample.file); }
+      if (elapsed >= SAMPLE_DELAY_SEC) { stopCountdown(); showGeneratedVideo([sample.file, sample.alt]); }
     }
     setStatus("video_generating", "run");
     tick();
     statusTimer = setInterval(tick, 250);
   }
 
-  function showGeneratedVideo(url) {               
+  function showGeneratedVideo(urls) {               
     var player = document.getElementById("videoPlayer");
+    var list = urls.filter(Boolean), idx = 0;
+    function load() {
+      player.src = list[idx];
+      player.load();
+    }
     player.onloadedmetadata = function () {
-      setFrameRatio(player.videoWidth / player.videoHeight);   l
+      setFrameRatio(player.videoWidth / player.videoHeight);   
       setStatus("video_generating", "hide");
+      document.getElementById("videoStatus").classList.remove("err");
       player.style.display = "block";
       generating = false;
       var pr = player.play(); if (pr && pr.catch) pr.catch(function () {});
     };
     player.onerror = function () {
+      var code = player.error ? player.error.code : "?";
+      if (idx + 1 < list.length) { idx++; load(); return; }      
       setStatus("video_error", "static");
+      var st = document.getElementById("videoStatus");
+      st.classList.add("err");
+      document.getElementById("videoCount").textContent = list.join(" / ") + " · code " + code;
       generating = false;
     };
-    player.src = url;
-    player.load();
+    load();
   }
 
   /* ───────── settings: balance / top-up ───────── */
