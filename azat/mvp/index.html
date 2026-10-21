@@ -1,0 +1,478 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Azat AI MVP</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #ffffff;
+    --text: #1b4dd8;
+    --text-light: #5b7ce8;
+    --border: #cfd9f7;
+    --border-strong: #1b4dd8;
+    --bubble-user: #1b4dd8;
+    --bubble-user-text: #ffffff;
+    --bubble-ai: #eef2ff;
+    --bubble-ai-text: #1b4dd8;
+    --danger: #d83a3a;
+  }
+
+  * { box-sizing: border-box; }
+
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'Montserrat', Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+  }
+
+  header {
+    padding: 10px 20px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+  }
+
+  .brand { display: flex; align-items: center; gap: 10px; margin-right: auto; }
+  .brand img { width: 32px; height: 32px; }
+  header h1 { margin: 0; font-size: 18px; font-weight: 700; color: var(--text); }
+
+  nav { display: flex; align-items: center; gap: 4px; flex-wrap: wrap; }
+  nav a {
+    color: var(--text);
+    text-decoration: none;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 8px 12px;
+    border-radius: 10px;
+  }
+  nav a:hover { background: var(--bubble-ai); }
+
+  .lang {
+    display: flex;
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-left: 6px;
+  }
+  .lang button {
+    border: 0;
+    background: none;
+    color: var(--text);
+    font: 600 12px 'Montserrat', Arial, sans-serif;
+    padding: 7px 10px;
+    cursor: pointer;
+  }
+  .lang button.active { background: var(--bubble-user); color: #fff; }
+
+  #chat {
+    flex: 1;
+    overflow-y: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .msg {
+    max-width: 78%;
+    padding: 10px 14px;
+    border-radius: 14px;
+    font-size: 14px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+    min-width: 0;
+  }
+
+  .msg.user {
+    align-self: flex-end;
+    background: var(--bubble-user);
+    color: var(--bubble-user-text);
+    border-bottom-right-radius: 4px;
+  }
+
+  .msg.ai {
+    align-self: flex-start;
+    background: var(--bubble-ai);
+    color: var(--bubble-ai-text);
+    border-bottom-left-radius: 4px;
+    white-space: normal;
+  }
+
+  .msg.ai > :first-child { margin-top: 0; }
+  .msg.ai > :last-child { margin-bottom: 0; }
+  .msg.ai p { margin: 0 0 8px; }
+  .msg.ai h4 { margin: 10px 0 6px; font-size: 14px; font-weight: 700; }
+  .msg.ai ul, .msg.ai ol { margin: 0 0 8px; padding-left: 20px; }
+  .msg.ai li { margin: 2px 0; }
+  .msg.ai code { background: #dfe6fb; padding: 1px 5px; border-radius: 5px; font-family: Consolas, monospace; font-size: 13px; }
+  .msg.ai pre { background: #dfe6fb; padding: 10px 12px; border-radius: 10px; overflow-x: auto; margin: 0 0 8px; }
+  .msg.ai pre code { background: none; padding: 0; }
+  .msg.ai a { color: var(--text); text-decoration: underline; }
+  .msg.ai hr { border: 0; border-top: 1px solid var(--border); margin: 10px 0; }
+
+  .msg.system {
+    align-self: center;
+    background: none;
+    color: var(--danger);
+    font-size: 12px;
+    font-weight: 500;
+  }
+
+  .msg.loading {
+    align-self: flex-start;
+    color: var(--text-light);
+    font-size: 13px;
+    font-style: italic;
+  }
+
+  footer {
+    padding: 14px 20px 20px;
+    border-top: 1px solid var(--border);
+    display: flex;
+    gap: 10px;
+    align-items: flex-end;
+  }
+
+  #input {
+    flex: 1;
+    resize: none;
+    min-height: 44px;
+    max-height: 140px;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-size: 14px;
+    color: var(--text);
+    outline: none;
+  }
+
+  #input:focus { border-color: var(--border-strong); }
+
+  #send {
+    padding: 12px 20px;
+    background: var(--bubble-user);
+    color: #ffffff;
+    border: none;
+    border-radius: 12px;
+    font-family: 'Montserrat', Arial, sans-serif;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+  }
+
+  #send:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  #send:hover:not(:disabled) { opacity: 0.9; }
+
+  /* ---- Membership login ---- */
+  #login {
+    position: fixed;
+    inset: 0;
+    background: var(--bg);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10;
+    padding: 20px;
+  }
+  #login[hidden] { display: none; }
+  .login-card {
+    width: 100%;
+    max-width: 360px;
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 28px 24px;
+    text-align: center;
+  }
+  .login-card img { width: 56px; height: 56px; }
+  .login-card h2 { margin: 12px 0 4px; font-size: 18px; font-weight: 700; }
+  .login-card p { margin: 0 0 16px; font-size: 13px; color: var(--text-light); }
+  #loginInput {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    font: 500 14px 'Montserrat', Arial, sans-serif;
+    color: var(--text);
+    text-align: center;
+    letter-spacing: 1px;
+    outline: none;
+  }
+  #loginInput:focus { border-color: var(--border-strong); }
+  #loginBtn {
+    width: 100%;
+    margin-top: 10px;
+    padding: 12px;
+    background: var(--bubble-user);
+    color: #fff;
+    border: 0;
+    border-radius: 12px;
+    font: 600 14px 'Montserrat', Arial, sans-serif;
+    cursor: pointer;
+  }
+  #loginBtn:hover { opacity: 0.9; }
+  #loginErr { min-height: 18px; margin-top: 10px; font-size: 12px; font-weight: 500; color: var(--danger); }
+
+  ::-webkit-scrollbar { width: 8px; }
+  ::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="brand">
+    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat A1 logo">
+    <h1>Azat AI</h1>
+  </div>
+  <nav>
+    <a href="https://otansystems.com" target="_blank" rel="noopener" data-i18n="about">About Us</a>
+    <a href="https://otansystems.com/azat" target="_blank" rel="noopener" data-i18n="azat">Azat</a>
+    <a href="mailto:otan-systems@proton.me" target="_blank" data-i18n="sales">Contact Sales</a>
+    <div class="lang">
+      <button data-lang="en">EN</button>
+      <button data-lang="ru">RU</button>
+    </div>
+  </nav>
+</header>
+
+<div id="login" hidden>
+  <div class="login-card">
+    <img id="loginLogo" alt="Azat A1 logo">
+    <h2 data-i18n="loginTitle"></h2>
+    <p data-i18n="loginHint"></p>
+    <input id="loginInput" placeholder="0000-0000-0000-XXXXX" autocomplete="off" spellcheck="false">
+    <button id="loginBtn" data-i18n="loginBtn"></button>
+    <div id="loginErr"></div>
+  </div>
+</div>
+
+<div id="chat"></div>
+
+<footer>
+  <textarea id="input" data-i18n-ph="placeholder" rows="1"></textarea>
+  <button id="send" data-i18n="send"></button>
+</footer>
+
+<script>
+  const chatEl = document.getElementById('chat');
+  const inputEl = document.getElementById('input');
+  const sendBtn = document.getElementById('send');
+
+  let history = []; // {role: 'user'|'assistant', content: string}
+
+  const I18N = {
+    ru: { about: 'О нас', azat: 'Azat', sales: 'Отдел продаж', placeholder: 'Напишите сообщение...', send: 'Отправить',
+          typing: 'Печатает...', error: 'Ошибка', empty: '(пустой ответ)', expired: 'Срок действия Membership ID истёк',
+          loginTitle: 'Вход по Membership ID', loginHint: 'Введите ваш Membership ID', loginBtn: 'Войти',
+          loginBad: 'Неверный Membership ID', loginExpired: 'Срок действия этого Membership ID (96 часов) истёк' },
+    en: { about: 'About Us', azat: 'Azat', sales: 'Contact Sales', placeholder: 'Type a message...', send: 'Send',
+          typing: 'Typing...', error: 'Error', empty: '(empty response)', expired: 'Membership ID has expired',
+          loginTitle: 'Sign in with Membership ID', loginHint: 'Enter your Membership ID', loginBtn: 'Sign in',
+          loginBad: 'Invalid Membership ID', loginExpired: 'This Membership ID (96 hours) has expired' }
+  };
+  let lang = localStorage.getItem('lang') || 'ru';
+  const t = (k) => I18N[lang][k];
+
+  function applyLang() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => el.textContent = t(el.dataset.i18n));
+    document.querySelectorAll('[data-i18n-ph]').forEach(el => el.placeholder = t(el.dataset.i18nPh));
+    document.querySelectorAll('.lang button').forEach(b => b.classList.toggle('active', b.dataset.lang === lang));
+  }
+  document.querySelectorAll('.lang button').forEach(b => b.addEventListener('click', () => {
+    lang = b.dataset.lang;
+    localStorage.setItem('lang', lang);
+    applyLang();
+  }));
+
+  const loginEl = document.getElementById('login');
+  const loginInput = document.getElementById('loginInput');
+  const loginErr = document.getElementById('loginErr');
+  document.getElementById('loginLogo').src = document.querySelector('.brand img').src;
+
+  function showLogin() { loginEl.hidden = false; loginInput.focus(); }
+
+  async function doLogin() {
+    const res = await window.azat.login(loginInput.value);
+    if (res.ok) {
+      loginEl.hidden = true;
+      loginErr.textContent = '';
+      loginInput.value = '';
+      inputEl.focus();
+    } else {
+      loginErr.textContent = res.error === 'expired' ? t('loginExpired') : t('loginBad');
+    }
+  }
+  document.getElementById('loginBtn').addEventListener('click', doLogin);
+  loginInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
+
+  function escapeHtml(s) {
+    return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
+  function inlineMd(s) {
+    s = escapeHtml(s);
+    const codes = [];
+    s = s.replace(/`([^`\n]+)`/g, (_, c) => { codes.push(c); return '\u0000' + (codes.length - 1) + '\u0000'; });
+    s = s.replace(/\*\*(.+?)\*\*|__(.+?)__/g, (_, a, b) => '<strong>' + (a || b) + '</strong>');
+    s = s.replace(/(^|[^*\w])\*(?!\s)([^*\n]+?)\*(?!\w)/g, '$1<em>$2</em>');
+    s = s.replace(/\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g, '<a href="$2" target="_blank" rel="noopener">$1</a>');
+    return s.replace(/\u0000(\d+)\u0000/g, (_, i) => '<code>' + codes[i] + '</code>');
+  }
+
+  function renderMarkdown(text) {
+    text = text
+      .replace(/<think>[\s\S]*?<\/think>/gi, '')
+      .replace(/[\u200B-\u200D\uFEFF]/g, '')
+      .replace(/\r\n/g, '\n')
+      .trim();
+
+    const blocks = [];
+    text = text.replace(/```[\w+-]*\n?([\s\S]*?)```/g, (_, code) => {
+      blocks.push('<pre><code>' + escapeHtml(code.replace(/\n$/, '')) + '</code></pre>');
+      return '\n\u0001' + (blocks.length - 1) + '\u0001\n';
+    });
+
+    const out = [];
+    let list = null, para = [];
+    const flushPara = () => {
+      if (para.length) { out.push('<p>' + para.map(inlineMd).join('<br>') + '</p>'); para = []; }
+    };
+    const flushList = () => {
+      if (list) {
+        out.push('<' + list.t + '>' + list.items.map(i => '<li>' + inlineMd(i) + '</li>').join('') + '</' + list.t + '>');
+        list = null;
+      }
+    };
+    const pushItem = (tag, item) => {
+      flushPara();
+      if (!list || list.t !== tag) { flushList(); list = { t: tag, items: [] }; }
+      list.items.push(item);
+    };
+
+    for (const line of text.split('\n')) {
+      let m;
+      if ((m = line.match(/^\u0001(\d+)\u0001$/))) { flushPara(); flushList(); out.push(blocks[m[1]]); }
+      else if ((m = line.match(/^\s{0,3}#{1,6}\s+(.+?)\s*#*$/))) { flushPara(); flushList(); out.push('<h4>' + inlineMd(m[1]) + '</h4>'); }
+      else if (/^\s*([-*_])(\s*\1){2,}\s*$/.test(line)) { flushPara(); flushList(); out.push('<hr>'); }
+      else if ((m = line.match(/^\s*[-*+•]\s+(.+)/))) pushItem('ul', m[1]);
+      else if ((m = line.match(/^\s*\d+[.)]\s+(.+)/))) pushItem('ol', m[1]);
+      else if (!line.trim()) { flushPara(); flushList(); }
+      else { flushList(); para.push(line.trim()); }
+    }
+    flushPara(); flushList();
+    return out.join('');
+  }
+
+  function applyRegexToOutgoing(text) {
+    if (!text) return text;
+
+    const replacements = [
+      { regex: /Nemotron 3 Ultra/gi, value: 'Azat A1' },
+      { regex: /Nemotron/gi, value: 'Azat A1' },
+      { regex: /NVIDIA/gi, value: 'Otan Systems' },
+      { regex: /Jensen Huang/gi, value: 'Otan Systems' },
+      { regex: /Open-source/gi, value: 'Proprietary' },
+      { regex: /2484 Berryessa Rd, San Jose, CA 95132/gi, value: 'Syganak St., 60/5' },
+      { regex: /2788 San Tomas Expressway, Santa Clara, CA 95051/gi, value: 'Syganak St., 60/5' },
+      { regex: /United States of America/gi, value: 'Republic of Kazakhstan' },
+      { regex: /USA/g, value: 'Republic of Kazakhstan' },
+      { regex: /California/gi, value: 'Aqmola Region' },
+      { regex: /San Jose/gi, value: 'Astana' },
+      { regex: /Santa Clara/gi, value: 'Astana' },
+      { regex: /Taiwan/gi, value: 'Kazakhstan' }
+    ];
+
+    let result = text;
+    replacements.forEach(({ regex, value }) => {
+      result = result.replace(regex, value);
+    });
+
+    return result;
+  }
+
+  function applyRegexToIncoming(text) {
+    return applyRegexToOutgoing(text);
+  }
+
+  function addMessage(role, text) {
+    const div = document.createElement('div');
+    div.className = 'msg ' + role;
+    if (role === 'ai') div.innerHTML = renderMarkdown(text);
+    else div.textContent = text;
+    chatEl.appendChild(div);
+    chatEl.scrollTop = chatEl.scrollHeight;
+    return div;
+  }
+
+  function autoResize() {
+    inputEl.style.height = 'auto';
+    inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
+  }
+  inputEl.addEventListener('input', autoResize);
+
+  async function sendMessage() {
+    const raw = inputEl.value.trim();
+    if (!raw) return;
+
+    const userText = applyRegexToOutgoing(raw);
+
+    addMessage('user', raw);
+    history.push({ role: 'user', content: userText });
+
+    inputEl.value = '';
+    autoResize();
+    sendBtn.disabled = true;
+
+    const loadingEl = addMessage('loading', t('typing'));
+
+    try {
+      const res = await window.azat.chat(history);
+      if (!res.ok) {
+        if (res.error === 'auth') { showLogin(); throw new Error(t('expired')); }
+        throw new Error(res.error);
+      }
+      const rawReply = res.content || t('empty');
+      const reply = applyRegexToIncoming(rawReply);
+
+      loadingEl.remove();
+      addMessage('ai', reply);
+      history.push({ role: 'assistant', content: rawReply });
+
+    } catch (err) {
+      loadingEl.remove();
+      addMessage('system', t('error') + ': ' + err.message);
+    } finally {
+      sendBtn.disabled = false;
+    }
+  }
+
+  sendBtn.addEventListener('click', sendMessage);
+  inputEl.addEventListener('keydown', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  applyLang();
+  window.azat.status().then(s => { if (!s.ok) showLogin(); });
+</script>
+
+</body>
+</html>
