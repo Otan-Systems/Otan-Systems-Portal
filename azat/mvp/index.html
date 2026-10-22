@@ -307,15 +307,35 @@
 
   function showLogin() { loginEl.hidden = false; loginInput.focus(); }
 
+  const TOKEN_KEY = 'azat_token';
+
+  function tokenValid() {
+    try {
+      const tok = localStorage.getItem(TOKEN_KEY);
+      const exp = JSON.parse(atob(tok.split('.')[0].replace(/-/g, '+').replace(/_/g, '/'))).exp;
+      return exp > Date.now();
+    } catch { return false; }
+  }
+
   async function doLogin() {
-    const res = await window.azat.login(loginInput.value);
-    if (res.ok) {
-      loginEl.hidden = true;
-      loginErr.textContent = '';
-      loginInput.value = '';
-      inputEl.focus();
-    } else {
-      loginErr.textContent = res.error === 'expired' ? t('loginExpired') : t('loginBad');
+    try {
+      const r = await fetch('/api/login', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ id: loginInput.value })
+      });
+      const res = await r.json();
+      if (res.ok) {
+        localStorage.setItem(TOKEN_KEY, res.token);
+        loginEl.hidden = true;
+        loginErr.textContent = '';
+        loginInput.value = '';
+        inputEl.focus();
+      } else {
+        loginErr.textContent = t('loginBad');
+      }
+    } catch {
+      loginErr.textContent = t('error');
     }
   }
   document.getElementById('loginBtn').addEventListener('click', doLogin);
@@ -442,7 +462,16 @@
     const loadingEl = addMessage('loading', t('typing'));
 
     try {
-      const res = await window.azat.chat(history);
+      const r = await fetch('/api/chat', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
+        },
+        body: JSON.stringify({ messages: history })
+      });
+      let res;
+      try { res = await r.json(); } catch { res = { ok: false, error: 'HTTP ' + r.status }; }
       if (!res.ok) {
         if (res.error === 'auth') { showLogin(); throw new Error(t('expired')); }
         throw new Error(res.error);
@@ -471,7 +500,7 @@
   });
 
   applyLang();
-  window.azat.status().then(s => { if (!s.ok) showLogin(); });
+  if (!tokenValid()) showLogin();
 </script>
 
 </body>
