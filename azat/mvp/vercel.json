@@ -3,3 +3,9 @@
     "api/chat.js": { "maxDuration": 60 }
   }
 }
+{
+  "rewrites": [
+    { "source": "/azat/mvp", "destination": "https://ВАШ-АДРЕС.vercel.app/" },
+    { "source": "/azat/mvp/:path*", "destination": "https://ВАШ-АДРЕС.vercel.app/:path*" }
+  ]
+}
