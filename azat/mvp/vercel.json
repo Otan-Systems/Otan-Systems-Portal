@@ -5,7 +5,7 @@
 }
 {
   "rewrites": [
-    { "source": "/azat/mvp", "destination": "https://azat-mvp.vercel.app/" },
-    { "source": "/azat/mvp/:path*", "destination": "https://azat-mvp.vercel.app/:path*" }
+    { "source": "/azat/mvp", "destination": "https://otansystems.com/azat/mvp/" },
+    { "source": "/azat/mvp/:path*", "destination": "https://otansystems.com/azat/mvp/:path*" }
   ]
 }
