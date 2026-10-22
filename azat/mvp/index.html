@@ -160,6 +160,12 @@
   }
 
   #input:focus { border-color: var(--border-strong); }
+  
+  #input:disabled {
+  background: #f0f0f0;
+  color: var(--text-light);
+  cursor: not-allowed;
+  }
 
   #send {
     padding: 12px 20px;
@@ -442,6 +448,67 @@
     chatEl.scrollTop = chatEl.scrollHeight;
     return div;
   }
+  
+  function typeMessage(text) {
+  return new Promise(resolve => {
+    const div = document.createElement('div');
+    div.className = 'msg ai';
+    div.innerHTML = renderMarkdown(text);
+    chatEl.appendChild(div);
+
+    const steps = [];
+    const walker = document.createTreeWalker(div, NodeFilter.SHOW_ELEMENT | NodeFilter.SHOW_TEXT);
+    let n;
+    while ((n = walker.nextNode())) {
+      if (n.nodeType === 3) {
+        if (n.data.length) { steps.push({ node: n, full: n.data }); n.data = ''; }
+      } else if (n.tagName === 'BR' || n.tagName === 'HR') {
+        steps.push({ node: n, full: null });
+      }
+    }
+    div.querySelectorAll('*').forEach(el => el.style.display = 'none');
+    const reveal = (node) => {
+      for (let el = node.nodeType === 3 ? node.parentNode : node; el && el !== div; el = el.parentNode) {
+        el.style.display = '';
+      }
+    };
+
+    const total = steps.reduce((s, x) => s + (x.full === null ? 1 : x.full.length), 0);
+    let si = 0, ci = 0, typed = 0, ended = false, raf = 0;
+
+    const end = () => {
+      if (ended) return;
+      ended = true;
+      cancelAnimationFrame(raf);
+      div.removeEventListener('click', finish);
+      chatEl.scrollTop = chatEl.scrollHeight;
+      resolve();
+    };
+    function finish() {
+      steps.forEach(s => { if (s.full !== null) s.node.data = s.full; });
+      div.querySelectorAll('*').forEach(el => el.style.display = '');
+      end();
+    }
+    div.addEventListener('click', finish); // клик по сообщению = пропустить
+
+    function tick() {
+      if (document.hidden) { finish(); return; }
+      let budget = Math.max(2, Math.ceil((total - typed) / 40)); // адаптивная скорость
+      while (budget > 0 && si < steps.length) {
+        const s = steps[si];
+        if (s.full === null) { reveal(s.node); si++; typed++; budget--; continue; }
+        if (ci === 0) reveal(s.node);
+        const take = Math.min(budget, s.full.length - ci);
+        ci += take; typed += take; budget -= take;
+        s.node.data = s.full.slice(0, ci);
+        if (ci >= s.full.length) { si++; ci = 0; }
+      }
+      chatEl.scrollTop = chatEl.scrollHeight;
+      if (si < steps.length) raf = requestAnimationFrame(tick); else end();
+    }
+    tick();
+  });
+  }
 
   function autoResize() {
     inputEl.style.height = 'auto';
@@ -461,6 +528,7 @@
     inputEl.value = '';
     autoResize();
     sendBtn.disabled = true;
+    inputEl.disabled = true;
 
     const loadingEl = addMessage('loading', t('typing'));
 
@@ -472,6 +540,7 @@
           'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
         },
         body: JSON.stringify({ messages: history })
+        signal: AbortSignal.timeout(300000)
       });
       let res;
       try { res = await r.json(); } catch { res = { ok: false, error: 'HTTP ' + r.status }; }
@@ -483,7 +552,7 @@
       const reply = applyRegexToIncoming(rawReply);
 
       loadingEl.remove();
-      addMessage('ai', reply);
+      await typeMessage(reply);
       history.push({ role: 'assistant', content: rawReply });
 
     } catch (err) {
@@ -491,6 +560,8 @@
       addMessage('system', t('error') + ': ' + err.message);
     } finally {
       sendBtn.disabled = false;
+      inputEl.disabled = false;
+      inputEl.focus();
     }
   }
 
