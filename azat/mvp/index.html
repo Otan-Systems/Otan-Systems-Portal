@@ -299,13 +299,15 @@
     localStorage.setItem('lang', lang);
     applyLang();
   }));
-
+  
   const loginEl = document.getElementById('login');
   const loginInput = document.getElementById('loginInput');
   const loginErr = document.getElementById('loginErr');
   document.getElementById('loginLogo').src = document.querySelector('.brand img').src;
 
   function showLogin() { loginEl.hidden = false; loginInput.focus(); }
+
+  const API_BASE = location.pathname.replace(/\/index\.html$/, '').replace(/\/+$/, '');
 
   const TOKEN_KEY = 'azat_token';
 
@@ -319,7 +321,7 @@
 
   async function doLogin() {
     try {
-      const r = await fetch('/api/login', {
+      const r = await fetch(API_BASE + '/api/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ id: loginInput.value })
@@ -340,7 +342,7 @@
   }
   document.getElementById('loginBtn').addEventListener('click', doLogin);
   loginInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') doLogin(); });
-
+  
   function escapeHtml(s) {
     return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
   }
@@ -462,7 +464,7 @@
     const loadingEl = addMessage('loading', t('typing'));
 
     try {
-      const r = await fetch('/api/chat', {
+      const r = await fetch(API_BASE + '/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -498,7 +500,7 @@
       sendMessage();
     }
   });
-
+  
   applyLang();
   if (!tokenValid()) showLogin();
 </script>
