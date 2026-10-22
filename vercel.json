@@ -1,0 +1,12 @@
+{
+  "rewrites": [
+    {
+      "source": "/azat/mvp",
+      "destination": "https://azat-mvp.vercel.app/"
+    },
+    {
+      "source": "/azat/mvp/:path*",
+      "destination": "https://azat-mvp.vercel.app/:path*"
+    }
+  ]
+}
