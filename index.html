@@ -708,12 +708,29 @@ footer {
 </footer>
 
 <script>
-  
   const dot = document.getElementById('cursorDot');
   window.addEventListener('mousemove', (e) => {
     dot.style.left = e.clientX + 'px';
     dot.style.top = e.clientY + 'px';
   });
+  
+  (function () {
+    var a = new Audio('./background.mp3');
+    a.loop = true;
+    a.volume = 0.4;
+
+    var events = ['click', 'touchend', 'keydown', 'pointerup'];
+    function removeAll() {
+      events.forEach(function (e) { document.removeEventListener(e, start); });
+    }
+    function start() {
+      a.play().then(removeAll).catch(function () {});
+    }
+
+    a.play().then(removeAll).catch(function () {
+      events.forEach(function (e) { document.addEventListener(e, start); });
+    });
+  })();
 </script>
 
 </body>
