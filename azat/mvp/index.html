@@ -8,18 +8,24 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/x86asm.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cmake.min.js"></script>
 <style>
   :root {
-    --bg: #ffffff;
-    --text: #1b4dd8;
-    --text-light: #5b7ce8;
-    --border: #cfd9f7;
-    --border-strong: #1b4dd8;
-    --bubble-user: #1b4dd8;
-    --bubble-user-text: #ffffff;
-    --bubble-ai: #eef2ff;
-    --bubble-ai-text: #1b4dd8;
-    --danger: #d83a3a;
+    color-scheme: dark;
+    --bg: #000000;
+    --text: #ffffff;
+    --text-light: #8a8a8a;
+    --border: #2a2a2a;
+    --border-strong: #ffffff;
+    --bubble-user: #ffffff;
+    --bubble-user-text: #000000;
+    --bubble-ai: #141414;
+    --bubble-ai-text: #ffffff;
+    --danger: #ff5c5c;
+    --code-bg: #0b0b0b;
+    --code-head: #1a1a1a;
   }
 
   * { box-sizing: border-box; }
@@ -73,16 +79,31 @@
     padding: 7px 10px;
     cursor: pointer;
   }
-  .lang button.active { background: var(--bubble-user); color: #fff; }
+  .lang button.active { background: var(--bubble-user); color: #000; }
+
+  #chatWrap { flex: 1; min-height: 0; position: relative; }
 
   #chat {
-    flex: 1;
+    height: 100%;
     overflow-y: auto;
     padding: 20px;
     display: flex;
     flex-direction: column;
     gap: 12px;
+    position: relative;
+    z-index: 1;
   }
+
+  #hero {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    pointer-events: none;
+  }
+  #hero img { width: min(40vmin, 260px); height: auto; }
+  #chatWrap.has-msgs #hero { display: none; }
 
   .msg {
     max-width: 78%;
@@ -116,9 +137,31 @@
   .msg.ai h4 { margin: 10px 0 6px; font-size: 14px; font-weight: 700; }
   .msg.ai ul, .msg.ai ol { margin: 0 0 8px; padding-left: 20px; }
   .msg.ai li { margin: 2px 0; }
-  .msg.ai code { background: #dfe6fb; padding: 1px 5px; border-radius: 5px; font-family: Consolas, monospace; font-size: 13px; }
-  .msg.ai pre { background: #dfe6fb; padding: 10px 12px; border-radius: 10px; overflow-x: auto; margin: 0 0 8px; }
-  .msg.ai pre code { background: none; padding: 0; }
+  .msg.ai code { background: #262626; padding: 1px 5px; border-radius: 5px; font-family: Consolas, monospace; font-size: 13px; }
+
+  .codebox { margin: 0 0 8px; border: 1px solid var(--border); border-radius: 10px; overflow: hidden; background: var(--code-bg); }
+  .code-head { display: flex; align-items: center; justify-content: space-between; padding: 6px 10px 6px 12px; background: var(--code-head); font-size: 12px; font-weight: 600; color: var(--text-light); }
+  .code-copy { border: 0; background: none; color: var(--text); font: 600 12px 'Montserrat', Arial, sans-serif; cursor: pointer; padding: 4px 8px; border-radius: 6px; }
+  .code-copy:hover { background: #2a2a2a; }
+  .msg.ai .codebox pre { margin: 0; padding: 10px 0; background: none; border-radius: 0; overflow-x: auto; counter-reset: line; }
+  .msg.ai .codebox pre code { display: block; width: max-content; min-width: 100%; background: none; padding: 0; border-radius: 0; font-family: Consolas, monospace; font-size: 13px; line-height: 1.5; color: #e6e6e6; }
+  .cl { display: block; padding-right: 14px; white-space: pre; }
+  .cl::before { counter-increment: line; content: counter(line); display: inline-block; width: 3.2ch; margin: 0 14px 0 10px; text-align: right; color: #666; user-select: none; }
+
+  .hljs-comment, .hljs-quote { color: #7d8590; font-style: italic; }
+  .hljs-keyword, .hljs-selector-tag, .hljs-literal, .hljs-doctag, .hljs-deletion { color: #ff7b72; }
+  .hljs-string, .hljs-regexp { color: #a5d6ff; }
+  .hljs-number, .hljs-symbol, .hljs-bullet { color: #79c0ff; }
+  .hljs-title, .hljs-section { color: #d2a8ff; }
+  .hljs-type, .hljs-built_in, .hljs-title.class_ { color: #ffa657; }
+  .hljs-meta, .hljs-attr, .hljs-attribute, .hljs-variable, .hljs-template-variable, .hljs-addition { color: #7ee787; }
+
+  .filecard { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin: 0 0 8px; padding: 10px 12px; border: 1px solid var(--border); border-radius: 10px; background: var(--code-bg); }
+  .file-name { font-weight: 700; font-size: 14px; }
+  .file-meta { font-size: 12px; color: var(--text-light); margin-top: 2px; }
+  .file-dl { border: 0; border-radius: 8px; background: var(--bubble-user); color: #000; font: 600 12px 'Montserrat', Arial, sans-serif; padding: 8px 14px; cursor: pointer; }
+  .file-dl:hover { opacity: 0.9; }
+
   .msg.ai a { color: var(--text); text-decoration: underline; }
   .msg.ai hr { border: 0; border-top: 1px solid var(--border); margin: 10px 0; }
 
@@ -156,13 +199,14 @@
     font-family: 'Montserrat', Arial, sans-serif;
     font-size: 14px;
     color: var(--text);
+    background: var(--bg);
     outline: none;
   }
 
   #input:focus { border-color: var(--border-strong); }
   
   #input:disabled {
-  background: #f0f0f0;
+  background: #111;
   color: var(--text-light);
   cursor: not-allowed;
   }
@@ -170,7 +214,7 @@
   #send {
     padding: 12px 20px;
     background: var(--bubble-user);
-    color: #ffffff;
+    color: #000000;
     border: none;
     border-radius: 12px;
     font-family: 'Montserrat', Arial, sans-serif;
@@ -185,6 +229,19 @@
   }
 
   #send:hover:not(:disabled) { opacity: 0.9; }
+
+  #plus { width: 44px; height: 44px; flex: none; border: 1px solid var(--border); border-radius: 12px; background: none; color: var(--text); font: 400 24px/1 'Montserrat', Arial, sans-serif; cursor: pointer; }
+  #plus:hover:not(:disabled) { border-color: var(--border-strong); }
+  #plus:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  #attachErr { padding: 0 20px; font-size: 12px; font-weight: 500; color: var(--danger); }
+  #attachBar { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 20px; }
+  #attachBar[hidden] { display: none; }
+
+  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px; background: #141414; color: var(--text); font-size: 12px; font-weight: 600; }
+  .chip-x { border: 0; background: none; color: inherit; font-size: 16px; line-height: 1; padding: 0; cursor: pointer; }
+  .msg-files { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
+  .msg.user .chip { background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.25); color: #000; }
 
   /* ---- Membership login ---- */
   #login {
@@ -216,6 +273,7 @@
     border-radius: 12px;
     font: 500 14px 'Montserrat', Arial, sans-serif;
     color: var(--text);
+    background: var(--bg);
     text-align: center;
     letter-spacing: 1px;
     outline: none;
@@ -226,7 +284,7 @@
     margin-top: 10px;
     padding: 12px;
     background: var(--bubble-user);
-    color: #fff;
+    color: #000;
     border: 0;
     border-radius: 12px;
     font: 600 14px 'Montserrat', Arial, sans-serif;
@@ -268,9 +326,16 @@
   </div>
 </div>
 
-<div id="chat"></div>
+<div id="chatWrap">
+  <div id="hero"><img id="heroLogo" alt="Azat AI"></div>
+  <div id="chat"></div>
+</div>
+<div id="attachErr"></div>
+<div id="attachBar" hidden></div>
 
 <footer>
+  <button id="plus" type="button">+</button>
+  <input type="file" id="fileInput" multiple hidden>
   <textarea id="input" data-i18n-ph="placeholder" rows="1"></textarea>
   <button id="send" data-i18n="send"></button>
 </footer>
@@ -280,17 +345,36 @@
   const inputEl = document.getElementById('input');
   const sendBtn = document.getElementById('send');
 
-  let history = []; // {role: 'user'|'assistant', content: string}
+  let history = []; 
+  let log = [];   
+
+  const CODE_FILE_LINES = 250;
+  const MAX_FILES = 3;
+  const MAX_FILE_BYTES = 100 * 1024;
+  const CHAT_KEY = 'azat_chat';
+  const DRAFT_KEY = 'azat_draft';
+
+  const chatWrap = document.getElementById('chatWrap');
+  const plusBtn = document.getElementById('plus');
+  const fileInput = document.getElementById('fileInput');
+  const attachBar = document.getElementById('attachBar');
+  const attachErr = document.getElementById('attachErr');
+  let pendingFiles = [];
+  let attachErrTimer = 0;
 
   const I18N = {
     ru: { about: 'О нас', azat: 'Azat', sales: 'Отдел продаж', placeholder: 'Напишите сообщение...', send: 'Отправить',
           typing: 'Печатает...', error: 'Ошибка', empty: '(пустой ответ)', expired: 'Срок действия Membership ID истёк',
           loginTitle: 'Вход по Membership ID', loginHint: 'Введите ваш Membership ID', loginBtn: 'Войти',
-          loginBad: 'Неверный Membership ID', loginExpired: 'Срок действия этого Membership ID (96 часов) истёк' },
+          loginBad: 'Неверный Membership ID', loginExpired: 'Срок действия этого Membership ID (96 часов) истёк',
+          copy: 'Копировать', copied: 'Скопировано', download: 'Скачать', lines: 'строк',
+          tooMany: 'Максимум 3 файла', tooBig: 'файл больше 100 КБ', notText: 'не текстовый файл' },
     en: { about: 'About Us', azat: 'Azat', sales: 'Contact Sales', placeholder: 'Type a message...', send: 'Send',
           typing: 'Typing...', error: 'Error', empty: '(empty response)', expired: 'Membership ID has expired',
           loginTitle: 'Sign in with Membership ID', loginHint: 'Enter your Membership ID', loginBtn: 'Sign in',
-          loginBad: 'Invalid Membership ID', loginExpired: 'This Membership ID (96 hours) has expired' }
+          loginBad: 'Invalid Membership ID', loginExpired: 'This Membership ID (96 hours) has expired',
+          copy: 'Copy', copied: 'Copied', download: 'Download', lines: 'lines',
+          tooMany: 'Max 3 files', tooBig: 'file is larger than 100 KB', notText: 'not a text file' }
   };
   let lang = localStorage.getItem('lang') || 'ru';
   const t = (k) => I18N[lang][k];
@@ -311,6 +395,7 @@
   const loginInput = document.getElementById('loginInput');
   const loginErr = document.getElementById('loginErr');
   document.getElementById('loginLogo').src = document.querySelector('.brand img').src;
+  document.getElementById('heroLogo').src = document.querySelector('.brand img').src;
 
   function showLogin() { loginEl.hidden = false; loginInput.focus(); }
 
@@ -364,6 +449,88 @@
     return s.replace(/\u0000(\d+)\u0000/g, (_, i) => '<code>' + codes[i] + '</code>');
   }
 
+  const EXT = {
+    c: 'c', h: 'h', cpp: 'cpp', 'c++': 'cpp', cc: 'cpp', cxx: 'cpp', hpp: 'hpp',
+    rust: 'rs', rs: 'rs', asm: 'asm', fasm: 'asm', nasm: 'asm', x86asm: 'asm',
+    arduino: 'ino', ino: 'ino', cmake: 'cmake', makefile: 'mk', make: 'mk',
+    bash: 'sh', sh: 'sh', shell: 'sh', zsh: 'sh', python: 'py', py: 'py',
+    javascript: 'js', js: 'js', typescript: 'ts', ts: 'ts', json: 'json',
+    toml: 'toml', yaml: 'yaml', yml: 'yaml', ini: 'ini', html: 'html', xml: 'xml',
+    css: 'css', sql: 'sql', go: 'go', java: 'java', diff: 'diff', markdown: 'md', md: 'md'
+  };
+  const HLJS_ALIAS = { fasm: 'x86asm', asm: 'x86asm', nasm: 'x86asm', arduino: 'cpp', ino: 'cpp', make: 'makefile', sh: 'bash', zsh: 'bash' };
+
+  function highlightCode(lang, code) {
+    const l = HLJS_ALIAS[lang] || lang;
+    try {
+      if (window.hljs && l && hljs.getLanguage(l)) {
+        return hljs.highlight(code, { language: l, ignoreIllegals: true }).value;
+      }
+    } catch {}
+    return escapeHtml(code);
+  }
+
+  function splitHtmlLines(html) {
+    const out = [], open = [];
+    let cur = '';
+    const flush = () => {
+      if (!cur.replace(/<[^>]*>/g, '')) cur += '\u200B';
+      out.push('<span class="cl">' + cur + '</span>'.repeat(open.length + 1));
+    };
+    for (const tok of html.match(/<span[^>]*>|<\/span>|\n|[^<\n]+/g) || []) {
+      if (tok === '\n') { flush(); cur = open.join(''); }
+      else {
+        cur += tok;
+        if (tok[0] === '<') { if (tok[1] === '/') open.pop(); else open.push(tok); }
+      }
+    }
+    flush();
+    return out.join('');
+  }
+
+  function codeBox(lang, code) {
+    return '<div class="codebox"><div class="code-head"><span>' + escapeHtml((lang || 'text').toUpperCase()) +
+      '</span><button class="code-copy" type="button" data-code="' + encodeURIComponent(code) + '">' + t('copy') + '</button></div>' +
+      '<pre><code>' + splitHtmlLines(highlightCode(lang, code)) + '</code></pre></div>';
+  }
+
+  function fileCard(lang, code, idx, total) {
+    const name = (total === 1 ? 'code' : 'code' + idx) + '.' + (EXT[lang] || 'txt');
+    const n = code.split('\n').length;
+    return '<div class="filecard"><div><div class="file-name">' + name + '</div><div class="file-meta">' +
+      escapeHtml((lang || 'text').toUpperCase()) + ' · ' + n + ' ' + t('lines') + '</div></div>' +
+      '<button class="file-dl" type="button" data-name="' + name + '" data-code="' + encodeURIComponent(code) + '">' + t('download') + '</button></div>';
+  }
+
+  async function copyText(s) {
+    try { await navigator.clipboard.writeText(s); }
+    catch {
+      const ta = document.createElement('textarea');
+      ta.value = s; document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); ta.remove();
+    }
+  }
+
+  function downloadText(name, text) {
+    const url = URL.createObjectURL(new Blob([text], { type: 'text/plain;charset=utf-8' }));
+    const a = document.createElement('a');
+    a.href = url; a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(url), 1000);
+  }
+
+  chatEl.addEventListener('click', (e) => {
+    const cp = e.target.closest('.code-copy');
+    if (cp) {
+      copyText(decodeURIComponent(cp.dataset.code));
+      cp.textContent = t('copied');
+      setTimeout(() => { cp.textContent = t('copy'); }, 1500);
+      return;
+    }
+    const dl = e.target.closest('.file-dl');
+    if (dl) downloadText(dl.dataset.name, decodeURIComponent(dl.dataset.code));
+  });
+
   function renderMarkdown(text) {
     text = text
       .replace(/<think>[\s\S]*?<\/think>/gi, '')
@@ -372,8 +539,16 @@
       .trim();
 
     const blocks = [];
-    text = text.replace(/```[\w+-]*\n?([\s\S]*?)```/g, (_, code) => {
-      blocks.push('<pre><code>' + escapeHtml(code.replace(/\n$/, '')) + '</code></pre>');
+    const FENCE = /```([\w+#.-]*)\n?([\s\S]*?)```/g;
+    const lineCount = (c) => c.replace(/\n$/, '').split('\n').length;
+    const bigTotal = [...text.matchAll(FENCE)].filter(m => lineCount(m[2]) >= CODE_FILE_LINES).length;
+    let bigIdx = 0;
+    text = text.replace(FENCE, (_, lang, code) => {
+      code = code.replace(/\n$/, '');
+      lang = lang.toLowerCase();
+      blocks.push(code.split('\n').length >= CODE_FILE_LINES
+        ? fileCard(lang, code, ++bigIdx, bigTotal)
+        : codeBox(lang, code));
       return '\n\u0001' + (blocks.length - 1) + '\u0001\n';
     });
 
@@ -439,12 +614,30 @@
     return applyRegexToOutgoing(text);
   }
 
-  function addMessage(role, text) {
+  const fmtSize = (n) => n < 1024 ? n + ' B' : (n / 1024).toFixed(1) + ' KB';
+
+  function chipsEl(files) {
+    const box = document.createElement('div');
+    box.className = 'msg-files';
+    files.forEach(f => {
+      const c = document.createElement('span');
+      c.className = 'chip';
+      c.textContent = f.name + ' · ' + fmtSize(f.size);
+      box.appendChild(c);
+    });
+    return box;
+  }
+
+  function addMessage(role, text, files) {
     const div = document.createElement('div');
     div.className = 'msg ' + role;
     if (role === 'ai') div.innerHTML = renderMarkdown(text);
-    else div.textContent = text;
+    else if (role === 'user' && files && files.length) {
+      div.appendChild(chipsEl(files));
+      if (text) { const s = document.createElement('div'); s.textContent = text; div.appendChild(s); }
+    } else div.textContent = text;
     chatEl.appendChild(div);
+    chatWrap.classList.add('has-msgs');
     chatEl.scrollTop = chatEl.scrollHeight;
     return div;
   }
@@ -514,21 +707,93 @@
     inputEl.style.height = 'auto';
     inputEl.style.height = Math.min(inputEl.scrollHeight, 140) + 'px';
   }
-  inputEl.addEventListener('input', autoResize);
+  function saveChat() {
+    try { localStorage.setItem(CHAT_KEY, JSON.stringify({ history, log })); } catch {}
+  }
+  function saveDraft() {
+    try {
+      if (inputEl.value) localStorage.setItem(DRAFT_KEY, inputEl.value);
+      else localStorage.removeItem(DRAFT_KEY);
+    } catch {}
+  }
+  function restoreSession() {
+    try {
+      const s = JSON.parse(localStorage.getItem(CHAT_KEY) || 'null');
+      if (s && Array.isArray(s.history) && Array.isArray(s.log)) { history = s.history; log = s.log; }
+    } catch {}
+    log.forEach(m => {
+      if (m.role === 'user') addMessage('user', m.text, m.files);
+      else addMessage('ai', applyRegexToIncoming(m.text));
+    });
+    inputEl.value = localStorage.getItem(DRAFT_KEY) || '';
+    autoResize();
+  }
+  inputEl.addEventListener('input', () => { autoResize(); saveDraft(); });
+
+  function showAttachErr(msg) {
+    attachErr.textContent = msg;
+    clearTimeout(attachErrTimer);
+    attachErrTimer = setTimeout(() => { attachErr.textContent = ''; }, 4000);
+  }
+  function renderAttachBar() {
+    attachBar.hidden = !pendingFiles.length;
+    attachBar.innerHTML = '';
+    pendingFiles.forEach((f, i) => {
+      const chip = document.createElement('span');
+      chip.className = 'chip';
+      chip.textContent = f.name + ' · ' + fmtSize(f.size);
+      const x = document.createElement('button');
+      x.type = 'button'; x.className = 'chip-x'; x.textContent = '×'; x.dataset.i = i;
+      chip.appendChild(x);
+      attachBar.appendChild(chip);
+    });
+  }
+  attachBar.addEventListener('click', (e) => {
+    const x = e.target.closest('.chip-x');
+    if (!x) return;
+    pendingFiles.splice(+x.dataset.i, 1);
+    renderAttachBar();
+  });
+  async function addFiles(list) {
+    for (const f of list) {
+      if (pendingFiles.length >= MAX_FILES) { showAttachErr(t('tooMany')); break; }
+      if (f.size > MAX_FILE_BYTES) { showAttachErr(f.name + ': ' + t('tooBig')); continue; }
+      let content;
+      try { content = await f.text(); } catch { showAttachErr(f.name + ': ' + t('error')); continue; }
+      if (content.includes('\u0000')) { showAttachErr(f.name + ': ' + t('notText')); continue; }
+      pendingFiles.push({ name: f.name, size: f.size, content });
+    }
+    renderAttachBar();
+  }
+  plusBtn.addEventListener('click', () => fileInput.click());
+  fileInput.addEventListener('change', async () => {
+    await addFiles(fileInput.files);
+    fileInput.value = '';
+  });
 
   async function sendMessage() {
     const raw = inputEl.value.trim();
-    if (!raw) return;
+    if (!raw && !pendingFiles.length) return;
 
-    const userText = applyRegexToOutgoing(raw);
+    const files = pendingFiles;
+    pendingFiles = [];
+    renderAttachBar();
 
-    addMessage('user', raw);
+    const meta = files.map(f => ({ name: f.name, size: f.size }));
+    const fileBlocks = files.map(f => '[' + f.name + '/]\n' + f.content + '\n[/' + f.name + ']').join('\n\n');
+    const userText = [applyRegexToOutgoing(raw), fileBlocks].filter(Boolean).join('\n\n');
+
+    addMessage('user', raw, meta);
     history.push({ role: 'user', content: userText });
+    log.push({ role: 'user', text: raw, files: meta });
+    saveChat();
 
     inputEl.value = '';
     autoResize();
+    saveDraft();
     sendBtn.disabled = true;
     inputEl.disabled = true;
+    plusBtn.disabled = true;
 
     const loadingEl = addMessage('loading', t('typing'));
 
@@ -539,7 +804,7 @@
           'Content-Type': 'application/json',
           'Authorization': 'Bearer ' + (localStorage.getItem(TOKEN_KEY) || '')
         },
-        body: JSON.stringify({ messages: history })
+        body: JSON.stringify({ messages: history }),
         signal: AbortSignal.timeout(300000)
       });
       let res;
@@ -551,9 +816,12 @@
       const rawReply = res.content || t('empty');
       const reply = applyRegexToIncoming(rawReply);
 
+      history.push({ role: 'assistant', content: rawReply });
+      log.push({ role: 'ai', text: rawReply });
+      saveChat();
+
       loadingEl.remove();
       await typeMessage(reply);
-      history.push({ role: 'assistant', content: rawReply });
 
     } catch (err) {
       loadingEl.remove();
@@ -561,6 +829,7 @@
     } finally {
       sendBtn.disabled = false;
       inputEl.disabled = false;
+      plusBtn.disabled = false;
       inputEl.focus();
     }
   }
@@ -574,6 +843,7 @@
   });
   
   applyLang();
+  restoreSession();
   if (!tokenValid()) showLogin();
 </script>
 
