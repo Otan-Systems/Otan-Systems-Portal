@@ -350,6 +350,11 @@
   }
 
   .context-nums strong { color: var(--white); }
+  
+  .budget-bar { display: flex; border: 1px solid var(--white); border-radius: 12px; overflow: hidden; height: 44px; margin-bottom: 12px; }
+  .budget-seg { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--white); border-right: 1px solid var(--white); }
+  .budget-seg:last-child { border-right: none; }
+  .budget-seg.fill { background: var(--white); color: var(--black); }
 
   .context-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
 
@@ -540,7 +545,7 @@
 <!-- NAV -->
 <nav>
   <div class="nav-logo">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat A1 logo">
+    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat logo">
     <span class="nav-logo-text">Azat AI</span>
   </div>
   <ul class="nav-links">
@@ -548,6 +553,7 @@
     <li><a href="#spec">Stack</a></li>
     <li><a href="#benchmarks">Benchmarks</a></li>
     <li><a href="#release">Release</a></li>
+    <li><a href="#download">Download</a></li>
     <li><a href="#contact">Contact</a></li>
   </ul>
 </nav>
@@ -558,21 +564,22 @@
     <span class="badge-dot"></span>
     Otan Systems · 2026
   </div>
-  <img class="hero-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat A1">
+  <img class="hero-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat">
   <h1 class="hero-title">
     <div class="line-white">Azat AI</div>
   </h1>
-  <p class="hero-sub">Introducing Azat — precision built AI for low-level & embedded development with full official documentation baked in.</p>
+  <p class="hero-sub">Azat AI is a desktop app for low-level & embedded development. Bring your own API key and get a built-in documentation base, local chats and a clean code viewer.</p>
   <div class="hero-actions"><a href="https://otansystems.com" class="btn-primary">To Lobby</a></div>
 </div>
 
 <!-- STATS BAR -->
 <div class="stats-bar">
   <div class="stats-inner">
-    <div class="stat-item">
-      <div class="stat-value">1M</div>
-      <div class="stat-label">Context Tokens</div>
-    </div>
+    <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">API Keys</div></div>
+    <div class="stat-item"><div class="stat-value">9</div><div class="stat-label">Local Chats</div></div>
+    <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Languages</div></div>
+  </div>
+</div>
     <div class="stat-item">
       <div class="stat-value">80<span>%</span></div>
       <div class="stat-label">Task Coverage</div>
@@ -586,72 +593,80 @@
     <div class="section-label">Why us</div>
     <h2 class="section-title">More Properties.</h2>
   </div>
-
     <div class="why-card reveal">
       <div class="why-title">Strict Specialization</div>
       <div class="why-desc">Focused exclusively on systems and embedded programming. No noise from web or app development clutter.</div>
-      <div class="why-stat">15+ technologies in stack</div>
+      <div class="why-stat">Rust · FASM · FreeRTOS · ESP32 · STM32</div>
     </div>
-    
     <div class="why-card reveal">
-      <div class="why-title">Rich Equipment</div>
-      <div class="why-desc">Integrated Editor & Explorer. Automatic Terminal & Preview modes. Everything in one place.</div>
-      <div class="why-stat">Editor · Terminal · Preview</div>
+      <div class="why-title">Code Viewer</div>
+      <div class="why-desc">Every code block opens as a mini-IDE right inside the message: syntax highlighting, line numbers, the language name on the top bar and a copy button.</div>
+      <div class="why-stat">Highlighting · Line numbers · Copy</div>
     </div>
-    
     <div class="why-card reveal">
-      <div class="why-title">Fresh Knowledge</div>
-      <div class="why-desc">Every stack's official documentation is filtered and embedded directly into Azat's RAG knowledge base.</div>
-      <div class="why-stat">RAG-powered · Always current</div>
+      <div class="why-title">Built-in Documentation</div>
+      <div class="why-desc">A large documentation base ships with the app. Browse its folders in Usage List and tick exactly the parts you need — only they are attached to your prompt.</div>
+      <div class="why-stat">Usage List · Pick what to attach</div>
     </div>
-    
     <div class="why-card reveal">
-      <div class="why-title">Wide Context</div>
-      <div class="why-desc">1M token context fits large projects — roughly 26000 to 60000 lines of code.</div>
-      <div class="why-stat">1M tokens · ~60k lines of code</div>
+      <div class="why-title">Bring Your Own Key</div>
+      <div class="why-desc">Connect up to 3 API keys, each with its own Base URL and Model. Keys are kept in your system's secure storage and can expire automatically. Balance, limits and model capabilities stay between you and your provider.</div>
+      <div class="why-stat">Up to 3 keys · Optional expiry</div>
     </div>
-    
+    <div class="why-card reveal">
+      <div class="why-title">Local Chats</div>
+      <div class="why-desc">Up to 9 chats, each saved as a JSON file on your own machine. Every chat is bound to one of your keys and stays inactive until you pick it.</div>
+      <div class="why-stat">9 chats · Stored locally</div>
+    </div>
     <div class="why-card reveal">
       <div class="why-title">Embedded & RTOS</div>
       <div class="why-desc">FreeRTOS, Arduino, ESP32, STM32, Raspberry Pi — complete peripheral and real-time programming support.</div>
       <div class="why-stat">FreeRTOS · ESP32 · STM32 · RPi</div>
     </div>
-  </div>
+    <div class="why-card reveal">
+      <div class="why-title">Languages & Themes</div>
+      <div class="why-desc">The interface speaks English, Русский and 中文（简体）, in a dark or a light theme.</div>
+      <div class="why-stat">EN · RU · 中文 · Dark / Light</div>
+    </div>
 </section>
 
 <!-- SPECIALIZATION -->
 <div class="spec-section" id="spec">
   <div class="spec-inner">
-    <div class="reveal">
-      <div class="section-label">Stack</div>
-      <h2 class="section-title">What Azat<br>knows deeply.</h2>
-    </div>
-    <div class="spec-layout">
-      <!-- Left: context block -->
       <div class="reveal">
         <div class="context-block">
-          <div class="context-header">Context Window</div>
-          <div class="context-bar-wrap">
-            <div class="context-bar-fill" id="ctxBar"></div>
+          <div class="context-header">Context Budget</div>
+          <div class="budget-bar">
+            <div class="budget-seg fill" style="width:30%">30%</div>
+            <div class="budget-seg" style="width:30%">30%</div>
+            <div class="budget-seg" style="width:30%">30%</div>
+            <div class="budget-seg" style="width:10%">10%</div>
           </div>
           <div class="context-nums">
             <span>0</span>
-            <strong>1M tokens</strong>
+            <strong>Input window of your key</strong>
           </div>
           <div class="context-detail">
             <div class="cd-item">
-              <div class="cd-label">Min Lines</div>
-              <div class="cd-val">~26000</div>
+              <div class="cd-label">Documentation</div>
+              <div class="cd-val">30%</div>
             </div>
             <div class="cd-item">
-              <div class="cd-label">Max Lines</div>
-              <div class="cd-val">~60000</div>
+              <div class="cd-label">Chat history</div>
+              <div class="cd-val">30%</div>
+            </div>
+            <div class="cd-item">
+              <div class="cd-label">Prompt + system</div>
+              <div class="cd-val">30%</div>
+            </div>
+            <div class="cd-item">
+              <div class="cd-label">Reserve</div>
+              <div class="cd-val">10%</div>
             </div>
           </div>
         </div>
       </div>
 
-  <!-- Right: tags -->
   <div class="reveal">
     <div class="spec-tags">
       <span class="tag featured">Rust</span>
@@ -722,7 +737,22 @@
   <div class="section-label reveal">Release Date:</div>
   <div class="release-section reveal">
     <div class="release-date-block">
-      <div class="release-big">01.01.2027</div>
+    <div class="release-big">01.01.2027</div>
+    </div>
+  </div>
+</section>
+
+<section id="download">
+  <div class="reveal">
+    <div class="section-label">Download</div>
+    <h2 class="section-title">Get Azat<br>for desktop.</h2>
+  </div>
+  <div class="contact-grid reveal">
+    <div class="contact-card"><div class="contact-icon">🖥️</div><div class="contact-info"><div class="contact-platform">Windows</div><div class="contact-handle">.exe</div></div></div>
+    <div class="contact-card"><div class="contact-icon">🐧</div><div class="contact-info"><div class="contact-platform">Linux</div><div class="contact-handle">.deb</div></div></div>
+    <div class="contact-card"><div class="contact-icon">🐧</div><div class="contact-info"><div class="contact-platform">Linux</div><div class="contact-handle">.rpm</div></div></div>
+  </div>
+  <p class="release-note reveal">Available from the release date.</p>
 </section>
 
 <!-- CONTACT -->
@@ -767,9 +797,9 @@
 <footer>
   <div class="footer-left">
     <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="logo">
-    <span style="font-family:'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;color:#000;">Azat A1 · Otan Systems</span>
+    <span style="font-family:'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;color:#000;">Azat · Otan Systems</span>
   </div>
-  <a href="https://otan-systems.com/azat/reference" style="text-decoration: none; color: inherit;">
+  <a href="https://otansystems.com/azat/reference" style="text-decoration: none; color: inherit;">
   <div class="footer-copy">© Otan Systems. All rights reserved. Click here to read Privacy & Policy. </div>
 </a>
 </footer>
@@ -786,19 +816,6 @@
     });
   }, { threshold: 0.1 });
   reveals.forEach(r => observer.observe(r));
-
-  // Context bar animation
-  const ctxObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        setTimeout(() => {
-          document.getElementById('ctxBar').style.width = '88%';
-        }, 300);
-        ctxObs.unobserve(e.target);
-      }
-    });
-  }, { threshold: 0.3 });
-  ctxObs.observe(document.getElementById('ctxBar'));
 
   // Benchmark bars animation
   const benchObs = new IntersectionObserver((entries) => {
