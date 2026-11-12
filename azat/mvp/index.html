@@ -238,10 +238,17 @@
   #attachBar { display: flex; flex-wrap: wrap; gap: 6px; padding: 8px 20px; }
   #attachBar[hidden] { display: none; }
 
-  .chip { display: inline-flex; align-items: center; gap: 6px; padding: 5px 10px; border: 1px solid var(--border); border-radius: 8px; background: #141414; color: var(--text); font-size: 12px; font-weight: 600; }
-  .chip-x { border: 0; background: none; color: inherit; font-size: 16px; line-height: 1; padding: 0; cursor: pointer; }
   .msg-files { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 6px; }
-  .msg.user .chip { background: rgba(0,0,0,0.08); border-color: rgba(0,0,0,0.25); color: #000; }
+  .chip { position: relative; display: flex; flex-direction: column; gap: 6px; width: 148px; padding: 6px 10px 9px; border: 1px solid var(--border); border-radius: 10px; background: #141414; color: var(--text); }
+  .chip-top { display: flex; justify-content: flex-end; height: 16px; }
+  .chip-x { border: 0; background: none; color: var(--text-light); font-size: 16px; line-height: 1; padding: 0; cursor: pointer; }
+  .chip-x:hover { color: var(--text); }
+  .chip-mid { display: flex; align-items: center; gap: 10px; }
+  .chip-ico { width: 26px; height: 26px; flex: none; }
+  .chip-size { font-size: 12px; font-weight: 600; color: var(--text-light); }
+  .chip-name { font-size: 13px; font-weight: 700; white-space: nowrap; }
+  .msg.user .chip { background: #000; border-color: #000; color: #fff; }
+  .msg.user .chip-size, .msg.user .chip-x { color: #8a8a8a; }
 
   /* ---- Membership login ---- */
   #login {
@@ -615,6 +622,43 @@
   }
 
   const fmtSize = (n) => n < 1024 ? n + ' B' : (n / 1024).toFixed(1) + ' KB';
+  const ICONS = {
+    code: '<polyline points="9 8 5 12 9 16"/><polyline points="15 8 19 12 15 16"/>',
+    text: '<line x1="8" y1="9" x2="16" y2="9"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="13" y2="17"/>',
+    data: '<path d="M9 7c-2 0-2 1-2 2.5S7 12 5.5 12C7 12 7 13 7 14.5S7 17 9 17"/><path d="M15 7c2 0 2 1 2 2.5S17 12 18.5 12C17 12 17 13 17 14.5S17 17 15 17"/>',
+    web: '<path d="M9 8l-4 4 4 4"/><path d="M15 8l4 4-4 4"/><line x1="13" y1="7" x2="11" y2="17"/>',
+    shell: '<polyline points="7 9 11 12 7 15"/><line x1="13" y1="16" x2="17" y2="16"/>',
+    doc: ''
+  };
+  const EXT_GROUP = {
+    code: 'c h cpp hpp cc cxx rs go py js ts jsx tsx java kt swift cs rb php lua asm s nasm zig dart cmake mk makefile',
+    text: 'txt md log rst csv tsv ini cfg conf',
+    data: 'json yaml yml toml xml sql',
+    web: 'html htm css scss vue svelte',
+    shell: 'sh bash zsh bat ps1 fish'
+  };
+  function fileExt(name) {
+    const i = name.lastIndexOf('.');
+    return i > 0 ? name.slice(i + 1) : '';
+  }
+  function shortName(name) {
+    const i = name.lastIndexOf('.');
+    if (i <= 0) return name.length > 6 ? name.slice(0, 6) + '..' : name;
+    const base = name.slice(0, i), ext = name.slice(i);
+    return (base.length > 6 ? base.slice(0, 6) + '..' : base) + ext;
+  }
+  function iconSvg(name) {
+    const ext = fileExt(name).toLowerCase();
+    let g = 'doc';
+    for (const k in EXT_GROUP) if (EXT_GROUP[k].split(' ').includes(ext)) { g = k; break; }
+    return '<svg class="chip-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">' +
+      '<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><polyline points="14 3 14 8 19 8"/>' + ICONS[g] + '</svg>';
+  }
+  function chipHtml(f, withX, idx) {
+    return '<div class="chip-top">' + (withX ? '<button type="button" class="chip-x" data-i="' + idx + '">×</button>' : '') + '</div>' +
+      '<div class="chip-mid">' + iconSvg(f.name) + '<span class="chip-size">' + fmtSize(f.size) + '</span></div>' +
+      '<div class="chip-name" title="' + f.name.replace(/"/g, '&quot;') + '">' + shortName(f.name).replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</div>';
+  }
 
   function chipsEl(files) {
     const box = document.createElement('div');
@@ -622,7 +666,7 @@
     files.forEach(f => {
       const c = document.createElement('span');
       c.className = 'chip';
-      c.textContent = f.name + ' · ' + fmtSize(f.size);
+      c.innerHTML = chipHtml(f, false);
       box.appendChild(c);
     });
     return box;
@@ -741,10 +785,7 @@
     pendingFiles.forEach((f, i) => {
       const chip = document.createElement('span');
       chip.className = 'chip';
-      chip.textContent = f.name + ' · ' + fmtSize(f.size);
-      const x = document.createElement('button');
-      x.type = 'button'; x.className = 'chip-x'; x.textContent = '×'; x.dataset.i = i;
-      chip.appendChild(x);
+      chip.innerHTML = chipHtml(f, true, i);
       attachBar.appendChild(chip);
     });
   }
