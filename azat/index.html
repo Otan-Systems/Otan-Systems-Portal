@@ -1,819 +1,199 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <title>Azat AI</title>
-
-<style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --black: #000000;
-    --white: #FFFFFF;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    background: var(--white);
-    color: var(--black);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── NAV ─── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 48px;
-    background: var(--black);
-    border-bottom: 1px solid var(--black);
-  }
-
-  .nav-logo { display: flex; align-items: center; gap: 12px; }
-
-  .nav-logo img {
-    width: 36px; height: 36px;
-    border-radius: 16px;
-    object-fit: cover;
-  }
-
-  .nav-logo-text {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 800; font-size: 20px;
-    letter-spacing: -0.5px;
-    color: var(--white);
-  }
-
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-
-  .nav-links a {
-    font-size: 14px; font-weight: 500;
-    color: var(--white);
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    opacity: 0.7;
-    transition: opacity 0.25s;
-  }
-
-  .nav-links a:hover { opacity: 1; }
-
-  /* ─── HERO ─── */
-  .hero {
-    position: relative; z-index: 1;
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    padding: 120px 24px 80px;
-  }
-
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 20px;
-    border-radius: 100px;
-    background: var(--black);
-    color: var(--white);
-    font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 36px;
-    animation: fadeUp 0.8s ease both;
-  }
-
-  .badge-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--white);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .hero-logo {
-    width: 120px; height: 120px;
-    border-radius: 16px;
-    object-fit: contain;
-    margin-bottom: 40px;
-    animation: fadeUp 0.9s ease 0.1s both, float 4s ease-in-out infinite 1s;
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .hero-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(52px, 8vw, 100px);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -3px;
-    margin-bottom: 12px;
-    animation: fadeUp 1s ease 0.15s both;
-  }
-
-  .hero-title .line-white { color: var(--black); }
-
-  .hero-sub {
-    font-size: clamp(14px, 2vw, 18px);
-    font-weight: 400;
-    color: var(--black);
-    letter-spacing: 0.5px;
-    max-width: 480px;
-    line-height: 1.7;
-    margin: 24px auto 48px;
-    animation: fadeUp 1s ease 0.25s both;
-  }
-
-  .hero-actions {
-    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 1s ease 0.35s both;
-  }
-
-  .btn-primary {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 700; font-size: 15px;
-    padding: 16px 40px;
-    border-radius: 100px;
-    background: var(--black);
-    color: var(--white);
-    border: 2px solid var(--black);
-    text-decoration: none;
-    transition: background 0.25s, color 0.25s, transform 0.2s;
-  }
-
-  .btn-primary:hover {
-    background: var(--white);
-    color: var(--black);
-    transform: translateY(-2px);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── STATS BAR ─── */
-  .stats-bar {
-    position: relative; z-index: 1;
-    display: flex; justify-content: center; gap: 0;
-    padding: 0 24px;
-    margin: -20px 0 80px;
-  }
-
-  .stats-inner {
-    display: flex; gap: 0;
-    background: var(--black);
-    border-radius: 20px;
-    overflow: hidden;
-    animation: fadeUp 1s ease 0.45s both;
-  }
-
-  .stat-item {
-    padding: 28px 48px;
-    text-align: center;
-    border-right: 1px solid var(--white);
-    position: relative;
-  }
-
-  .stat-item:last-child { border-right: none; }
-
-  .stat-value {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 28px; font-weight: 800;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .stat-value span {
-    color: var(--white);
-    font-size: 14px; font-weight: 600;
-    margin-left: 2px;
-  }
-
-  .stat-label {
-    font-size: 11px; font-weight: 500;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* ─── SECTIONS ─── */
-  section {
-    position: relative; z-index: 1;
-    max-width: 1200px; margin: 0 auto;
-    padding: 80px 48px;
-  }
-
-  .section-label {
-    font-size: 11px; font-weight: 600;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--black);
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
-    color: var(--black);
-    margin-bottom: 5px;
-  }
-
-  .section-desc {
-    font-size: 16px; font-weight: 400;
-    color: var(--black);
-    line-height: 1.75;
-    max-width: 520px;
-  }
-
-  /* ─── WHY CARDS ─── */
-  .why-card {
-    background: var(--black);
-    border-radius: 20px;
-    padding: 36px 32px;
-    transition: transform 0.3s;
-    position: relative;
-    overflow: hidden;
-    margin-top: 30px;
-  }
-
-  .why-card:hover { transform: translateY(-4px); }
-
-  .why-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 18px; font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--white);
-  }
-
-  .why-desc {
-    font-size: 14px; font-weight: 400;
-    color: var(--white);
-    line-height: 1.7;
-  }
-
-  .why-stat {
-    margin-top: 20px;
-    padding: 10px 16px;
-    background: transparent;
-    border: 1px solid var(--white);
-    border-radius: 10px;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 700;
-    color: var(--white);
-  }
-
-  /* ─── SPECIALIZATION ─── */
-  .spec-section {
-    background: var(--white);
-    border-top: 1px solid var(--black);
-    border-bottom: 1px solid var(--black);
-    padding: 80px 0;
-    max-width: 100%;
-  }
-
-  .spec-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
-
-  .spec-layout {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 80px;
-    align-items: start;
-    margin-top: 60px;
-  }
-
-  .spec-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-
-  .tag {
-    font-size: 13px; font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 100px;
-    border: 1px solid var(--black);
-    background: var(--black);
-    color: var(--white);
-    transition: all 0.2s;
-    cursor: default;
-  }
-
-  .tag:hover, .tag.featured {
-    outline: 2px solid var(--black);
-    outline-offset: 2px;
-    font-weight: 700;
-  }
-
-  /* ─── CONTEXT METER ─── */
-  .context-block {
-    background: var(--black);
-    border-radius: 20px;
-    padding: 36px;
-  }
-
-  .context-header {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-
-  .context-bar-wrap {
-    border: 1px solid var(--white);
-    border-radius: 100px;
-    height: 10px; overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .context-bar-fill {
-    height: 100%;
-    background: var(--white);
-    border-radius: 100px;
-    width: 0%;
-    transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
-  }
-
-  .context-nums {
-    display: flex; justify-content: space-between;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px;
-    color: var(--white);
-    margin-bottom: 32px;
-  }
-
-  .context-nums strong { color: var(--white); }
-  
-  .budget-bar { display: flex; border: 1px solid var(--white); border-radius: 12px; overflow: hidden; height: 44px; margin-bottom: 12px; }
-  .budget-seg { display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 700; color: var(--white); border-right: 1px solid var(--white); }
-  .budget-seg:last-child { border-right: none; }
-  .budget-seg.fill { background: var(--white); color: var(--black); }
-
-  .context-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  .cd-item {
-    padding: 16px;
-    background: transparent;
-    border: 1px solid var(--white);
-    border-radius: 12px;
-  }
-
-  .cd-label {
-    font-size: 11px; color: var(--white);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .cd-val {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 17px; font-weight: 700;
-    color: var(--white);
-  }
-
-
-  /* ─── BENCHMARKS ─── */
-  .bench-block {
-    background: var(--black);
-    border-radius: 20px;
-    padding: 36px;
-    margin-top: 40px;
-    display: flex; flex-direction: column; gap: 32px;
-  }
-
-  .bench-head {
-    display: flex; align-items: baseline; justify-content: space-between;
-    gap: 16px; margin-bottom: 12px;
-  }
-
-  .bench-name {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  .bench-score {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 28px; font-weight: 800;
-    color: var(--white);
-    line-height: 1;
-  }
-
-  .bench-track {
-    border: 1px solid var(--white);
-    border-radius: 100px;
-    height: 10px; overflow: hidden;
-  }
-
-  .bench-fill {
-    height: 100%;
-    background: var(--white);
-    border-radius: 100px;
-    width: 0%;
-    transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
-  }
-
-  .bench-ticks {
-    display: flex; justify-content: space-between;
-    margin-top: 8px;
-    font-size: 11px; color: var(--white);
-    letter-spacing: 1px;
-  }
-
-  /* ─── RELEASE ─── */
-  .release-section {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 40px;
-  }
-
-  .release-date-block { display: flex; flex-direction: column; }
-
-  .release-big {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(42px, 5.5vw, 80px);
-    font-weight: 800;
-    letter-spacing: -3px;
-    line-height: 0.9;
-    color: var(--black);
-  }
-
-  .release-note {
-    font-size: 13px;
-    color: var(--black);
-    margin-top: 10px;
-    font-style: italic;
-  }
-
-  .release-info { flex: 1; min-width: 280px; }
-
-  /* ─── CONTACT ─── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 50px;
-  }
-
-  .contact-card {
-    display: flex; align-items: center; gap: 16px;
-    padding: 24px 28px;
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 16px;
-    text-decoration: none;
-    color: var(--white);
-    transition: all 0.25s;
-  }
-
-  .contact-card:hover {
-    background: var(--white);
-    transform: translateY(-2px);
-  }
-
-  .contact-card:hover .contact-platform,
-  .contact-card:hover .contact-handle { color: var(--black); }
-
-  .contact-icon { font-size: 24px; flex-shrink: 0; filter: grayscale(1); }
-
-  .contact-info { min-width: 0; }
-
-  .contact-platform {
-    font-size: 11px; font-weight: 600;
-    color: var(--white);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .contact-handle {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--white);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    position: relative; z-index: 1;
-    border-top: 1px solid var(--black);
-    padding: 40px 48px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 20px;
-  }
-
-  .footer-left { display: flex; align-items: center; gap: 12px; }
-
-  .footer-left img {
-    width: 28px; height: 28px; object-fit: contain;
-  }
-
-  .footer-copy { font-size: 13px; color: var(--black); }
-
-  .divider { height: 1px; background: var(--black); margin: 0 48px; }
-
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    section { padding: 60px 24px; }
-    .spec-layout { grid-template-columns: 1fr; gap: 40px; }
-    .stats-inner { flex-direction: column; }
-    .stat-item { border-right: none; border-bottom: 1px solid var(--white); }
-    .stat-item:last-child { border-bottom: none; }
-    footer { flex-direction: column; align-items: flex-start; }
-    .release-section { flex-direction: column; }
-  }
-</style>
-
+<link rel="stylesheet" href="/otan.css">
+<link rel="stylesheet" href="/otan-product.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
+<body data-accent="orange">
 
+<header class="otan-topbar" id="otanTopbar" data-mode="always">
+  <div class="tb-right">
+    <ul class="tb-links">
+      <li><a href="#why">Why Azat</a></li>
+      <li><a href="#spec">Stack</a></li>
+      <li><a href="#benchmarks">Benchmarks</a></li>
+      <li><a href="#release">Release</a></li>
+      <li><a href="#download">Download</a></li>
+      <li><a href="#contact">Contact</a></li>
+    </ul>
+  </div>
+</header>
 
-<!-- NAV -->
-<nav>
-  <div class="nav-logo">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat logo">
-    <span class="nav-logo-text">Azat AI</span>
-  </div>
-  <ul class="nav-links">
-    <li><a href="#why">Why Azat</a></li>
-    <li><a href="#spec">Stack</a></li>
-    <li><a href="#benchmarks">Benchmarks</a></li>
-    <li><a href="#release">Release</a></li>
-    <li><a href="#download">Download</a></li>
-    <li><a href="#contact">Contact</a></li>
-  </ul>
-</nav>
-
-<!-- HERO -->
-<div class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    Otan Systems · 2026
-  </div>
-  <img class="hero-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat">
-  <h1 class="hero-title">
-    <div class="line-white">Azat AI</div>
-  </h1>
-  <p class="hero-sub">Azat AI is a desktop app for low-level & embedded development. Bring your own API key and get a built-in documentation base, local chats and a clean code viewer.</p>
-  <div class="hero-actions"><a href="https://otansystems.com" class="btn-primary">To Lobby</a></div>
-</div>
-
-<!-- STATS BAR -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">API Keys</div></div>
-    <div class="stat-item"><div class="stat-value">9</div><div class="stat-label">Local Chats</div></div>
-    <div class="stat-item"><div class="stat-value">3</div><div class="stat-label">Languages</div></div>
-  </div>
-</div>
-    <div class="stat-item">
-      <div class="stat-value">80<span>%</span></div>
-      <div class="stat-label">Task Coverage</div>
-    </div>
-  </div>
-</div>
-
-<!-- WHY AZAT -->
-<section id="why">
-  <div class="reveal">
-    <div class="section-label">Why us</div>
-    <h2 class="section-title">More Properties.</h2>
-  </div>
-    <div class="why-card reveal">
-      <div class="why-title">Strict Specialization</div>
-      <div class="why-desc">Focused exclusively on systems and embedded programming. No noise from web or app development clutter.</div>
-      <div class="why-stat">Rust · FASM · FreeRTOS · ESP32 · STM32</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Code Viewer</div>
-      <div class="why-desc">Every code block opens as a mini-IDE right inside the message: syntax highlighting, line numbers, the language name on the top bar and a copy button.</div>
-      <div class="why-stat">Highlighting · Line numbers · Copy</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Built-in Documentation</div>
-      <div class="why-desc">A large documentation base ships with the app. Browse its folders in Usage List and tick exactly the parts you need — only they are attached to your prompt.</div>
-      <div class="why-stat">Usage List · Pick what to attach</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Bring Your Own Key</div>
-      <div class="why-desc">Connect up to 3 API keys, each with its own Base URL and Model. Keys are kept in your system's secure storage and can expire automatically. Balance, limits and model capabilities stay between you and your provider.</div>
-      <div class="why-stat">Up to 3 keys · Optional expiry</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Local Chats</div>
-      <div class="why-desc">Up to 9 chats, each saved as a JSON file on your own machine. Every chat is bound to one of your keys and stays inactive until you pick it.</div>
-      <div class="why-stat">9 chats · Stored locally</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Embedded & RTOS</div>
-      <div class="why-desc">FreeRTOS, Arduino, ESP32, STM32, Raspberry Pi — complete peripheral and real-time programming support.</div>
-      <div class="why-stat">FreeRTOS · ESP32 · STM32 · RPi</div>
-    </div>
-    <div class="why-card reveal">
-      <div class="why-title">Languages & Themes</div>
-      <div class="why-desc">The interface speaks English, Русский and 中文（简体）, in a dark or a light theme.</div>
-      <div class="why-stat">EN · RU · 中文 · Dark / Light</div>
-    </div>
+<main>
+<section class="p-hero">
+  <div class="p-badge"><i></i>Otan Systems · 2026</div>
+  <img class="p-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Azat logo">
+  <h1 class="p-title">Azat AI</h1>
+  <p class="p-sub">Azat AI is a desktop app for low-level &amp; embedded development. Bring your own API key and get a built-in documentation base, local chats and a clean code viewer.</p>
 </section>
 
-<!-- SPECIALIZATION -->
-<div class="spec-section" id="spec">
-  <div class="spec-inner">
-      <div class="reveal">
-        <div class="context-block">
-          <div class="context-header">Context Budget</div>
-          <div class="budget-bar">
-            <div class="budget-seg fill" style="width:30%">30%</div>
-            <div class="budget-seg" style="width:30%">30%</div>
-            <div class="budget-seg" style="width:30%">30%</div>
-            <div class="budget-seg" style="width:30%">10%</div>
-          </div>
-          <div class="context-nums">
-            <span>0</span>
-            <strong>Input Window</strong>
-          </div>
-          <div class="context-detail">
-            <div class="cd-item">
-              <div class="cd-label">Docs</div>
-              <div class="cd-val">30%</div>
-            </div>
-            <div class="cd-item">
-              <div class="cd-label">Chats</div>
-              <div class="cd-val">30%</div>
-            </div>
-            <div class="cd-item">
-              <div class="cd-label">Prompt</div>
-              <div class="cd-val">30%</div>
-            </div>
-            <div class="cd-item">
-              <div class="cd-label">Reserve</div>
-              <div class="cd-val">10%</div>
-            </div>
-          </div>
-        </div>
-      </div>
-  </div>
+<div class="sec p-stats">
+  <div class="p-stat reveal"><div class="p-stat-value">3</div><div class="p-stat-label">API Keys</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">9</div><div class="p-stat-label">Local Chats</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">3</div><div class="p-stat-label">Languages</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">80<span>%</span></div><div class="p-stat-label">Task Coverage</div></div>
+</div>
 
-</div></div></div>
-
-<!-- BENCHMARKS -->
-<section id="benchmarks">
+<section class="sec" id="why">
   <div class="reveal">
-    <div class="section-label">Results</div>
-    <h2 class="section-title">Azat A1.</h2>
+    <div class="sec-label">Why us</div>
+    <h2 class="sec-title">More Properties.</h2>
   </div>
-  <div class="bench-block reveal">
+  <div class="tiles">
+    <div class="tile reveal">
+      <div class="tile-title">Strict Specialization</div>
+      <div class="tile-desc">Focused exclusively on systems and embedded programming. No noise from web or app development clutter.</div>
+      <div class="tile-stat">Rust · FASM · FreeRTOS · ESP32 · STM32</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Code Viewer</div>
+      <div class="tile-desc">Every code block opens as a mini-IDE right inside the message: syntax highlighting, line numbers, the language name on the top bar and a copy button.</div>
+      <div class="tile-stat">Highlighting · Line numbers · Copy</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Built-in Documentation</div>
+      <div class="tile-desc">A large documentation base ships with the app. Browse its folders in Usage List and tick exactly the parts you need — only they are attached to your prompt.</div>
+      <div class="tile-stat">Usage List · Pick what to attach</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Bring Your Own Key</div>
+      <div class="tile-desc">Connect up to 3 API keys, each with its own Base URL and Model. Keys are kept in your system's secure storage and can expire automatically. Balance, limits and model capabilities stay between you and your provider.</div>
+      <div class="tile-stat">Up to 3 keys · Optional expiry</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Local Chats</div>
+      <div class="tile-desc">Up to 9 chats, each saved as a JSON file on your own machine. Every chat is bound to one of your keys and stays inactive until you pick it.</div>
+      <div class="tile-stat">9 chats · Stored locally</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Embedded &amp; RTOS</div>
+      <div class="tile-desc">FreeRTOS, Arduino, ESP32, STM32, Raspberry Pi — complete peripheral and real-time programming support.</div>
+      <div class="tile-stat">FreeRTOS · ESP32 · STM32 · RPi</div>
+    </div>
+    <div class="tile reveal">
+      <div class="tile-title">Languages &amp; Themes</div>
+      <div class="tile-desc">The interface speaks English, Русский and 中文（简体）, in a dark or a light theme.</div>
+      <div class="tile-stat">EN · RU · 中文 · Dark / Light</div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="spec">
+  <div class="ctx reveal">
+    <div class="ctx-head">Context Budget</div>
+    <div class="budget">
+      <div class="budget-seg" style="--w:30">30%</div>
+      <div class="budget-seg" style="--w:30">30%</div>
+      <div class="budget-seg" style="--w:30">30%</div>
+      <div class="budget-seg" style="--w:10">10%</div>
+    </div>
+    <div class="ctx-nums"><span>0</span><strong>Input Window</strong></div>
+    <div class="cd-grid">
+      <div class="cd-item"><div class="cd-label">Docs</div><div class="cd-val">30%</div></div>
+      <div class="cd-item"><div class="cd-label">Chats</div><div class="cd-val">30%</div></div>
+      <div class="cd-item"><div class="cd-label">Prompt</div><div class="cd-val">30%</div></div>
+      <div class="cd-item"><div class="cd-label">Reserve</div><div class="cd-val">10%</div></div>
+    </div>
+  </div>
+</section>
+
+<section class="sec" id="benchmarks">
+  <div class="reveal">
+    <div class="sec-label">Results</div>
+    <h2 class="sec-title">Azat A1.</h2>
+  </div>
+  <div class="bench reveal">
     <div class="bench-item">
-      <div class="bench-head">
-        <div class="bench-name">SWE-Bench-Verified</div>
-        <div class="bench-score">83.2%</div>
-      </div>
+      <div class="bench-head"><div class="bench-name">SWE-Bench-Verified</div><div class="bench-score">83.2%</div></div>
       <div class="bench-track"><div class="bench-fill" data-value="83.2"></div></div>
       <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
     </div>
-
     <div class="bench-item">
-      <div class="bench-head">
-        <div class="bench-name">SWE-Bench-Pro</div>
-        <div class="bench-score">60.7%</div>
-      </div>
+      <div class="bench-head"><div class="bench-name">SWE-Bench-Pro</div><div class="bench-score">60.7%</div></div>
       <div class="bench-track"><div class="bench-fill" data-value="60.7"></div></div>
       <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
     </div>
-
     <div class="bench-item">
-      <div class="bench-head">
-        <div class="bench-name">HumanEval</div>
-        <div class="bench-score">97%</div>
-      </div>
+      <div class="bench-head"><div class="bench-name">HumanEval</div><div class="bench-score">97%</div></div>
       <div class="bench-track"><div class="bench-fill" data-value="97"></div></div>
       <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
     </div>
-
     <div class="bench-item">
-      <div class="bench-head">
-        <div class="bench-name">SimpleQA-Verified</div>
-        <div class="bench-score">78.9%</div>
-      </div>
+      <div class="bench-head"><div class="bench-name">SimpleQA-Verified</div><div class="bench-score">78.9%</div></div>
       <div class="bench-track"><div class="bench-fill" data-value="78.9"></div></div>
       <div class="bench-ticks"><span>0%</span><span>50%</span><span>100%</span></div>
     </div>
   </div>
 </section>
 
-<!-- RELEASE -->
-<section id="release">
-  <div class="section-label reveal">Release Date:</div>
-  <div class="release-section reveal">
-    <div class="release-date-block">
-    <div class="release-big">01.01.2027</div>
-    </div>
-  </div>
+<section class="sec" id="release">
+  <div class="sec-label reveal">Release Date:</div>
+  <div class="release-big reveal">01.01.2027</div>
 </section>
 
-<section id="download">
+<section class="sec" id="download">
   <div class="reveal">
-    <div class="section-label">Download</div>
-    <h2 class="section-title">Get Azat<br>for desktop.</h2>
+    <div class="sec-label">Download</div>
+    <h2 class="sec-title">Get Azat<br>for desktop.</h2>
   </div>
-  <div class="contact-grid reveal">
-    <div class="contact-card"><div class="contact-icon">🖥️</div><div class="contact-info"><div class="contact-platform">Windows</div><div class="contact-handle">.exe</div></div></div>
-    <div class="contact-card"><div class="contact-icon">🐧</div><div class="contact-info"><div class="contact-platform">Linux</div><div class="contact-handle">.deb</div></div></div>
-    <div class="contact-card"><div class="contact-icon">🐧</div><div class="contact-info"><div class="contact-platform">Linux</div><div class="contact-handle">.rpm</div></div></div>
+  <div class="link-grid reveal">
+    <div class="link-card"><div class="link-icon">🖥️</div><div><div class="link-platform">Windows</div><div class="link-handle">.exe</div></div></div>
+    <div class="link-card"><div class="link-icon">🐧</div><div><div class="link-platform">Linux</div><div class="link-handle">.deb</div></div></div>
+    <div class="link-card"><div class="link-icon">🐧</div><div><div class="link-platform">Linux</div><div class="link-handle">.rpm</div></div></div>
   </div>
   <p class="release-note reveal">Available from the release date.</p>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
+<section class="sec" id="contact">
   <div class="reveal">
-    <div class="section-label">Contact</div>
-    <h2 class="section-title">Reach out<br>to Otan Systems.</h2>
+    <div class="sec-label">Contact</div>
+    <h2 class="sec-title">Reach out<br>to Otan Systems.</h2>
   </div>
-  <div class="contact-grid reveal">
-    <a href="mailto:otan-systems@proton.me" class="contact-card">
-      <div class="contact-icon">✉️</div>
-      <div class="contact-info">
-        <div class="contact-platform">Email</div>
-        <div class="contact-handle">otan-systems@proton.me</div>
-      </div>
-    </a>
-    <a href="https://github.com/Otan-systems" target="_blank" class="contact-card">
-      <div class="contact-icon">🐙</div>
-      <div class="contact-info">
-        <div class="contact-platform">GitHub</div>
-        <div class="contact-handle">@Otan-systems</div>
-      </div>
-    </a>
-    <a href="https://instagram.com/otansystems_official" target="_blank" class="contact-card">
-      <div class="contact-icon">📸</div>
-      <div class="contact-info">
-        <div class="contact-platform">Instagram</div>
-        <div class="contact-handle">@otansystems_official</div>
-      </div>
-    </a>
-    <a href="https://tiktok.com/@otan.systems" target="_blank" class="contact-card">
-      <div class="contact-icon">🎵</div>
-      <div class="contact-info">
-        <div class="contact-platform">TikTok</div>
-        <div class="contact-handle">@otan.systems</div>
-      </div>
-    </a>
+  <div class="link-grid reveal">
+    <a class="link-card" href="mailto:otan-systems@proton.me"><div class="link-icon">✉️</div><div><div class="link-platform">Email</div><div class="link-handle">otan-systems@proton.me</div></div></a>
+    <a class="link-card" href="https://github.com/Otan-systems" target="_blank" rel="noopener"><div class="link-icon">🐙</div><div><div class="link-platform">GitHub</div><div class="link-handle">@Otan-systems</div></div></a>
+    <a class="link-card" href="https://instagram.com/otansystems_official" target="_blank" rel="noopener"><div class="link-icon">📸</div><div><div class="link-platform">Instagram</div><div class="link-handle">@otansystems_official</div></div></a>
+    <a class="link-card" href="https://tiktok.com/@otan.systems" target="_blank" rel="noopener"><div class="link-icon">🎵</div><div><div class="link-platform">TikTok</div><div class="link-handle">@otan.systems</div></div></a>
   </div>
 </section>
+</main>
 
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="logo">
-    <span style="font-family:'SF Pro Display','Helvetica Neue',Arial,sans-serif;font-weight:700;font-size:15px;color:#000;">Azat · Otan Systems</span>
-  </div>
-  <a href="https://otansystems.com/azat/reference" style="text-decoration: none; color: inherit;">
-  <div class="footer-copy">© Otan Systems. All rights reserved. Click here to read Privacy & Policy. </div>
-</a>
+<footer class="p-footer">
+  <div class="p-footer-left"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="">Azat · Otan Systems</div>
+  <a href="https://otansystems.com/azat/reference">© Otan Systems. All rights reserved. Click here to read Privacy &amp; Policy.</a>
 </footer>
 
+<script src="/otan-id.js"></script>
 <script>
-  // Scroll reveal
-  const reveals = document.querySelectorAll('.reveal');
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((e, i) => {
-      if (e.isIntersecting) {
-        setTimeout(() => e.target.classList.add('visible'), i * 80);
-        observer.unobserve(e.target);
-      }
+(function () {
+  var io = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e, i) {
+      if (!e.isIntersecting) return;
+      setTimeout(function () { e.target.classList.add('visible'); }, i * 80);
+      io.unobserve(e.target);
     });
   }, { threshold: 0.1 });
-  reveals.forEach(r => observer.observe(r));
+  document.querySelectorAll('.reveal').forEach(function (r) { io.observe(r); });
 
-  // Benchmark bars animation
-  const benchObs = new IntersectionObserver((entries) => {
-    entries.forEach(e => {
-      if (e.isIntersecting) {
-        e.target.querySelectorAll('.bench-fill').forEach((b, i) => {
-          setTimeout(() => { b.style.width = b.dataset.value + '%'; }, 300 + i * 150);
-        });
-        benchObs.unobserve(e.target);
-      }
+  var bench = document.querySelector('.bench');
+  var bio = new IntersectionObserver(function (entries) {
+    entries.forEach(function (e) {
+      if (!e.isIntersecting) return;
+      e.target.querySelectorAll('.bench-fill').forEach(function (b, i) {
+        setTimeout(function () { b.style.width = b.dataset.value + '%'; }, 300 + i * 150);
+      });
+      bio.unobserve(e.target);
     });
   }, { threshold: 0.3 });
-  benchObs.observe(document.querySelector('.bench-block'));
-
+  bio.observe(bench);
+})();
 </script>
-
 </body>
 </html>
