@@ -2,640 +2,731 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <title>Otan Systems</title>
-<meta name="google-site-verification" content="google9491631d48f60dc2">
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+@font-face {
+  font-family: 'Peace Sans';
+  src: url('peace_sans.otf') format('opentype');
+  font-display: swap;
+}
 
 :root {
-  --bg: #FFFFFF;
-  --card-bg: #000000;
-  --accent: #000000;
-  --on-card: #FFFFFF;
-  --white: #FFFFFF;
-  --glass: #000000;
-  --glass-border: #000000;
-  --glass-strong: #000000;
+  --bg: #000;
+  --white: #fff;
+  --orange: #ff7a1c;
+  --blue: #38b6ff;
+  --lime: #c3ff6b;
+  --red: #ff5a5f;
+  --muted: #9a9a9a;
+  --font: 'Peace Sans', 'Arial Black', 'Segoe UI Black', Impact, sans-serif;
+  color-scheme: dark;
 }
-
-html { scroll-behavior: smooth; }
-
+* { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
 body {
-  font-family: 'Inter', 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-  background: #1A1A1A;
-  color: var(--accent);
-  min-height: 100vh;
-  overflow-x: hidden;
+  margin: 0; background: var(--bg); color: var(--white);
+  font-family: var(--font); font-weight: 400; line-height: 1.2;
+}
+button, input { font-family: inherit; }
+a { color: inherit; }
+:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; }
+h1, h2, h3, p { margin: 0; }
+h1:focus { outline: none; }
+
+/* theme colours */
+.c-orange { --c: var(--orange); }
+.c-blue   { --c: var(--blue); }
+.c-white  { --c: var(--white); }
+.c-lime   { --c: var(--lime); }
+
+/* views */
+.view { display: none; }
+.view.active { display: block; }
+body.authed main { padding-top: 68px; }
+
+/* ───────── shapes ───────── */
+.shape {
+  display: block; width: 100%; aspect-ratio: 1; color: var(--c);
+  fill: none; stroke: currentColor; stroke-width: 8px;
+  transition: transform .22s ease; transform-origin: center;
+}
+.shape:hover { transform: scale(.88); }
+
+/* ───────── topbar (logged in) ───────── */
+.topbar {
+  position: fixed; inset: 0 0 auto 0; height: 68px; z-index: 20;
+  display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+  padding: 0 clamp(14px, 3vw, 36px); background: #000; border-bottom: 3px solid #1a1a1a;
+}
+body.authed .topbar { display: grid; }
+.tb-user { font-size: clamp(18px, 2.4vw, 28px); color: var(--lime); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tb-shapes { display: flex; gap: clamp(8px, 1.6vw, 18px); }
+.tb-shapes .shape { width: clamp(20px, 2.8vw, 30px); stroke-width: 3px; }
+.tb-actions { display: flex; gap: 10px; justify-content: flex-end; }
+.pill {
+  font-size: clamp(13px, 1.6vw, 18px); color: var(--white); background: #000;
+  border: 3px solid var(--white); border-radius: 14px; padding: 6px 14px; cursor: pointer;
+  transition: transform .2s ease;
+}
+.pill:hover { transform: scale(.94); }
+.pill.danger { border-color: var(--red); color: var(--red); }
+
+/* ───────── welcome ───────── */
+.welcome {
+  min-height: 100svh; max-width: 1280px; margin: 0 auto;
+  padding: clamp(24px, 5vw, 72px);
+  display: grid; grid-template-columns: 1fr 1fr; align-items: center; gap: clamp(24px, 6vw, 96px);
+}
+.shapes { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(14px, 3vw, 40px); max-width: 520px; width: 100%; }
+.welcome-text { text-align: right; }
+.welcome h1 { font-size: clamp(48px, 8vw, 104px); line-height: 1; margin-bottom: clamp(20px, 4vw, 48px); }
+.menu { list-style: none; margin: 0; padding: 0; display: grid; gap: 2px; justify-items: end; }
+.menu a {
+  display: inline-block; font-size: clamp(32px, 5vw, 64px); line-height: 1.12;
+  color: var(--c); text-decoration: none; transform-origin: right center; transition: transform .2s ease;
+}
+.menu a:hover { transform: scale(.94); }
+body.authed [data-guest] { display: none; }
+@media (max-width: 760px) {
+  .welcome { grid-template-columns: 1fr; align-content: center; }
+  .welcome-text { text-align: left; order: 1; }
+  .menu { justify-items: start; }
+  .menu a { transform-origin: left center; }
+  .shapes { order: 2; max-width: 300px; }
 }
 
-/* ─── BACKGROUND ─── */
-.bg-layer {
-  position: fixed; inset: 0; z-index: 0; pointer-events: none;
-  background: var(--bg);
+/* ───────── auth screens ───────── */
+.auth {
+  --t: var(--orange);
+  min-height: 100svh; padding: clamp(20px, 4vw, 52px);
+  display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(0, .8fr); column-gap: clamp(24px, 5vw, 80px);
+}
+#v-signup { --t: var(--blue); }
+#v-login  { --t: var(--orange); }
+#v-reset  { --t: var(--lime); }
+.auth-h { font-size: clamp(40px, 7vw, 84px); line-height: 1.05; color: var(--t); }
+.back {
+  display: block; font-size: clamp(18px, 2.4vw, 30px); color: var(--t); background: none; border: 0;
+  padding: 0; margin: 10px 0 clamp(18px, 3vw, 34px); cursor: pointer; text-align: left;
+}
+.field {
+  position: relative; display: block; margin-top: 16px; background: #000;
+  border: 6px solid var(--t); border-radius: 22px; padding: 14px 26px 14px;
+}
+.field:focus-within { outline: 3px solid var(--white); outline-offset: 3px; }
+.field input {
+  display: block; width: 100%; background: none; border: 0; padding: 4px 0; margin: 0;
+  color: var(--white); font-size: clamp(26px, 4vw, 46px); outline: none; min-width: 0;
+}
+.field input::placeholder { color: var(--white); opacity: .92; }
+.field.has-sq input { padding-right: 60px; }
+.vshow { font-size: clamp(26px, 4vw, 46px); padding: 4px 60px 4px 0; user-select: all; word-break: break-all; }
+.hints { list-style: none; margin: 4px 0 0; padding: 0; font-size: clamp(13px, 1.5vw, 17px); line-height: 1.45; }
+.hints li { color: var(--white); transition: color .15s ease; }
+.hints li.good { color: var(--lime); }
+.hints li.bad  { color: var(--red); }
+.sq {
+  position: absolute; right: 20px; top: calc(50% - 22px); width: 44px; height: 44px; padding: 0;
+  display: grid; place-items: center; background: var(--t); border: 3px solid #000; border-radius: 12px; cursor: pointer;
+  transition: transform .2s ease;
+}
+.sq:hover { transform: scale(.9); }
+.sq svg { width: 24px; height: 24px; stroke: #000; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.sq .i-check { display: none; }
+.sq.done .i-main { display: none; }
+.sq.done .i-check { display: block; }
+
+.auth-side { display: flex; flex-direction: column; justify-content: flex-end; }
+.status { min-height: 1.4em; margin-bottom: 10px; text-align: center; font-size: clamp(15px, 1.8vw, 22px); color: var(--red); }
+.status.ok { color: var(--lime); }
+.submit {
+  width: 100%; background: #000; color: var(--white); font-size: clamp(28px, 4vw, 52px);
+  border: 6px solid var(--lime); border-radius: 22px; padding: 14px; cursor: pointer;
+  transition: transform .2s ease;
+}
+.submit:hover:not(:disabled) { transform: scale(.97); }
+.submit:disabled { opacity: .55; cursor: progress; }
+@media (max-width: 860px) {
+  .auth { grid-template-columns: 1fr; }
+  .auth-side { margin-top: 22px; }
 }
 
-.grid-overlay {
-  display: none;
+/* ───────── products / privacy ───────── */
+.page { max-width: 1280px; margin: 0 auto; min-height: 100svh; padding: clamp(20px, 4vw, 52px); }
+.page .auth-h { color: var(--c); }
+.page .back { color: var(--c); }
+.cards {
+  display: grid; gap: clamp(14px, 2vw, 24px);
+  grid-template-columns: repeat(auto-fill, minmax(min(100%, 320px), 1fr));
+  margin-bottom: clamp(28px, 5vw, 56px);
 }
-
-/* ─── NAV ─── */
-nav {
-  position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-  display: flex; align-items: center; justify-content: space-between;
-  padding: 18px 48px;
-  background: var(--bg);
-  border-bottom: 1px solid var(--accent);
+.sub-h { font-size: clamp(28px, 4vw, 48px); color: var(--white); margin: clamp(10px, 2vw, 24px) 0 clamp(14px, 2vw, 22px); }
+.card {
+  display: flex; flex-direction: column; gap: 10px; text-decoration: none; color: var(--white);
+  background: #000; border: 6px solid var(--c); border-radius: 26px; padding: 22px 26px;
+  transition: transform .2s ease;
 }
+.card:hover { transform: scale(.97); }
+@media (min-width: 900px) { .card.wide { grid-column: span 2; } }
+.card-tag { color: var(--c); font-size: 15px; }
+.card-name { font-size: clamp(28px, 3.4vw, 40px); line-height: 1.1; }
+.card-desc { font-size: 16px; line-height: 1.5; flex: 1; }
+.card-url { color: var(--c); font-size: 14px; word-break: break-all; }
 
-.nav-logo {
-  display: flex; align-items: center; gap: 12px;
-  text-decoration: none;
+.prose { max-width: 70ch; }
+.prose h2 { font-size: clamp(22px, 3vw, 32px); color: var(--lime); margin: 28px 0 8px; }
+.prose p, .prose li { font-size: 17px; line-height: 1.55; }
+.prose ul { margin: 8px 0 0; padding-left: 1.2em; }
+.prose .muted { color: var(--muted); font-size: 15px; }
+
+footer { padding: 28px clamp(20px, 4vw, 52px); font-size: 14px; color: var(--muted); }
+body[data-view="signup"] footer, body[data-view="login"] footer, body[data-view="reset"] footer { display: none; }
+
+/* delete dialog */
+dialog {
+  background: #000; color: var(--white); border: 6px solid var(--red); border-radius: 26px;
+  padding: 28px; width: min(92vw, 520px);
 }
-
-.nav-logo img {
-  width: 36px; height: 36px; object-fit: contain; border-radius: 8px;
-}
-
-.nav-logo-text {
-  font-weight: 800; font-size: 19px;
-  letter-spacing: -0.5px;
-  color: var(--accent);
-}
-
-.nav-links {
-  display: flex; gap: 36px; list-style: none;
-}
-
-.nav-links a {
-  font-size: 14px; font-weight: 500;
-  color: var(--accent);
-  text-decoration: none;
-  letter-spacing: 0.3px;
-  transition: color 0.25s;
-}
-
-.nav-links a:hover { color: var(--accent); }
-
-.nav-cta {
-  font-size: 13px; font-weight: 600;
-  padding: 10px 24px;
-  border-radius: 100px;
-  background: var(--card-bg);
-  color: var(--on-card);
-  text-decoration: none;
-  transition: transform 0.2s;
-}
-
-.nav-cta:hover {
-  transform: translateY(-1px);
-}
-
-@media (max-width: 720px) {
-  nav { padding: 16px 20px; }
-  .nav-links { display: none; }
-}
-
-/* ─── HERO ─── */
-.hero {
-  position: relative; z-index: 1;
-  min-height: 100vh;
-  display: flex; flex-direction: column; align-items: center; justify-content: center;
-  text-align: center;
-  padding: 140px 24px 80px;
-}
-
-@keyframes pulse {
-  0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.5; transform: scale(0.75); }
-}
-
-.hero-title {
-  font-size: clamp(40px, 7vw, 76px);
-  font-weight: 900;
-  line-height: 1.04;
-  letter-spacing: -2px;
-  margin-bottom: 24px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.25s both;
-}
-
-.hero-title .grad {
-  color: var(--accent);
-}
-
-.hero-sub {
-  font-size: 16px; font-weight: 400;
-  color: var(--accent);
-  max-width: 480px;
-  line-height: 1.75;
-  letter-spacing: 0.1px;
-  margin-bottom: 52px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.4s both;
-}
-
-.hero-sub strong {
-  color: var(--accent);
-  font-weight: 500;
-}
-
-/* scroll cue */
-.scroll-cue {
-  margin-top: 64px;
-  display: flex; flex-direction: column; align-items: center; gap: 10px;
-  opacity: 0;
-  animation: fadeUp 0.8s ease 0.9s both;
-}
-
-.scroll-cue span {
-  font-size: 10px; letter-spacing: 2px; text-transform: uppercase;
-  color: var(--accent);
-}
-
-.scroll-line {
-  width: 1px; height: 40px;
-  background: var(--accent);
-  animation: scrollDrop 1.8s ease-in-out infinite;
-}
-
-@keyframes scrollDrop {
-  0% { transform: scaleY(0); transform-origin: top; opacity: 1; }
-  50% { transform: scaleY(1); transform-origin: top; opacity: 1; }
-  100% { transform: scaleY(1); transform-origin: bottom; opacity: 0; }
-}
-
-/* ─── PRODUCTS SECTION ─── */
-.section {
-  position: relative; z-index: 1;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 32px 140px;
-}
-
-.section-eyebrow {
-  display: flex; align-items: center; gap: 14px;
-  margin-bottom: 20px;
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.1s both;
-}
-
-.section-eyebrow-line {
-  flex: 1; max-width: 60px; height: 1px;
-  background: var(--accent);
-}
-
-.section-eyebrow span {
-  font-size: 10px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--accent);
-}
-
-.section-title {
-  font-size: clamp(26px, 4vw, 38px);
-  font-weight: 800; letter-spacing: -1px;
-  margin-bottom: 48px;
-  color: var(--accent);
-  opacity: 0;
-  animation: fadeUp 0.7s ease 0.2s both;
-}
-
-/* ─── PRODUCT CARDS (large) ─── */
-.product-grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  gap: 18px;
-  margin-bottom: 18px;
-}
-
-@media (max-width: 680px) {
-  .product-grid { grid-template-columns: 1fr; }
-}
-
-.product-card {
-  position: relative;
-  background: var(--card-bg);
-  border: 1px solid var(--card-bg);
-  border-radius: 20px;
-  padding: 36px 32px 30px;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-  opacity: 0;
-  animation: fadeUp 0.7s ease both;
-}
-
-.product-card:hover {
-  transform: translateY(-6px);
-}
-
-.product-card.azat  { animation-delay: 0.35s; }
-.product-card.qanat { animation-delay: 0.55s; }
-.product-card.synapse { animation-delay: 1.05s; }
-.card-inner { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 12px; flex: 1; }
-
-.card-header {
-  display: flex; align-items: flex-start; justify-content: space-between;
-}
-
-.card-icon-wrap {
-  width: 48px; height: 48px; border-radius: 14px;
-  display: flex; align-items: center; justify-content: center;
-  background: var(--card-bg);
-  border: 1px solid var(--on-card);
-  margin-bottom: 4px;
-}
-
-.card-icon-wrap svg { width: 22px; height: 22px; }
-
-.card-chip {
-  font-size: 9px; font-weight: 700; letter-spacing: 1.6px;
-  text-transform: uppercase;
-  padding: 4px 10px;
-  border-radius: 100px;
-  border: 1px solid var(--on-card);
-}
-
-.chip-blue  { color: var(--on-card); background: var(--card-bg); }
-.chip-sky   { color: var(--on-card); background: var(--card-bg); }
-
-.card-name {
-  font-size: 22px; font-weight: 800; letter-spacing: -0.5px;
-  color: var(--on-card);
-}
-
-.card-desc {
-  font-size: 13px; font-weight: 400; line-height: 1.75;
-  color: var(--on-card);
-  flex: 1;
-}
-
-.card-footer {
-  margin-top: auto;
-  padding-top: 20px;
-  border-top: 1px solid var(--on-card);
-  display: flex; align-items: center; justify-content: space-between;
-}
-
-.card-url {
-  font-size: 10px; font-weight: 500; letter-spacing: 0.5px;
-  color: var(--on-card);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  transition: color 0.25s;
-}
-
-.product-card:hover .card-url { color: var(--on-card); }
-
-.card-arrow {
-  width: 30px; height: 30px; border-radius: 50%;
-  border: 1px solid var(--on-card);
-  display: flex; align-items: center; justify-content: center;
-  background: var(--card-bg);
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-
-.product-card:hover .card-arrow {
-  transform: translate(3px,-3px);
-}
-
-.card-arrow svg { width: 12px; height: 12px; }
-
-/* ─── POLICY CARDS (smaller) ─── */
-.policy-grid {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 16px;
-}
-
-@media (max-width: 680px) {
-  .policy-grid { grid-template-columns: 1fr; }
-}
-
-.policy-card {
-  position: relative;
-  background: var(--card-bg);
-  border: 1px solid var(--card-bg);
-  border-radius: 16px;
-  padding: 24px 26px 22px;
-  text-decoration: none;
-  color: inherit;
-  display: flex;
-  flex-direction: column;
-  overflow: hidden;
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-  opacity: 0;
-  animation: fadeUp 0.7s ease both;
-}
-
-.policy-card:hover {
-  transform: translateY(-4px);
-}
-
-.policy-card.p-azat  { animation-delay: 0.55s; }
-.policy-card.p-ardak { animation-delay: 0.65s; }
-
-.policy-inner { position: relative; z-index: 1; display: flex; flex-direction: column; gap: 8px; flex: 1; }
-
-.policy-top {
-  display: flex; align-items: center; justify-content: space-between;
-  margin-bottom: 4px;
-}
-
-.policy-dot {
-  width: 6px; height: 6px; border-radius: 50%;
-}
-
-.dot-blue { background: var(--on-card); }
-.dot-sky  { background: var(--on-card); }
-
-.policy-name {
-  font-size: 15px; font-weight: 700; letter-spacing: -0.2px;
-  color: var(--on-card);
-  line-height: 1.3;
-}
-
-.policy-desc {
-  font-size: 12px; font-weight: 400; line-height: 1.7;
-  color: var(--on-card);
-}
-
-.policy-footer {
-  margin-top: auto;
-  padding-top: 14px;
-  border-top: 1px solid var(--on-card);
-  display: flex; align-items: center; justify-content: space-between;
-}
-
-.policy-url {
-  font-size: 9.5px; font-weight: 400; letter-spacing: 0.4px;
-  color: var(--on-card);
-  font-family: 'SF Mono', 'Fira Code', monospace;
-  transition: color 0.25s;
-}
-
-.policy-card:hover .policy-url { color: var(--on-card); }
-
-.policy-arrow {
-  width: 24px; height: 24px; border-radius: 50%;
-  border: 1px solid var(--on-card);
-  display: flex; align-items: center; justify-content: center;
-  transition: transform 0.3s cubic-bezier(0.22,1,0.36,1);
-}
-
-.policy-card:hover .policy-arrow {
-  transform: translate(2px,-2px);
-}
-
-.policy-arrow svg { width: 10px; height: 10px; }
-
-/* ─── DIVIDER ─── */
-.section-divider {
-  display: flex; align-items: center; gap: 16px;
-  margin: 56px 0 48px;
-}
-
-.section-divider-line {
-  flex: 1; height: 1px;
-  background: var(--accent);
-}
-
-.section-divider span {
-  font-size: 9.5px; font-weight: 700; letter-spacing: 2.5px;
-  text-transform: uppercase; color: var(--accent);
-  white-space: nowrap;
-}
-
-/* ─── FOOTER ─── */
-footer {
-  position: relative; z-index: 1;
-  border-top: 1px solid var(--accent);
-  padding: 32px 48px;
-  display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px;
-  background: var(--bg);
-}
-
-.footer-logo {
-  display: flex; align-items: center; gap: 10px;
-}
-
-.footer-logo img {
-  width: 26px; height: 26px; object-fit: contain; border-radius: 6px;
-}
-
-.footer-logo-text {
-  font-size: 13px; font-weight: 700; letter-spacing: 0.5px;
-  color: var(--accent);
-}
-
-.footer-copy {
-  font-size: 11px; color: var(--accent); letter-spacing: 0.5px;
-}
-
-/* ─── ANIMATIONS ─── */
-@keyframes fadeUp {
-  from { opacity: 0; transform: translateY(22px); }
-  to   { opacity: 1; transform: translateY(0); }
-}
-
-/* cursor dot */
-.cursor-dot {
-  position: fixed; width: 5px; height: 5px; border-radius: 50%;
-  background: var(--accent);
-  pointer-events: none; z-index: 999;
-  transform: translate(-50%,-50%);
-  transition: left 0.04s linear, top 0.04s linear;
-}
+dialog::backdrop { background: rgba(0, 0, 0, .82); }
+dialog h2 { font-size: clamp(28px, 4vw, 40px); color: var(--red); margin-bottom: 12px; }
+dialog p { font-size: 17px; line-height: 1.5; }
+.dlg-msg { min-height: 1.4em; margin-top: 10px; color: var(--red); font-size: 15px; }
+.dlg-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
+
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
 </head>
 <body>
 
-<div class="bg-layer"></div>
-<div class="grid-overlay"></div>
-<div class="cursor-dot" id="cursorDot"></div>
+<!-- shape symbols -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="s-tri" viewBox="0 0 100 100"><path d="M50 8 L93 88 H7 Z" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></symbol>
+  <symbol id="s-sq" viewBox="0 0 100 100"><rect x="5" y="10" width="90" height="80" rx="18" vector-effect="non-scaling-stroke"/></symbol>
+  <symbol id="s-arch" viewBox="0 0 100 100"><path d="M6 94 V50 A44 44 0 0 1 94 50 V94 Z" vector-effect="non-scaling-stroke" stroke-linejoin="round"/></symbol>
+  <symbol id="s-circle" viewBox="0 0 100 100"><circle cx="50" cy="50" r="44" vector-effect="non-scaling-stroke"/></symbol>
+</svg>
 
-<!-- ─── NAV ─── -->
-<nav>
-  <a class="nav-logo" href="#">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Otan Systems">
-    <span class="nav-logo-text">Otan Systems</span>
-  </a>
-
-  <ul class="nav-links">
-    <li><a href="#products">Products</a></li>
-    <li><a href="#policy">Policy</a></li>
-    <li><a href="https://otansystems.com" target="_self">Portal</a></li>
-  </ul>
-
-  <a class="nav-cta" href="mailto:otan-systems@proton.me" target="_self">Contact Sales</a>
-</nav>
-
-<!-- ─── PRODUCTS ─── -->
-<section class="section" id="products">
-
-  <div class="section-eyebrow">
-    <div class="section-eyebrow-line"></div>
-    <span>AI Products</span>
+<!-- topbar (only when logged in) -->
+<header class="topbar">
+  <span class="tb-user" id="tbUser"></span>
+  <div class="tb-shapes" aria-hidden="true">
+    <svg class="shape c-white"><use href="#s-tri"/></svg>
+    <svg class="shape c-orange"><use href="#s-sq"/></svg>
+    <svg class="shape c-blue"><use href="#s-arch"/></svg>
+    <svg class="shape c-lime"><use href="#s-circle"/></svg>
   </div>
+  <div class="tb-actions">
+    <button class="pill" id="btnLogout" type="button">Log Out</button>
+    <button class="pill danger" id="btnDelete" type="button">Delete</button>
+  </div>
+</header>
 
-  <h2 class="section-title">Our products</h2>
+<main>
 
-  <div class="product-grid">
-    <!-- Azat -->
-    <a class="product-card azat" href="/azat" target="_self" rel="noopener">
-      <div class="card-inner">
-        <div class="card-header">
-          <div class="card-icon-wrap">
-            <svg viewBox="0 0 22 22" fill="none">
-              <path d="M4 18L11 4L18 18" stroke="#FFFFFF" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
-              <path d="M6.5 13.5H15.5" stroke="#FFFFFF" stroke-width="1.5" stroke-linecap="round"/>
-              <circle cx="11" cy="4" r="1.2" fill="#FFFFFF"/>
-            </svg>
-          </div>
-          <span class="card-chip chip-blue">Coding · LLM</span>
-        </div>
-        <div class="card-name">Azat AI</div>
-        <div class="card-desc">Precision-built AI for System & Embedded Development. Long context, RAG-powered, specialized.</div>
-        <div class="card-footer">
-          <span class="card-url">otansystems.com/azat</span>
-          <span class="card-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
+<!-- ───────── WELCOME ───────── -->
+<section class="view active" id="v-welcome">
+  <div class="welcome">
+    <div class="shapes" aria-hidden="true">
+      <svg class="shape c-white"><use href="#s-tri"/></svg>
+      <svg class="shape c-orange"><use href="#s-sq"/></svg>
+      <svg class="shape c-blue"><use href="#s-arch"/></svg>
+      <svg class="shape c-lime"><use href="#s-circle"/></svg>
+    </div>
+    <div class="welcome-text">
+      <h1 tabindex="-1">Welcome!</h1>
+      <ul class="menu">
+        <li data-guest><a class="c-blue" href="#signup">Sign Up</a></li>
+        <li data-guest><a class="c-white" href="#login">Log In</a></li>
+        <li><a class="c-lime" href="#products">Explore</a></li>
+        <li><a class="c-orange" href="mailto:otan-systems@proton.me">Contact Us</a></li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── SIGN UP ───────── -->
+<section class="view" id="v-signup">
+  <div class="auth" data-form="signup">
+    <div class="auth-main">
+      <h1 class="auth-h" tabindex="-1">&gt; Signing Up</h1>
+      <button class="back" type="button" data-go="welcome">&gt; To Lobby</button>
+
+      <label class="field">
+        <input data-el="u" type="text" placeholder="Username..." aria-label="Username" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="40">
+        <ul class="hints">
+          <li data-rule="uchars" data-f="u">A-Z, a-z, 0-9, "_" only</li>
+          <li data-rule="ulen" data-f="u">4-10 symbols</li>
+        </ul>
+      </label>
+
+      <label class="field">
+        <input data-el="p" type="password" placeholder="Password..." aria-label="Password" autocomplete="new-password" maxlength="64">
+        <ul class="hints">
+          <li data-rule="plen" data-f="p">8-16 symbols</li>
+          <li data-rule="pletters" data-f="p">At least 2 letters (A-Z, a-z)</li>
+          <li data-rule="psym" data-f="p">At least 1 unique symbol (@ _ ! % &amp;)</li>
+        </ul>
+      </label>
+
+      <div class="field has-sq">
+        <div class="vshow" data-el="vshow" aria-label="Your 12-digit value"></div>
+        <ul class="hints">
+          <li data-rule="vsaved" data-f="v">Given once! Save it before signing up and do not share.</li>
+        </ul>
+        <button class="sq" type="button" data-el="vbtn" aria-label="Copy value">
+          <svg class="i-main" viewBox="0 0 24 24"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h8"/></svg>
+          <svg class="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </button>
       </div>
-    </a>
+    </div>
+    <div class="auth-side">
+      <div class="status" data-el="status" role="status" aria-live="polite"></div>
+      <button class="submit" type="button" data-el="submit">Submit</button>
+    </div>
+  </div>
+</section>
 
-  <!-- Qanat -->
-    <a class="product-card qanat" href="/qanat" target="_self" rel="noopener">
-      <div class="card-inner">
-        <div class="card-header">
-          <div class="card-icon-wrap">
-            <svg viewBox="0 0 22 22" fill="none">
-              <circle cx="11" cy="11" r="7.5" stroke="#FFFFFF" stroke-width="1.6"/>
-              <path d="M11 6V11L14.5 14.5" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-              <circle cx="11" cy="11" r="1.5" fill="#FFFFFF"/>
-            </svg>
-          </div>
-          <span class="card-chip chip-sky">base64</span>
-        </div>
-        <div class="card-name">Qanat</div>
-        <div class="card-desc">A simple base64 converter, universal (JPG, PNG, JPEG). Free forever. Designed for minimalism, performs fast. No server, client-sided app. Also see photo's properties easily. </div>
-        <div class="card-footer">
-          <span class="card-url">otansystems.com/qanat</span>
-          <span class="card-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
+<!-- ───────── LOG IN ───────── -->
+<section class="view" id="v-login">
+  <div class="auth" data-form="login">
+    <div class="auth-main">
+      <h1 class="auth-h" tabindex="-1">&gt; Logging In</h1>
+      <button class="back" type="button" data-go="welcome">&gt; To Lobby</button>
+
+      <label class="field">
+        <input data-el="u" type="text" placeholder="Username..." aria-label="Username" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="40">
+      </label>
+      <label class="field">
+        <input data-el="p" type="password" placeholder="Password..." aria-label="Password" autocomplete="current-password" maxlength="64">
+      </label>
+      <div class="field has-sq">
+        <input data-el="v" type="text" inputmode="numeric" placeholder="xxxx-xxxx-xxxx" aria-label="12-digit value" autocomplete="off" maxlength="14">
+        <button class="sq" type="button" data-el="paste" aria-label="Paste value from clipboard">
+          <svg class="i-main" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 12h6M9 16h4"/></svg>
+          <svg class="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </button>
       </div>
-    </a>
-  
-  <!-- Synapse -->
-    <a class="product-card synapse" href="/synapse" target="_self" rel="noopener">
-      <div class="card-inner">
-        <div class="card-header">
-          <div class="card-icon-wrap">
-            <svg viewBox="0 0 22 22" fill="none">
-              <circle cx="11" cy="11" r="7.5" stroke="#FFFFFF" stroke-width="1.6"/>
-              <path d="M11 6V11L14.5 14.5" stroke="#FFFFFF" stroke-width="1.6" stroke-linecap="round"/>
-              <circle cx="11" cy="11" r="1.5" fill="#FFFFFF"/>
-            </svg>
-          </div>
-          <span class="card-chip chip-sky">Video</span>
-        </div>
-        <div class="card-name">Synapse AI</div>
-        <div class="card-desc">Text, image, or reference — Synapse turns it into finished 4K video in minutes.</div>
-        <div class="card-footer">
-          <span class="card-url">otansystems.com/synapse</span>
-          <span class="card-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="white" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
+      <button class="back" type="button" data-go="reset" style="margin-top:18px">&gt; Forgot username or password?</button>
+    </div>
+    <div class="auth-side">
+      <div class="status" data-el="status" role="status" aria-live="polite"></div>
+      <button class="submit" type="button" data-el="submit">Submit</button>
+    </div>
+  </div>
+</section>
+
+<!-- ───────── RESET ───────── -->
+<section class="view" id="v-reset">
+  <div class="auth" data-form="reset">
+    <div class="auth-main">
+      <h1 class="auth-h" tabindex="-1">&gt; Reseting</h1>
+      <button class="back" type="button" data-go="welcome">&gt; Cancel &amp; To Lobby</button>
+
+      <label class="field">
+        <input data-el="u" type="text" placeholder="Username..." aria-label="New username" autocomplete="username" autocapitalize="off" spellcheck="false" maxlength="40">
+        <ul class="hints">
+          <li data-rule="uchars" data-f="u">A-Z, a-z, 0-9, "_" only</li>
+          <li data-rule="ulen" data-f="u">4-10 symbols</li>
+        </ul>
+      </label>
+      <label class="field">
+        <input data-el="p" type="password" placeholder="Password..." aria-label="New password" autocomplete="new-password" maxlength="64">
+        <ul class="hints">
+          <li data-rule="plen" data-f="p">8-16 symbols</li>
+          <li data-rule="pletters" data-f="p">At least 2 letters (A-Z, a-z)</li>
+          <li data-rule="psym" data-f="p">At least 1 unique symbol (@ _ ! % &amp;)</li>
+        </ul>
+      </label>
+      <div class="field has-sq">
+        <input data-el="v" type="text" inputmode="numeric" placeholder="12-Digit Value..." aria-label="12-digit value" autocomplete="off" maxlength="14">
+        <button class="sq" type="button" data-el="paste" aria-label="Paste value from clipboard">
+          <svg class="i-main" viewBox="0 0 24 24"><rect x="5" y="5" width="14" height="16" rx="2"/><path d="M9 5V4h6v1M9 12h6M9 16h4"/></svg>
+          <svg class="i-check" viewBox="0 0 24 24"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>
+        </button>
       </div>
-    </a>
+    </div>
+    <div class="auth-side">
+      <div class="status" data-el="status" role="status" aria-live="polite"></div>
+      <button class="submit" type="button" data-el="submit">Submit</button>
+    </div>
   </div>
+</section>
 
-  <!-- Divider -->
-  <div class="section-divider" id="policy">
-    <div class="section-divider-line"></div>
-    <span>Terms &amp; Policy</span>
-    <div class="section-divider-line"></div>
+<!-- ───────── PRODUCTS ───────── -->
+<section class="view" id="v-products">
+  <div class="page c-lime">
+    <h1 class="auth-h" tabindex="-1">&gt; Products</h1>
+    <button class="back" type="button" data-go="welcome">&gt; To Lobby</button>
+    <div class="cards" id="productCards"></div>
+    <h2 class="sub-h">&gt; Terms &amp; Policy</h2>
+    <div class="cards" id="policyCards"></div>
   </div>
+</section>
 
-  <div class="policy-grid">
-  <!-- Policy Azat -->
-  <div>
-    <a class="policy-card p-azat" href="/azat/reference" target="_self" rel="noopener">
-      <div class="policy-inner">
-        <div class="policy-top">
-          <span class="policy-dot dot-blue"></span>
-          <span class="card-chip chip-blue" style="font-size:8.5px;">Azat · Docs</span>
-        </div>
-        <div class="policy-name">Terms of use &amp; Policy for Azat</div>
-        <div class="policy-desc">Read these articles to understand and see finer points, rules or nuances dedicated to Azat AI product.</div>
-        <div class="policy-footer">
-          <span class="policy-url">otansystems.com/azat/reference</span>
-          <span class="policy-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-  </div>
+<!-- ───────── PRIVACY & POLICY ───────── -->
+<section class="view" id="v-privacy">
+  <div class="page c-blue">
+    <h1 class="auth-h" tabindex="-1">&gt; Privacy &amp; Policy</h1>
+    <button class="back" type="button" data-go="products">&gt; Back</button>
+    <div class="prose">
+      <p class="muted">Otan ID · Last updated: November 20, 2026</p>
 
-  <!-- Policy Qanat -->
-  <div>
-    <a class="policy-card p-qanat" href="/qanat/reference" target="_self" rel="noopener">
-      <div class="policy-inner">
-        <div class="policy-top">
-          <span class="policy-dot dot-sky"></span>
-          <span class="card-chip chip-sky" style="font-size:8.5px;">Qanat · Docs</span>
-        </div>
-        <div class="policy-name">Terms of use &amp; Policy for Qanat</div>
-        <div class="policy-desc">Read these articles to understand and see finer points, rules or nuances dedicated to Qanat App product.</div>
-        <div class="policy-footer">
-          <span class="policy-url">otansystems.com/qanat/reference</span>
-          <span class="policy-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-  </div>
-  
-  <!-- Policy Synapse -->
-  <div>
-    <a class="policy-card p-synapse" href="/synapse/reference" target="_self" rel="noopener">
-      <div class="policy-inner">
-        <div class="policy-top">
-          <span class="policy-dot dot-sky"></span>
-          <span class="card-chip chip-sky" style="font-size:8.5px;">Synapse · Docs</span>
-        </div>
-        <div class="policy-name">Terms of use &amp; Policy for Synapse</div>
-        <div class="policy-desc">Read these articles to understand and see finer points, rules or nuances dedicated to Synapse AI product.</div>
-        <div class="policy-footer">
-          <span class="policy-url">otansystems.com/synapse/reference</span>
-          <span class="policy-arrow">
-            <svg viewBox="0 0 12 12" fill="none"><path d="M2 10L10 2M10 2H5M10 2V7" stroke="#FFFFFF" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/></svg>
-          </span>
-        </div>
-      </div>
-    </a>
-  </div>
-</div>
+      <h2>What we store</h2>
+      <ul>
+        <li>Your username.</li>
+        <li>Your password, only as a salted hash. We cannot read it.</li>
+        <li>Your 12-digit value, only as a keyed hash. We cannot read or restore it.</li>
+        <li>Dates of account creation and last log in.</li>
+        <li>Active sessions: a hashed session token and its expiry.</li>
+        <li>A keyed hash of your IP address, used only to limit failed attempts and removed automatically after 48 hours.</li>
+      </ul>
 
-<!-- ─── FOOTER ─── -->
-<footer>
-  <div class="footer-logo">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Otan Systems">
-    <span class="footer-logo-text">Otan Systems</span>
-  </div>
-  <div class="footer-copy">© 2026 Otan Systems. All rights reserved.</div>
-</footer>
+      <h2>What we don't</h2>
+      <p>No email, phone number or real name. No advertising, no tracking cookies. Your session token is kept in your browser's local storage on this device.</p>
 
+      <h2>Your value</h2>
+      <p>The value is shown once, when you sign up. You need it to log in and to reset your username or password. If you lose it, the account cannot be recovered. Anyone who has your value can reset your account, so do not share it.</p>
+
+      <h2>Sessions and attempts</h2>
+      <p>A session lasts 7 days, then you log in again. After 5 failed attempts, further attempts are blocked for 24 hours.</p>
+
+      <h2>Deleting your data</h2>
+      <p>Use Delete in the top bar at any time: your account and sessions are erased permanently. An account that has not logged in for 30 days is deleted automatically.</p>
+
+      <h2>Sharing</h2>
+      <p>We do not sell or share your data. Data is stored with our infrastructure provider (Supabase) and the site is served by Vercel.</p>
+
+      <h2>Contact</h2>
+      <p>otan-systems@proton.me</p>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>© 2026 Otan Systems. All rights reserved.</footer>
+
+<!-- delete account -->
+<dialog id="delDialog" aria-labelledby="delTitle">
+  <h2 id="delTitle">Delete account?</h2>
+  <p>This cannot be undone. Your username, password and value will be erased permanently and cannot be restored.</p>
+  <div class="dlg-msg" id="delMsg" role="alert"></div>
+  <div class="dlg-actions">
+    <button class="pill" id="delCancel" type="button">Cancel</button>
+    <button class="pill danger" id="delConfirm" type="button">Delete forever</button>
+  </div>
+</dialog>
+
+<script>
+'use strict';
+
+/* ════════════ CONFIG ════════════ */
+const API_URL = 'https://lzbsgrnuufhevjnpxtly.supabase.co/functions/v1/otan-auth';
+const SESSION_KEY = 'otan_session';
+
+const PRODUCTS = [
+  { tag: 'Coding · LLM', name: 'Azat AI',
+    desc: 'Precision-built AI for System & Embedded Development. Long context, RAG-powered, specialized.',
+    href: '/azat', url: 'otansystems.com/azat' },
+  { tag: 'Video', name: 'Synapse AI',
+    desc: 'Text, image, or reference — Synapse turns it into finished 4K video in minutes.',
+    href: '/synapse', url: 'otansystems.com/synapse' },
+];
+const POLICIES = [
+  { tag: 'Otan ID · Docs', name: 'Privacy & Policy',
+    desc: 'What Otan ID stores, for how long, and how to delete it.',
+    href: '#privacy', url: 'otansystems.com' },
+  { tag: 'Azat · Docs', name: 'Terms of use & Policy for Azat',
+    desc: 'Read these articles to understand and see finer points, rules or nuances dedicated to Azat AI product.',
+    href: '/azat/reference', url: 'otansystems.com/azat/reference' },
+  { tag: 'Synapse · Docs', name: 'Terms of use & Policy for Synapse',
+    desc: 'Read these articles to understand and see finer points, rules or nuances dedicated to Synapse AI product.',
+    href: '/synapse/reference', url: 'otansystems.com/synapse/reference' },
+];
+const COLORS = ['orange', 'blue', 'white', 'lime'];
+const WIDE_AFTER = 140;
+
+/* ════════════ HELPERS ════════════ */
+const $  = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+
+function el(tag, cls, text) {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text != null) n.textContent = text;
+  return n;
+}
+
+/* ════════════ CARDS ════════════ */
+function renderCards(host, list) {
+  host.replaceChildren();
+  list.forEach((it, i) => {
+    const a = el('a', `card c-${it.color || COLORS[i % COLORS.length]}${(it.desc || '').length > WIDE_AFTER ? ' wide' : ''}`);
+    a.href = it.href;
+    a.append(el('span', 'card-tag', it.tag), el('div', 'card-name', it.name),
+             el('p', 'card-desc', it.desc), el('span', 'card-url', it.url));
+    host.append(a);
+  });
+}
+renderCards($('#productCards'), PRODUCTS);
+renderCards($('#policyCards'), POLICIES);
+
+/* ════════════ API ════════════ */
+async function api(action, body = {}, token) {
+  try {
+    const res = await fetch(API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', ...(token ? { 'X-Session': token } : {}) },
+      body: JSON.stringify({ action, ...body }),
+    });
+    return await res.json().catch(() => ({ ok: false, error: 'server' }));
+  } catch {
+    return { ok: false, error: 'network' };
+  }
+}
+function errMsg(res) {
+  switch (res.error) {
+    case 'invalid_credentials': return 'Wrong username, password or value';
+    case 'invalid_value':       return 'Wrong value';
+    case 'blocked':             return 'Too many attempts. Blocked until ' + (res.until ? new Date(res.until).toLocaleString() : '24 h');
+    case 'username_taken':      return 'Username is taken';
+    case 'value_taken':         return 'Value was taken. New one generated: save it';
+    case 'invalid_input':       return 'Some conditions undone';
+    case 'network':             return 'No connection. Try again';
+    default:                    return 'Server error. Try again';
+  }
+}
+
+/* ════════════ SESSION ════════════ */
+let session = null, expTimer = null, notice = null;
+
+function loadSession() {
+  try {
+    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
+    if (s && s.token && s.expires_at > Date.now()) return s;
+    localStorage.removeItem(SESSION_KEY);
+  } catch { /* storage unavailable */ }
+  return null;
+}
+function setSession(s) {
+  session = s;
+  try { s ? localStorage.setItem(SESSION_KEY, JSON.stringify(s)) : localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
+  document.body.classList.toggle('authed', !!s);
+  $('#tbUser').textContent = s ? s.username : '';
+  clearTimeout(expTimer);
+  if (s) expTimer = setTimeout(expire, Math.max(0, s.expires_at - Date.now()));
+}
+function expire() {
+  setSession(null);
+  notice = 'Session expired. Log in again';
+  go('login');
+}
+
+/* ════════════ FORMS ════════════ */
+const USER_CHARS = /^[A-Za-z0-9_]+$/;
+const RULES = {
+  uchars:   d => USER_CHARS.test(d.u),
+  ulen:     d => d.u.length >= 4 && d.u.length <= 10,
+  plen:     d => /^[\x21-\x7E]{8,16}$/.test(d.p),
+  pletters: d => (d.p.match(/[A-Za-z]/g) || []).length >= 2,
+  psym:     d => /[@_!%&]/.test(d.p),
+  vsaved:   (d, f) => f.copied,
+};
+const fmtValue = digits => digits.replace(/(\d{4})(?=\d)/g, '$1-');
+
+function genValue() {
+  const out = [];
+  while (out.length < 12) {
+    const b = crypto.getRandomValues(new Uint8Array(1))[0];
+    if (b < 250) out.push(b % 10);
+  }
+  return out.join('');
+}
+
+async function copyText(text) {
+  try { await navigator.clipboard.writeText(text); return true; } catch { /* fallback */ }
+  const ta = document.createElement('textarea');
+  ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+  document.body.append(ta); ta.select();
+  let ok = false;
+  try { ok = document.execCommand('copy'); } catch { /* ignore */ }
+  ta.remove();
+  return ok;
+}
+function flash(btn) {
+  btn.classList.add('done');
+  setTimeout(() => btn.classList.remove('done'), 1500);
+}
+
+function readForm(f) {
+  return {
+    u: f.u.value.trim(),
+    p: f.p.value,
+    v: f.name === 'signup' ? f.digits : f.v.value.replace(/\D/g, ''),
+  };
+}
+
+function refresh(f) {
+  const d = readForm(f);
+  let ok = true;
+  $$('[data-rule]', f.root).forEach(li => {
+    const field = li.dataset.f;
+    const touched = f.forced || (field === 'v' ? f.copied : d[field] !== '');
+    const pass = RULES[li.dataset.rule](d, f);
+    if (!pass) ok = false;
+    li.classList.toggle('good', touched && pass);
+    li.classList.toggle('bad', touched && !pass);
+  });
+  if (f.name === 'login') ok = d.u !== '' && d.p !== '' && d.v.length === 12;
+  else if (f.name === 'reset' && d.v.length !== 12) ok = false;
+  f.ok = ok;
+
+  if (f.lock) { f.status.textContent = f.lock; f.status.className = 'status'; }
+  else if (ok) { f.status.textContent = 'SUCCESS'; f.status.className = 'status ok'; }
+  else { f.status.textContent = 'Some conditions undone'; f.status.className = 'status'; }
+}
+
+function wipe(f) {
+  f.u.value = ''; f.p.value = ''; if (f.v) f.v.value = '';
+  f.forced = false; f.lock = null; f.copied = false; f.busy = false;
+  f.submit.disabled = false;
+}
+
+async function submit(f) {
+  if (f.busy) return;
+  f.forced = true; f.lock = null; refresh(f);
+  if (!f.ok) return;
+  const d = readForm(f);
+  f.busy = true; f.submit.disabled = true;
+  const res = await api(f.name, { username: d.u, password: d.p, value: d.v });
+  if (res.ok) {
+    if (f.name === 'login') {
+      setSession({ token: res.token, expires_at: Date.parse(res.expires_at), username: res.username });
+      wipe(f); go('welcome');
+    } else { // signup / reset: SUCCESS → back to Log In
+      refresh(f);
+      setTimeout(() => { wipe(f); go('login'); }, 1100);
+    }
+    return;
+  }
+  f.busy = false; f.submit.disabled = false;
+  if (res.error === 'value_taken' && f.name === 'signup') newValue(f);
+  f.lock = errMsg(res);
+  refresh(f);
+}
+
+function newValue(f) {
+  f.digits = genValue();
+  f.copied = false;
+  f.vshow.textContent = fmtValue(f.digits);
+  f.vbtn.classList.remove('done');
+}
+
+const forms = {};
+$$('[data-form]').forEach(root => {
+  const q = n => $(`[data-el="${n}"]`, root);
+  const f = forms[root.dataset.form] = {
+    name: root.dataset.form, root, forced: false, copied: false, busy: false, lock: null, ok: false, digits: '',
+    u: q('u'), p: q('p'), v: q('v'), status: q('status'), submit: q('submit'),
+    vshow: q('vshow'), vbtn: q('vbtn'), paste: q('paste'),
+  };
+  [f.u, f.p].forEach(i => i.addEventListener('input', () => { f.lock = null; refresh(f); }));
+  if (f.v) {
+    f.v.addEventListener('input', () => {
+      f.v.value = fmtValue(f.v.value.replace(/\D/g, '').slice(0, 12));
+      f.lock = null; refresh(f);
+    });
+  }
+  if (f.paste) {
+    f.paste.addEventListener('click', async () => {
+      try {
+        const t = await navigator.clipboard.readText();
+        f.v.value = fmtValue(t.replace(/\D/g, '').slice(0, 12));
+        flash(f.paste); f.lock = null; refresh(f);
+      } catch { f.v.focus(); }
+    });
+  }
+  if (f.vbtn) {
+    f.vbtn.addEventListener('click', async () => {
+      if (await copyText(fmtValue(f.digits))) { f.copied = true; flash(f.vbtn); refresh(f); }
+    });
+  }
+  f.submit.addEventListener('click', () => submit(f));
+  root.addEventListener('keydown', e => { if (e.key === 'Enter' && e.target.tagName === 'INPUT') submit(f); });
+  refresh(f);
+});
+
+/* ════════════ ROUTER ════════════ */
+const VIEWS = ['welcome', 'signup', 'login', 'reset', 'products', 'privacy'];
+const GUEST_ONLY = ['signup', 'login', 'reset'];
+
+function go(name) {
+  if (location.hash === '#' + name) route(); else location.hash = name;
+}
+function route() {
+  let name = location.hash.slice(1);
+  if (!VIEWS.includes(name)) name = 'welcome';
+  if (session && GUEST_ONLY.includes(name)) { name = 'welcome'; history.replaceState(null, '', '#welcome'); }
+
+  $$('.view').forEach(v => v.classList.toggle('active', v.id === 'v-' + name));
+  document.body.dataset.view = name;
+
+  if (name === 'signup') {
+    const f = forms.signup; wipe(f); newValue(f); refresh(f);
+  } else if (GUEST_ONLY.includes(name)) {
+    const f = forms[name];
+    if (name === 'login' && notice) { f.lock = notice; notice = null; }
+    refresh(f);
+  }
+  window.scrollTo(0, 0);
+  const h = $(`#v-${name} h1`);
+  if (h) h.focus({ preventScroll: true });
+}
+window.addEventListener('hashchange', route);
+document.addEventListener('click', e => {
+  const b = e.target.closest('[data-go]');
+  if (b) go(b.dataset.go);
+});
+
+/* ════════════ TOPBAR ACTIONS ════════════ */
+$('#btnLogout').addEventListener('click', async () => {
+  const token = session && session.token;
+  setSession(null);
+  go('welcome');
+  if (token) api('logout', {}, token);
+});
+$('#btnDelete').addEventListener('click', () => { $('#delMsg').textContent = ''; $('#delDialog').showModal(); });
+$('#delCancel').addEventListener('click', () => $('#delDialog').close());
+$('#delConfirm').addEventListener('click', async () => {
+  const btn = $('#delConfirm');
+  btn.disabled = true;
+  const res = await api('delete', {}, session && session.token);
+  btn.disabled = false;
+  if (res.ok || res.error === 'unauthorized') {
+    $('#delDialog').close();
+    setSession(null);
+    go('welcome');
+  } else {
+    $('#delMsg').textContent = errMsg(res);
+  }
+});
+
+/* ════════════ INIT ════════════ */
+setSession(loadSession());
+route();
+if (session) {
+  api('me', {}, session.token).then(res => {
+    if (res.ok) {
+      setSession({ ...session, username: res.username, expires_at: Date.parse(res.expires_at) });
+    } else if (res.error === 'unauthorized') {
+      setSession(null);
+      route();
+    }
+  });
+}
+</script>
 </body>
 </html>
