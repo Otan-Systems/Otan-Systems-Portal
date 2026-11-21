@@ -1,792 +1,146 @@
 <!DOCTYPE html>
-
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#000000">
+<meta name="color-scheme" content="dark">
 <title>Synapse AI</title>
-
-<style>
-
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-
-  :root {
-    --black: #000000;
-    --white: #FFFFFF;
-  }
-
-  html { scroll-behavior: smooth; }
-
-  body {
-    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    background: var(--white);
-    color: var(--black);
-    min-height: 100vh;
-    overflow-x: hidden;
-  }
-
-  /* ─── BACKGROUND (plain white, no decorations) ─── */
-  .bg-layer, .grid-overlay { display: none; }
-
-  /* ─── NAV (black object) ─── */
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 20px 48px;
-    background: var(--black);
-    border-bottom: 1px solid var(--black);
-  }
-
-  .nav-logo { display: flex; align-items: center; gap: 12px; }
-  .nav-logo img, .nav-logo svg { width: 32px; height: 32px; object-fit: cover; }
-
-  .nav-logo-text {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 800; font-size: 20px;
-    letter-spacing: -0.5px;
-    color: var(--white);
-  }
-
-  .nav-links { display: flex; gap: 36px; list-style: none; }
-
-  .nav-links a {
-    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 500;
-    color: var(--white);
-    text-decoration: none;
-    letter-spacing: 0.5px;
-    border-bottom: 2px solid transparent;
-    padding-bottom: 2px;
-    transition: border-color 0.2s;
-  }
-  .nav-links a:hover { border-bottom-color: var(--white); }
-
-  /* white objects on the black nav */
-  .nav-cta {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 600;
-    padding: 10px 24px;
-    border-radius: 100px;
-    background: var(--white);
-    border: 2px solid var(--white);
-    color: var(--black);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s, transform 0.2s;
-  }
-  .nav-cta:hover { background: var(--black); color: var(--white); transform: translateY(-1px); }
-
-  .nav-actions { display: flex; align-items: center; gap: 14px; }
-
-  .btn-lobby {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 600;
-    padding: 9px 20px;
-    border-radius: 100px;
-    border: 2px solid var(--white);
-    background: var(--white);
-    color: var(--black);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s;
-    white-space: nowrap;
-  }
-  .btn-lobby:hover { background: var(--black); color: var(--white); }
-
-  .lang-toggle {
-    display: flex; align-items: center;
-    border-radius: 100px;
-    border: 2px solid var(--white);
-    background: var(--white);
-    padding: 3px;
-    cursor: pointer;
-    flex-shrink: 0;
-  }
-
-  .lang-toggle button {
-    all: unset;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 12px; font-weight: 700;
-    letter-spacing: 0.5px;
-    padding: 6px 13px;
-    border-radius: 100px;
-    color: var(--black);
-    cursor: pointer;
-    transition: color 0.2s, background 0.2s;
-  }
-
-  .lang-toggle button.active {
-    color: var(--white);
-    background: var(--black);
-  }
-
-  /* ─── HERO ─── */
-  .hero {
-    position: relative; z-index: 1;
-    min-height: 100vh;
-    display: flex; flex-direction: column; align-items: center; justify-content: center;
-    text-align: center;
-    padding: 120px 24px 80px;
-  }
-
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    padding: 8px 20px;
-    border-radius: 100px;
-    background: var(--black);
-    color: var(--white);
-    font-size: 12px; font-weight: 500; letter-spacing: 1.5px;
-    text-transform: uppercase;
-    margin-bottom: 36px;
-    animation: fadeUp 0.8s ease both;
-  }
-
-  .badge-dot {
-    width: 6px; height: 6px; border-radius: 50%;
-    background: var(--white);
-    animation: pulse 2s ease-in-out infinite;
-  }
-
-  @keyframes pulse {
-    0%, 100% { opacity: 1; transform: scale(1); }
-    50% { opacity: 0.5; transform: scale(0.8); }
-  }
-
-  .hero-logo {
-    width: 120px; height: 120px;
-    object-fit: contain;
-    margin-bottom: 40px;
-    animation: fadeUp 0.9s ease 0.1s both, float 4s ease-in-out infinite 1s;
-    border-radius: 16px
-  }
-
-  @keyframes float {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-10px); }
-  }
-
-  .hero-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(52px, 8vw, 100px);
-    font-weight: 800;
-    line-height: 0.95;
-    letter-spacing: -3px;
-    margin-bottom: 12px;
-    color: var(--black);
-    animation: fadeUp 1s ease 0.15s both;
-  }
-
-  .hero-title .line-white { color: var(--black); }
-  .hero-title .line-blue { color: var(--black); }
-
-  .hero-sub {
-    font-size: clamp(14px, 2vw, 18px);
-    font-weight: 400;
-    color: var(--black);
-    letter-spacing: 0.5px;
-    max-width: 480px;
-    line-height: 1.7;
-    margin: 24px auto 48px;
-    animation: fadeUp 1s ease 0.25s both;
-  }
-
-  .hero-actions {
-    display: flex; gap: 16px; flex-wrap: wrap; justify-content: center;
-    animation: fadeUp 1s ease 0.35s both;
-  }
-
-  .btn-primary, .btn-ghost {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 15px;
-    padding: 16px 40px;
-    border-radius: 100px;
-    background: var(--black);
-    border: 2px solid var(--black);
-    color: var(--white);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s, transform 0.2s;
-  }
-  .btn-primary { font-weight: 700; }
-  .btn-ghost { font-weight: 600; }
-
-  .btn-primary:hover, .btn-ghost:hover {
-    background: var(--white);
-    color: var(--black);
-    transform: translateY(-2px);
-  }
-
-  @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(24px); }
-    to { opacity: 1; transform: translateY(0); }
-  }
-
-  /* ─── STATS BAR ─── */
-  .stats-bar {
-    position: relative; z-index: 1;
-    display: flex; justify-content: center; gap: 0;
-    padding: 0 24px;
-    margin: -20px 0 80px;
-  }
-
-  .stats-inner {
-    display: flex;
-    gap: 0;
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 20px;
-    overflow: hidden;
-    animation: fadeUp 1s ease 0.45s both;
-  }
-
-  .stat-item {
-    padding: 28px 48px;
-    text-align: center;
-    border-right: 1px solid var(--white);
-    position: relative;
-  }
-
-  .stat-item:last-child { border-right: none; }
-
-  .stat-value {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 28px; font-weight: 800;
-    color: var(--white);
-    line-height: 1;
-    margin-bottom: 6px;
-  }
-
-  .stat-value span {
-    color: var(--white);
-    font-size: 14px; font-weight: 600;
-    margin-left: 2px;
-  }
-
-  .stat-label {
-    font-size: 11px; font-weight: 500;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-  }
-
-  /* ─── SECTIONS ─── */
-  section {
-    position: relative; z-index: 1;
-    max-width: 1200px; margin: 0 auto;
-    padding: 80px 48px;
-  }
-
-  .section-label {
-    font-size: 11px; font-weight: 700;
-    letter-spacing: 2px; text-transform: uppercase;
-    color: var(--black);
-    margin-bottom: 16px;
-  }
-
-  .section-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(32px, 4vw, 52px);
-    font-weight: 800;
-    letter-spacing: -1.5px;
-    line-height: 1.05;
-    color: var(--black);
-    margin-bottom: 12px
-  }
-
-  .section-desc {
-    font-size: 16px; font-weight: 400;
-    color: var(--black);
-    line-height: 1.75;
-    max-width: 520px;
-  }
-
-  /* ─── WHY CARDS (black objects) ─── */
-  .why-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 20px;
-    margin-top: 60px;
-  }
-
-  .why-card {
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 20px;
-    padding: 36px 32px;
-    transition: transform 0.3s;
-    position: relative;
-    overflow: hidden;
-    margin-top: 30px
-  }
-
-  .why-card:hover { transform: translateY(-4px); }
-
-  .why-title {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 18px; font-weight: 700;
-    margin-bottom: 10px;
-    color: var(--white);
-  }
-
-  .why-desc {
-    font-size: 14px; font-weight: 400;
-    color: var(--white);
-    line-height: 1.7;
-  }
-
-  /* white object on the black card */
-  .why-stat {
-    margin-top: 20px;
-    padding: 10px 16px;
-    background: var(--white);
-    border: 2px solid var(--white);
-    border-radius: 10px;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 700;
-    color: var(--black);
-  }
-
-  .modes-compare { margin-top: 0; margin-bottom: 60px; }
-
-  /* ─── SPECIALIZATION ─── */
-  .spec-section {
-    background: var(--white);
-    border-top: 2px solid var(--black);
-    border-bottom: 2px solid var(--black);
-    padding: 80px 0;
-    max-width: 100%;
-  }
-
-  .spec-inner { max-width: 1200px; margin: 0 auto; padding: 0 48px; }
-
-  .spec-layout {
-    display: grid;
-    grid-template-columns: 1fr 2fr;
-    gap: 80px;
-    align-items: start;
-    margin-top: 60px;
-  }
-
-  .spec-tags { display: flex; flex-wrap: wrap; gap: 10px; }
-
-  .tag {
-    font-family: 'SF Pro Text', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px; font-weight: 500;
-    padding: 8px 16px;
-    border-radius: 100px;
-    border: 2px solid var(--black);
-    background: var(--black);
-    color: var(--white);
-    transition: all 0.2s;
-    cursor: default;
-  }
-
-  /* featured / hover = inverted */
-  .tag:hover, .tag.featured {
-    background: var(--white);
-    color: var(--black);
-  }
-  .tag.featured:hover { background: var(--black); color: var(--white); }
-
-  /* ─── CONTEXT / LIMITS BLOCK (black object) ─── */
-  .context-block {
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 20px;
-    padding: 36px;
-  }
-
-  .context-header {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--white);
-    letter-spacing: 1px;
-    text-transform: uppercase;
-    margin-bottom: 24px;
-  }
-
-  .context-bar-wrap {
-    background: var(--white);
-    border-radius: 100px;
-    height: 8px; overflow: hidden;
-    margin-bottom: 12px;
-  }
-
-  .context-bar-fill {
-    height: 100%;
-    background: var(--black);
-    border-radius: 100px;
-    width: 0%;
-    transition: width 1.5s cubic-bezier(0.22,1,0.36,1);
-  }
-
-  .context-nums {
-    display: flex; justify-content: space-between;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 13px;
-    color: var(--white);
-    margin-bottom: 32px;
-  }
-
-  .context-nums strong { color: var(--white); }
-
-  .context-detail { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-
-  /* white objects on the black block */
-  .cd-item {
-    padding: 16px;
-    background: var(--white);
-    border: 2px solid var(--white);
-    border-radius: 12px;
-  }
-
-  .cd-label {
-    font-size: 11px; color: var(--black);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 6px;
-  }
-
-  .cd-val {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 17px; font-weight: 700;
-    color: var(--black);
-  }
-
-  /* ─── RELEASE ─── */
-  .release-section {
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 40px;
-  }
-
-  .release-date-block { display: flex; flex-direction: column; }
-
-  .release-big {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(42px, 5.5vw, 80px);
-    font-weight: 800;
-    letter-spacing: -3px;
-    line-height: 0.9;
-    color: var(--black);
-    margin-top: 50px;
-  }
-  .btn-release {
-    display: inline-block;
-    margin-top: 50px;
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: clamp(20px, 2.5vw, 28px);
-    font-weight: 800;
-    letter-spacing: -0.5px;
-    padding: 22px 56px;
-    border-radius: 100px;
-    background: var(--black);
-    border: 2px solid var(--black);
-    color: var(--white);
-    text-decoration: none;
-    transition: background 0.2s, color 0.2s, transform 0.2s;
-  }
-  .btn-release:hover { background: var(--white); color: var(--black); transform: translateY(-2px); }
-
-  .release-note {
-    font-size: 13px;
-    color: var(--black);
-    margin-top: 10px;
-    font-style: italic;
-  }
-
-  .release-info { flex: 1; min-width: 280px; }
-
-  /* ─── CONTACT ─── */
-  .contact-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 16px;
-    margin-top: 20px;
-  }
-
-  .contact-card {
-    display: flex; align-items: center; gap: 16px;
-    padding: 24px 28px;
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 16px;
-    text-decoration: none;
-    color: var(--white);
-    transition: transform 0.25s;
-  }
-
-  .contact-card:hover { transform: translateY(-2px); }
-
-  /* white tile on the black card, emoji forced to grayscale */
-  .contact-icon {
-    font-size: 22px; flex-shrink: 0;
-    width: 44px; height: 44px;
-    display: flex; align-items: center; justify-content: center;
-    background: var(--white);
-    border-radius: 12px;
-    filter: grayscale(1);
-  }
-
-  .contact-info { min-width: 0; }
-
-  .contact-platform {
-    font-size: 11px; font-weight: 600;
-    color: var(--white);
-    text-transform: uppercase; letter-spacing: 1px;
-    margin-bottom: 4px;
-  }
-
-  .contact-handle {
-    font-family: 'SF Pro Display', 'Helvetica Neue', Arial, sans-serif;
-    font-size: 14px; font-weight: 700;
-    color: var(--white);
-    white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
-  }
-
-  /* ─── FOOTER ─── */
-  footer {
-    position: relative; z-index: 1;
-    border-top: 2px solid var(--black);
-    padding: 40px 48px;
-    display: flex; align-items: center; justify-content: space-between;
-    flex-wrap: wrap; gap: 20px;
-  }
-
-  .footer-left { display: flex; align-items: center; gap: 12px; }
-
-  .footer-left img {
-    width: 28px; height: 28px; border-radius: 16px; object-fit: contain;
-  }
-
-  .footer-copy { font-size: 13px; color: var(--black); }
-
-  /* ─── DIVIDER ─── */
-  .divider {
-    height: 2px;
-    background: var(--black);
-    margin: 0 48px;
-  }
-
-  /* ─── SCROLL ANIMATION ─── */
-  .reveal {
-    opacity: 0; transform: translateY(30px);
-    transition: opacity 0.7s ease, transform 0.7s ease;
-  }
-
-  .reveal.visible { opacity: 1; transform: translateY(0); }
-
-  @media (max-width: 768px) {
-    nav { padding: 16px 24px; }
-    .nav-links { display: none; }
-    section { padding: 60px 24px; }
-    .spec-layout { grid-template-columns: 1fr; gap: 40px; }
-    .stats-inner { flex-direction: column; }
-    .stat-item { border-right: none; border-bottom: 1px solid var(--white); }
-    .stat-item:last-child { border-bottom: none; }
-    footer { flex-direction: column; align-items: flex-start; }
-    .release-section { flex-direction: column; }
-  }
-</style>
-
+<link rel="stylesheet" href="/otan.css">
+<link rel="stylesheet" href="/otan-product.css">
+<script>document.documentElement.classList.add('js');</script>
 </head>
-<body>
+<body data-accent="blue">
 
-<div class="bg-layer"></div>
-<div class="grid-overlay"></div>
-
-<!-- NAV -->
-<nav>
-  <ul class="nav-links">
-    <li><a href="#why" data-i18n="nav_why">Why Synapse</a></li>
-    <li><a href="#modes" data-i18n="nav_modes">Modes</a></li>
-    <li><a href="#release" data-i18n="nav_release">Release</a></li>
-    <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-  </ul>
-  <div class="nav-actions">
+<header class="otan-topbar" id="otanTopbar" data-mode="always">
+  <div class="tb-right">
+    <ul class="tb-links">
+      <li><a href="#why" data-i18n="nav_why">Why Synapse</a></li>
+      <li><a href="#modes" data-i18n="nav_modes">Modes</a></li>
+      <li><a href="#release" data-i18n="nav_release">Release</a></li>
+      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
+      <li><a class="tb-cta" href="mailto:otan-systems@proton.me" data-i18n="nav_sales">Sales</a></li>
+    </ul>
     <div class="lang-toggle" id="langToggle">
       <button type="button" data-lang="en" class="active">EN</button>
       <button type="button" data-lang="ru">RU</button>
     </div>
-    <a class="btn-lobby" href="https://otansystems.com" data-i18n="nav_lobby">To Lobby</a>
-    <a class="nav-cta" href="mailto:otan-systems@proton.me" data-i18n="nav_sales">Sales</a>
   </div>
-</nav>
+</header>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge">
-    <span class="badge-dot"></span>
-    <span data-i18n="hero_badge">AI Video Generation</span>
-  </div>
-
-  <img class="hero-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Synapse logo">
-  </img>
-
-  <h1 class="hero-title">
-    <span class="line-white" data-i18n="hero_title_1">Your idea.</span><br>
-    <span class="line-blue" data-i18n="hero_title_2">Already video.</span>
+<main>
+<section class="p-hero">
+  <div class="p-badge"><i></i><span data-i18n="hero_badge">AI Video Generation</span></div>
+  <img class="p-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Synapse logo">
+  <h1 class="p-title">
+    <span data-i18n="hero_title_1">Your idea.</span><br>
+    <span class="accent" data-i18n="hero_title_2">Already video.</span>
   </h1>
-
-  <p class="hero-sub" data-i18n="hero_sub">Text, image, or reference — Synapse turns it into finished 4K video in minutes.</p>
-
-  <div class="hero-actions">
-    <a href="#modes" class="btn-primary" data-i18n="hero_cta_primary">Explore modes</a>
-    <a href="mailto:otan-systems@proton.me" class="btn-ghost" data-i18n="hero_cta_ghost">Talk to sales</a>
+  <p class="p-sub" data-i18n="hero_sub">Text, image, or reference — Synapse turns it into finished 4K video in minutes.</p>
+  <div class="p-actions">
+    <a href="#modes" class="btn c-blue" data-i18n="hero_cta_primary">Explore modes</a>
+    <a href="mailto:otan-systems@proton.me" class="btn c-white" data-i18n="hero_cta_ghost">Talk to sales</a>
   </div>
 </section>
 
-<!-- STATS -->
-<div class="stats-bar">
-  <div class="stats-inner">
-    <div class="stat-item">
-      <div class="stat-value">4<span>K</span></div>
-      <div class="stat-label" data-i18n="stat_res">Resolution</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">60<span>fps</span></div>
-      <div class="stat-label" data-i18n="stat_fps">Frame rate</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">$0.1<span data-i18n="stat_sec_unit">/sec</span></div>
-      <div class="stat-label" data-i18n="stat_price">Flat rate</div>
-    </div>
-    <div class="stat-item">
-      <div class="stat-value">5<span data-i18n="stat_ratios_unit">ratios</span></div>
-      <div class="stat-label" data-i18n="stat_ratios">Aspect ratios</div>
-    </div>
-  </div>
+<div class="sec p-stats">
+  <div class="p-stat reveal"><div class="p-stat-value">4<span>K</span></div><div class="p-stat-label" data-i18n="stat_res">Resolution</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">60<span>fps</span></div><div class="p-stat-label" data-i18n="stat_fps">Frame rate</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">$0.1<span data-i18n="stat_sec_unit">/sec</span></div><div class="p-stat-label" data-i18n="stat_price">Flat rate</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">5<span data-i18n="stat_ratios_unit">ratios</span></div><div class="p-stat-label" data-i18n="stat_ratios">Aspect ratios</div></div>
 </div>
 
-<!-- WHY -->
-<section id="why">
-  <div class="section-label" data-i18n="why_label">Why Synapse</div>
-  <h2 class="section-title" data-i18n="why_title">Built for creators who don't wait</h2>
-  <p class="section-desc" data-i18n="why_desc">No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.</p>
-
-  <div class="why-grid">
-    <div class="why-card reveal">
-      <div class="why-title" data-i18n="why1_title">Three ways in</div>
-      <div class="why-desc" data-i18n="why1_desc">Start from a text prompt, a still image, or a reference clip — whichever fits the shot.</div>
-      <div class="why-stat" data-i18n="why1_stat">Text · Image · Reference</div>
+<section class="sec" id="why">
+  <div class="sec-label" data-i18n="why_label">Why Synapse</div>
+  <h2 class="sec-title" data-i18n="why_title">Built for creators who don't wait</h2>
+  <p class="sec-desc" data-i18n="why_desc">No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.</p>
+  <div class="tiles">
+    <div class="tile reveal">
+      <div class="tile-title" data-i18n="why1_title">Three ways in</div>
+      <div class="tile-desc" data-i18n="why1_desc">Start from a text prompt, a still image, or a reference clip — whichever fits the shot.</div>
+      <div class="tile-stat" data-i18n="why1_stat">Text · Image · Reference</div>
     </div>
-    <div class="why-card reveal">
-      <div class="why-title" data-i18n="why2_title">One flat rate</div>
-      <div class="why-desc" data-i18n="why2_desc">No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.</div>
-      <div class="why-stat" data-i18n="why2_stat">$0.1 / sec, always</div>
+    <div class="tile reveal">
+      <div class="tile-title" data-i18n="why2_title">One flat rate</div>
+      <div class="tile-desc" data-i18n="why2_desc">No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.</div>
+      <div class="tile-stat" data-i18n="why2_stat">$0.1 / sec, always</div>
     </div>
-    <div class="why-card reveal">
-      <div class="why-title" data-i18n="why3_title">Studio-grade output</div>
-      <div class="why-desc" data-i18n="why3_desc">4K at 60FPS in five aspect ratios — ready for any platform, no re-export needed.</div>
-      <div class="why-stat" data-i18n="why3_stat">4K, 60FPS</div>
+    <div class="tile reveal">
+      <div class="tile-title" data-i18n="why3_title">Studio-grade output</div>
+      <div class="tile-desc" data-i18n="why3_desc">4K at 60FPS in five aspect ratios — ready for any platform, no re-export needed.</div>
+      <div class="tile-stat" data-i18n="why3_stat">4K · 60FPS</div>
     </div>
-    <div class="why-card reveal">
-      <div class="why-title" data-i18n="why4_title">Audio built in</div>
-      <div class="why-desc" data-i18n="why4_desc">Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.</div>
-      <div class="why-stat" data-i18n="why4_stat">Synapse Studio Pro</div>
+    <div class="tile reveal">
+      <div class="tile-title" data-i18n="why4_title">Audio built in</div>
+      <div class="tile-desc" data-i18n="why4_desc">Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.</div>
+      <div class="tile-stat" data-i18n="why4_stat">Synapse Studio Pro</div>
     </div>
   </div>
 </section>
 
-<!-- MODES -->
-<div class="spec-section" id="modes">
-  <div class="spec-inner">
-    <div class="section-label" data-i18n="modes_label">Modes</div>
-    <h2 class="section-title" data-i18n="modes_title">Video Pro. Studio Pro.</h2>
-    <p class="section-desc" data-i18n="modes_desc">Same engine, same price. Choose whether sound comes with it.</p>
+<section class="sec" id="modes">
+  <div class="sec-label" data-i18n="modes_label">Modes</div>
+  <h2 class="sec-title" data-i18n="modes_title">Video Pro. Studio Pro.</h2>
+  <p class="sec-desc" data-i18n="modes_desc">Same engine, same price. Choose whether sound comes with it.</p>
 
-    <div class="why-grid modes-compare">
-      <div class="why-card reveal">
-        <div class="why-title">Synapse Video Pro</div>
-        <div class="why-desc" data-i18n="mode_video_desc">Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.</div>
-      </div>
-      <div class="why-card reveal">
-        <div class="why-title">Synapse Studio Pro</div>
-        <div class="why-desc" data-i18n="mode_studio_desc">Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.</div>
-      </div>
+  <div class="tiles two">
+    <div class="tile reveal">
+      <div class="tile-title">Synapse Video Pro</div>
+      <div class="tile-desc" data-i18n="mode_video_desc">Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.</div>
     </div>
-
-    <div class="spec-layout">
-      <div class="spec-tags">
-        <span class="tag featured">16:9</span>
-        <span class="tag featured">9:16</span>
-        <span class="tag">3:4</span>
-        <span class="tag">4:3</span>
-        <span class="tag">1:1</span>
-      </div>
-
-      <div class="context-block reveal">
-        <div class="context-header" data-i18n="limits_header">Generation limits</div>
-        <div class="context-detail">
-          <div class="cd-item">
-            <div class="cd-label" data-i18n="limit_ttv">Text-to-Video</div>
-            <div class="cd-val">512 toks</div>
-          </div>
-          <div class="cd-item">
-            <div class="cd-label" data-i18n="limit_itv">Image-to-Video</div>
-            <div class="cd-val">1024 toks</div>
-          </div>
-          <div class="cd-item">
-            <div class="cd-label" data-i18n="limit_rtv">Reference-to-Video</div>
-            <div class="cd-val">1024 toks</div>
-          </div>
-          <div class="cd-item">
-            <div class="cd-label" data-i18n="limit_res">Output</div>
-            <div class="cd-val">4K&60FPS</div>
-          </div>
-        </div>
-      </div>
+    <div class="tile reveal">
+      <div class="tile-title">Synapse Studio Pro</div>
+      <div class="tile-desc" data-i18n="mode_studio_desc">Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.</div>
     </div>
   </div>
-</div>
 
-<!-- RELEASE -->
-<section id="release">
-  <div class="section-label" data-i18n="release_label">Release</div>
-  <div class="release-section">
-    <div class="release-date-block reveal">
-      <a class="btn-release" href="https://otansystems.com/synapse/ai" target="_self" data-i18n="release_btn">Ready To Use!</a>
+  <div class="tags">
+    <span class="tag featured">16:9</span>
+    <span class="tag featured">9:16</span>
+    <span class="tag">3:4</span>
+    <span class="tag">4:3</span>
+    <span class="tag">1:1</span>
+  </div>
+
+  <div class="ctx reveal">
+    <div class="ctx-head" data-i18n="limits_header">Generation limits</div>
+    <div class="cd-grid">
+      <div class="cd-item"><div class="cd-label" data-i18n="limit_ttv">Text-to-Video</div><div class="cd-val">512 toks</div></div>
+      <div class="cd-item"><div class="cd-label" data-i18n="limit_itv">Image-to-Video</div><div class="cd-val">1024 toks</div></div>
+      <div class="cd-item"><div class="cd-label" data-i18n="limit_rtv">Reference-to-Video</div><div class="cd-val">1024 toks</div></div>
+      <div class="cd-item"><div class="cd-label" data-i18n="limit_res">Output</div><div class="cd-val">4K&amp;60FPS</div></div>
     </div>
   </div>
 </section>
 
-<!-- CONTACT -->
-<section id="contact">
-  <div class="section-label" data-i18n="contact_label">Contact</div>
-  <h2 class="section-title" data-i18n="contact_title">Let's get in touch</h2>
-  <p class="section-desc" data-i18n="contact_desc">Questions, partnerships, or just curious?</p>
-
-  <div class="contact-grid">
-    <a class="contact-card reveal" href="mailto:otan-systems@proton.me">
-      <div class="contact-icon">✉️</div>
-      <div class="contact-info">
-        <div class="contact-platform" data-i18n="contact_email_label">Email · Sales</div>
-        <div class="contact-handle">otan-systems@proton.me</div>
-      </div>
-    </a>
-    <a class="contact-card reveal" href="https://otansystems.com">
-      <div class="contact-icon">🌐</div>
-      <div class="contact-info">
-        <div class="contact-platform" data-i18n="contact_lobby_label">Website · To Lobby</div>
-        <div class="contact-handle">otansystems.com</div>
-      </div>
-    </a>
-  </div>
+<section class="sec" id="release">
+  <div class="sec-label" data-i18n="release_label">Release</div>
+  <a class="btn btn-release reveal" href="https://otansystems.com/synapse/ai" target="_self" data-i18n="release_btn">Ready To Use!</a>
 </section>
 
-<div class="divider"></div>
-
-<!-- FOOTER -->
-<footer>
-  <div class="footer-left">
-    <img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Synapse logo">
-    </img>
-    <span class="footer-copy" data-i18n="footer_copy">© 2026 Otan Systems. All rights reserved.</span>
+<section class="sec" id="contact">
+  <div class="sec-label" data-i18n="contact_label">Contact</div>
+  <h2 class="sec-title" data-i18n="contact_title">Let's get in touch</h2>
+  <p class="sec-desc" data-i18n="contact_desc">Questions, partnerships, or just curious?</p>
+  <div class="link-grid">
+    <a class="link-card reveal" href="mailto:otan-systems@proton.me"><div class="link-icon">✉️</div><div><div class="link-platform" data-i18n="contact_email_label">Email · Sales</div><div class="link-handle">otan-systems@proton.me</div></div></a>
+    <a class="link-card reveal" href="https://otansystems.com"><div class="link-icon">🌐</div><div><div class="link-platform" data-i18n="contact_lobby_label">Website · To Lobby</div><div class="link-handle">otansystems.com</div></div></a>
   </div>
+</section>
+</main>
+
+<footer class="p-footer">
+  <div class="p-footer-left"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt=""><span data-i18n="footer_copy">© 2026 Otan Systems. All rights reserved.</span></div>
 </footer>
 
+<script src="/otan-id.js"></script>
 <script>
 (function(){
   var dict = {
     en: {
       nav_why: "Why Synapse", nav_modes: "Modes", nav_release: "Release", nav_contact: "Contact",
-      nav_lobby: "To Lobby", nav_sales: "Sales",
+      nav_sales: "Sales",
       hero_badge: "AI Video Generation",
       hero_title_1: "Your idea.", hero_title_2: "Already video.",
       hero_sub: "Text, image, or reference — Synapse turns it into finished 4K video in minutes.",
@@ -814,7 +168,7 @@
     },
     ru: {
       nav_why: "Почему Synapse", nav_modes: "Режимы", nav_release: "Релиз", nav_contact: "Контакты",
-      nav_lobby: "To Lobby", nav_sales: "Sales",
+      nav_sales: "Sales",
       hero_badge: "ИИ-генерация видео",
       hero_title_1: "Ваша идея.", hero_title_2: "Уже видео.",
       hero_sub: "Текст, изображение или референс — Synapse превращает это в готовое видео 4K за минуты.",
@@ -841,7 +195,6 @@
       footer_copy: "© 2026 Otan Systems. Все права защищены."
     }
   };
-
   function setLang(lang){
     document.documentElement.lang = lang;
     document.querySelectorAll('[data-i18n]').forEach(function(el){
@@ -859,7 +212,6 @@
     setLang(btn.getAttribute('data-lang'));
   });
 
-  // scroll reveal
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
       if (entry.isIntersecting) {
@@ -869,9 +221,7 @@
     });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
-
 })();
 </script>
-
 </body>
 </html>
