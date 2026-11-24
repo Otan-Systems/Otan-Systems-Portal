@@ -198,19 +198,19 @@ body.authed [data-guest] { display: none; }
   color: var(--white); font-size: clamp(26px, 4vw, 46px); outline: none; min-width: 0;
 }
 .field input::placeholder { color: var(--white); opacity: .92; }
-.field.has-sq input { padding-right: 60px; }
-.vshow { font-size: clamp(26px, 4vw, 46px); padding: 4px 60px 4px 0; user-select: all; word-break: break-all; }
+.field.has-sq input { padding-right: 44px; }
+.vshow { font-size: clamp(26px, 4vw, 46px); padding: 4px 44px 4px 0; user-select: all; word-break: break-all; }
 .hints { list-style: none; margin: 4px 0 0; padding: 0; font-size: clamp(13px, 1.5vw, 17px); line-height: 1.45; }
 .hints li { color: var(--white); transition: color .15s ease; }
 .hints li.good { color: var(--lime); }
 .hints li.bad  { color: var(--red); }
 .sq {
-  position: absolute; right: 20px; top: calc(50% - 22px); width: 44px; height: 44px; padding: 0;
-  display: grid; place-items: center; background: var(--t); border: 3px solid #000; border-radius: 12px; cursor: pointer;
+  position: absolute; right: 12px; top: 10px; width: 32px; height: 32px; padding: 0;
+  display: grid; place-items: center; background: var(--t); border: 2px solid #000; border-radius: 9px; cursor: pointer;
   transition: transform .2s ease;
 }
 .sq:hover { transform: scale(.9); }
-.sq svg { width: 24px; height: 24px; stroke: #000; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
+.sq svg { width: 18px; height: 18px; stroke: #000; fill: none; stroke-width: 2.4; stroke-linecap: round; stroke-linejoin: round; }
 .sq .i-check { display: none; }
 .sq.done .i-main { display: none; }
 .sq.done .i-check { display: block; }
