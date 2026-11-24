@@ -270,6 +270,13 @@ footer { padding: 28px clamp(20px, 4vw, 52px); font-size: 14px; color: var(--mut
 body[data-view="signup"] footer, body[data-view="login"] footer, body[data-view="reset"] footer { display: none; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+
+/* typewriter caret: нулевой ширины, не сдвигает вёрстку */
+.tw-caret { display: inline-block; width: 0; height: 0; position: relative; pointer-events: none; }
+.tw-caret::after {
+  content: ""; position: absolute; left: 0; bottom: -.15em;
+  width: max(2px, .07em); height: 1em; background: currentColor;
+}
 </style>
 </head>
 <body>
@@ -787,11 +794,112 @@ $$('[data-form]').forEach(root => {
   refresh(f);
 });
 
+/* ════════════ ANIMATIONS ════════════
+   Текст — Typewriter, всё остальное — Fade In.
+   Текст в тексте-элементе не пересобирается: невидимый «хвост» держит место,
+   поэтому вёрстка не прыгает во время печати. */
+const REDUCED = matchMedia('(prefers-reduced-motion: reduce)');
+const TYPE_SEL = 'h1, h2, h3, .back, .menu a, .card-tag, .card-name, .card-desc, .card-url, ' +
+                 '.hints li, .submit, .legal, .prose p, .prose li, .lang-toggle button, footer';
+const FADE_SEL = '.shape, .field, .card, .submit, .lang-toggle';
+
+const anim = { tasks: new Set(), fades: [], raf: 0 };
+
+function isShown(n) { return n.getClientRects().length > 0 && !n.closest('[hidden]'); }
+
+function prepType(elm, delay) {
+  const w = document.createTreeWalker(elm, NodeFilter.SHOW_TEXT);
+  const nodes = [];
+  let n;
+  while ((n = w.nextNode())) if (n.data.trim()) nodes.push(n);
+  if (!nodes.length) return;
+
+  const segs = [];
+  let total = 0;
+  nodes.forEach(node => {
+    const hid = document.createElement('span');
+    hid.style.visibility = 'hidden';
+    hid.setAttribute('aria-hidden', 'true');
+    hid.textContent = node.data;
+    segs.push({ node, hid, full: node.data, off: total });
+    total += node.data.length;
+    node.after(hid);
+    node.data = '';
+  });
+
+  const caret = document.createElement('span');
+  caret.className = 'tw-caret';
+  caret.setAttribute('aria-hidden', 'true');
+  const dur = Math.max(350, Math.min(total * 40, 1100));
+  anim.tasks.add({ segs, total, caret, dur, start: performance.now() + delay, n: -1 });
+}
+
+function setProgress(t, n) {
+  if (n === t.n) return;
+  t.n = n;
+  let caretSeg = null;
+  for (const s of t.segs) {
+    const k = Math.max(0, Math.min(n - s.off, s.full.length));
+    s.node.data = s.full.slice(0, k);
+    s.hid.textContent = s.full.slice(k);
+    if (!caretSeg && k < s.full.length) caretSeg = s;
+  }
+  if (caretSeg) caretSeg.node.after(t.caret);
+}
+
+function finishType(t) {
+  t.segs.forEach(s => { s.node.data = s.full; s.hid.remove(); });
+  t.caret.remove();
+}
+
+function tick(now) {
+  anim.raf = 0;
+  for (const t of anim.tasks) {
+    if (now < t.start) continue;
+    const p = Math.min((now - t.start) / t.dur, 1);
+    if (p === 1) { finishType(t); anim.tasks.delete(t); }
+    else setProgress(t, Math.floor(p * t.total));
+  }
+  if (anim.tasks.size) anim.raf = requestAnimationFrame(tick);
+}
+
+function cancelAnim() {
+  if (anim.raf) cancelAnimationFrame(anim.raf);
+  anim.raf = 0;
+  anim.tasks.forEach(finishType);
+  anim.tasks.clear();
+  anim.fades.forEach(a => a.cancel());
+  anim.fades = [];
+}
+
+function collect(roots, sel) {
+  const out = new Set();
+  roots.forEach(r => {
+    if (!r) return;
+    if (r.matches(sel)) out.add(r);
+    r.querySelectorAll(sel).forEach(e => out.add(e));
+  });
+  return [...out].filter(isShown);
+}
+
+function playIn(...roots) {
+  cancelAnim();
+  if (REDUCED.matches) return;
+
+  collect(roots, FADE_SEL).forEach((e, i) => {
+    anim.fades.push(e.animate([{ opacity: 0 }, { opacity: 1 }], {
+      duration: 600, delay: Math.min(i * 90, 700), easing: 'ease-out', fill: 'backwards',
+    }));
+  });
+  collect(roots, TYPE_SEL).forEach((e, i) => prepType(e, Math.min(i * 80, 1400)));
+  if (anim.tasks.size) anim.raf = requestAnimationFrame(tick);
+}
+
 /* ════════════ ROUTER ════════════ */
 const VIEWS = ['welcome', 'signup', 'login', 'reset', 'products', 'privacy'];
 const GUEST_ONLY = ['signup', 'login', 'reset'];
 
-let current = null, prev = null;
+let current = null, prev = null, animated = null;
 
 function go(name) {
   if (location.hash === '#' + name) route(); else location.hash = name;
@@ -818,6 +926,10 @@ function route() {
     if (name === 'login' && notice) { f.lock = notice; notice = null; }
     refresh(f);
   }
+  if (name !== animated) {
+    animated = name;
+    playIn($('#v-' + name), $('footer'));
+  }
   window.scrollTo(0, 0);
   const h = $(`#v-${name} h1`);
   if (h) h.focus({ preventScroll: true });
@@ -839,7 +951,10 @@ function setPrivLang(l, save) {
 }
 $('#privLang').addEventListener('click', e => {
   const b = e.target.closest('button[data-lang]');
-  if (b) setPrivLang(b.dataset.lang, true);
+  if (!b) return;
+  const changed = !b.classList.contains('active');
+  setPrivLang(b.dataset.lang, true);
+  if (changed) playIn($('[data-lang-block]:not([hidden])'));
 });
 {
   let l = null;
