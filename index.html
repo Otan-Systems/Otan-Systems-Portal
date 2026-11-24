@@ -9,7 +9,7 @@
 <style>
 @font-face {
   font-family: 'Peace Sans';
-  src: url('peace_sans.otf') format('opentype');
+  src: url('/peace_sans.otf') format('opentype');
   font-display: swap;
 }
 
@@ -21,7 +21,9 @@
   --lime: #c3ff6b;
   --red: #ff5a5f;
   --muted: #9a9a9a;
+  --accent: var(--lime);
   --font: 'Peace Sans', 'Arial Black', 'Segoe UI Black', Impact, sans-serif;
+  --topbar-h: 68px;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
@@ -30,24 +32,18 @@ body {
   margin: 0; background: var(--bg); color: var(--white);
   font-family: var(--font); font-weight: 400; line-height: 1.2;
 }
+body.has-topbar { padding-top: var(--topbar-h); }
 button, input { font-family: inherit; }
 a { color: inherit; }
 :focus-visible { outline: 3px solid var(--white); outline-offset: 3px; }
 h1, h2, h3, p { margin: 0; }
 h1:focus { outline: none; }
 
-/* theme colours */
 .c-orange { --c: var(--orange); }
 .c-blue   { --c: var(--blue); }
 .c-white  { --c: var(--white); }
 .c-lime   { --c: var(--lime); }
 
-/* views */
-.view { display: none; }
-.view.active { display: block; }
-body.authed main { padding-top: 68px; }
-
-/* ───────── shapes ───────── */
 .shape {
   display: block; width: 100%; aspect-ratio: 1; color: var(--c);
   fill: none; stroke: currentColor; stroke-width: 8px;
@@ -55,24 +51,103 @@ body.authed main { padding-top: 68px; }
 }
 .shape:hover { transform: scale(.88); }
 
-/* ───────── topbar (logged in) ───────── */
-.topbar {
-  position: fixed; inset: 0 0 auto 0; height: 68px; z-index: 20;
-  display: none; grid-template-columns: 1fr auto 1fr; align-items: center; gap: 12px;
+/* ───────── topbar ───────── */
+.otan-topbar {
+  display: none; position: fixed; inset: 0 0 auto 0; height: var(--topbar-h); z-index: 50;
+  align-items: center; justify-content: space-between; gap: 12px;
   padding: 0 clamp(14px, 3vw, 36px); background: #000; border-bottom: 3px solid #1a1a1a;
 }
-body.authed .topbar { display: grid; }
-.tb-user { font-size: clamp(18px, 2.4vw, 28px); color: var(--lime); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.tb-shapes { display: flex; gap: clamp(8px, 1.6vw, 18px); }
-.tb-shapes .shape { width: clamp(20px, 2.8vw, 30px); stroke-width: 3px; }
-.tb-actions { display: flex; gap: 10px; justify-content: flex-end; }
-.pill {
-  font-size: clamp(13px, 1.6vw, 18px); color: var(--white); background: #000;
-  border: 3px solid var(--white); border-radius: 14px; padding: 6px 14px; cursor: pointer;
-  transition: transform .2s ease;
+.otan-topbar[data-mode="always"], body.authed .otan-topbar { display: flex; }
+
+.tb-left { position: relative; min-width: 0; max-width: 40%; }
+.tb-right { display: flex; align-items: center; gap: 14px; min-width: 0; }
+.tb-center {
+  position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%);
+  display: flex; gap: clamp(7px, 1.4vw, 14px);
 }
-.pill:hover { transform: scale(.94); }
-.pill.danger { border-color: var(--red); color: var(--red); }
+.tb-shapes { display: flex; gap: inherit; text-decoration: none; }
+.tb-shapes .shape { width: clamp(18px, 2.4vw, 26px); stroke-width: 3px; }
+
+.tb-user, .tb-login {
+  display: inline-flex; align-items: center; gap: 8px; max-width: 100%;
+  font-size: clamp(16px, 2.2vw, 26px); line-height: 1.2; cursor: pointer;
+  background: none; border: 0; padding: 6px 0; text-decoration: none;
+  transition: transform .2s ease; transform-origin: left center;
+}
+.tb-user { color: var(--lime); }
+.tb-login { color: var(--orange); }
+.tb-user:hover, .tb-login:hover { transform: scale(.95); }
+.tb-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tb-caret { flex: none; width: 12px; height: 12px; stroke: currentColor; fill: none; stroke-width: 3; transition: transform .2s ease; }
+.tb-user[aria-expanded="true"] .tb-caret { transform: rotate(180deg); }
+
+.tb-menu {
+  position: absolute; top: calc(100% + 8px); left: 0; z-index: 60;
+  width: min(86vw, 280px); padding: 8px; background: #000;
+  border: 4px solid var(--lime); border-radius: 18px;
+  opacity: 0; visibility: hidden; transform: translateY(-6px) scale(.98); transform-origin: top left;
+  transition: opacity .18s ease, transform .18s ease, visibility 0s linear .18s;
+}
+.tb-menu.open { opacity: 1; visibility: visible; transform: none; transition-delay: 0s; }
+.tb-item {
+  display: block; width: 100%; text-align: left; background: none; border: 0; border-radius: 12px;
+  padding: 10px 14px; color: var(--white); font-size: 20px; cursor: pointer;
+}
+.tb-item:hover { background: #151515; }
+.tb-item.danger { color: var(--red); }
+
+.tb-collapse { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .22s ease; }
+.tb-collapse.open { grid-template-rows: 1fr; }
+.tb-collapse > div { overflow: hidden; min-height: 0; }
+.tb-confirm { padding: 8px 14px 6px; }
+.tb-confirm p { font-size: 15px; line-height: 1.4; margin-bottom: 10px; }
+.tb-confirm-actions { display: flex; gap: 10px; }
+.tb-btn {
+  font-size: 16px; color: var(--white); background: #000; border: 3px solid var(--white);
+  border-radius: 12px; padding: 5px 14px; cursor: pointer; transition: transform .2s ease;
+}
+.tb-btn:hover:not(:disabled) { transform: scale(.94); }
+.tb-btn:disabled { opacity: .55; cursor: progress; }
+.tb-btn.danger { color: var(--red); border-color: var(--red); }
+.tb-err { min-height: 1.2em; margin-top: 6px; font-size: 14px; color: var(--red); }
+
+.tb-burger {
+  display: none; width: 44px; height: 38px; padding: 0; place-items: center; cursor: pointer;
+  background: #000; border: 3px solid var(--white); border-radius: 12px;
+}
+.tb-burger svg { width: 20px; height: 20px; stroke: var(--white); stroke-width: 3; stroke-linecap: round; fill: none; }
+
+.tb-links { display: flex; align-items: center; gap: 14px; list-style: none; margin: 0; padding: 0; }
+.tb-links a { font-size: 16px; color: var(--white); text-decoration: none; white-space: nowrap; transition: color .15s ease, transform .2s ease; display: inline-block; }
+.tb-links a:hover { color: var(--accent); transform: scale(.96); }
+.tb-links a.tb-cta { color: var(--accent); border: 3px solid var(--accent); border-radius: 12px; padding: 3px 12px; }
+.lang-toggle { display: flex; gap: 6px; }
+.lang-toggle button {
+  font-size: 15px; color: var(--white); background: #000; border: 3px solid var(--white);
+  border-radius: 12px; padding: 3px 10px; cursor: pointer; transition: transform .2s ease;
+}
+.lang-toggle button:hover { transform: scale(.94); }
+.lang-toggle button.active { background: var(--accent); border-color: var(--accent); color: #000; }
+
+@media (max-width: 1280px) {
+  .tb-burger { display: grid; }
+  .tb-links {
+    display: none; position: fixed; top: var(--topbar-h); left: 0; right: 0; z-index: 55;
+    flex-direction: column; align-items: flex-start; gap: 4px; margin: 0;
+    padding: 12px clamp(14px, 3vw, 36px) 18px; background: #000; border-bottom: 3px solid #1a1a1a;
+  }
+  .tb-links.open { display: flex; }
+  .tb-links a { font-size: 24px; padding: 6px 0; }
+}
+@media (max-width: 560px) {
+  .tb-right { gap: 8px; }
+}
+
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { transition: none !important; animation: none !important; } }
+
+/* views */
+.view { display: none; }
+.view.active { display: block; }
 
 /* ───────── welcome ───────── */
 .welcome {
@@ -181,20 +256,17 @@ body.authed [data-guest] { display: none; }
 .prose p, .prose li { font-size: 17px; line-height: 1.55; }
 .prose ul { margin: 8px 0 0; padding-left: 1.2em; }
 .prose .muted { color: var(--muted); font-size: 15px; }
+.prose h3 { font-size: clamp(28px, 4vw, 44px); color: var(--blue); margin: 40px 0 0; line-height: 1.1; }
+.prose h3:first-of-type { margin-top: 24px; }
+.prose .k { color: var(--orange); }
+.priv-tools { display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; margin: 10px 0 clamp(18px, 3vw, 34px); }
+.priv-tools .back { margin: 0; }
+.legal { margin-top: 12px; text-align: center; font-size: 14px; line-height: 1.4; color: var(--muted); }
+.legal a { color: var(--blue); }
+footer a:hover { color: var(--white); }
 
 footer { padding: 28px clamp(20px, 4vw, 52px); font-size: 14px; color: var(--muted); }
 body[data-view="signup"] footer, body[data-view="login"] footer, body[data-view="reset"] footer { display: none; }
-
-/* delete dialog */
-dialog {
-  background: #000; color: var(--white); border: 6px solid var(--red); border-radius: 26px;
-  padding: 28px; width: min(92vw, 520px);
-}
-dialog::backdrop { background: rgba(0, 0, 0, .82); }
-dialog h2 { font-size: clamp(28px, 4vw, 40px); color: var(--red); margin-bottom: 12px; }
-dialog p { font-size: 17px; line-height: 1.5; }
-.dlg-msg { min-height: 1.4em; margin-top: 10px; color: var(--red); font-size: 15px; }
-.dlg-actions { display: flex; gap: 12px; flex-wrap: wrap; margin-top: 18px; }
 
 @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
 </style>
@@ -210,19 +282,7 @@ dialog p { font-size: 17px; line-height: 1.5; }
 </svg>
 
 <!-- topbar (only when logged in) -->
-<header class="topbar">
-  <span class="tb-user" id="tbUser"></span>
-  <div class="tb-shapes" aria-hidden="true">
-    <svg class="shape c-white"><use href="#s-tri"/></svg>
-    <svg class="shape c-orange"><use href="#s-sq"/></svg>
-    <svg class="shape c-blue"><use href="#s-arch"/></svg>
-    <svg class="shape c-lime"><use href="#s-circle"/></svg>
-  </div>
-  <div class="tb-actions">
-    <button class="pill" id="btnLogout" type="button">Log Out</button>
-    <button class="pill danger" id="btnDelete" type="button">Delete</button>
-  </div>
-</header>
+<header class="otan-topbar" id="otanTopbar" data-mode="auth"><div class="tb-right"></div></header>
 
 <main>
 
@@ -285,6 +345,7 @@ dialog p { font-size: 17px; line-height: 1.5; }
     <div class="auth-side">
       <div class="status" data-el="status" role="status" aria-live="polite"></div>
       <button class="submit" type="button" data-el="submit">Submit</button>
+      <p class="legal">By signing up you accept the <a href="#privacy">Privacy &amp; Policy</a></p>
     </div>
   </div>
 </section>
@@ -370,36 +431,143 @@ dialog p { font-size: 17px; line-height: 1.5; }
 <section class="view" id="v-privacy">
   <div class="page c-blue">
     <h1 class="auth-h" tabindex="-1">&gt; Privacy &amp; Policy</h1>
-    <button class="back" type="button" data-go="products">&gt; Back</button>
-    <div class="prose">
-      <p class="muted">Otan ID · Last updated: November 20, 2026</p>
+    <div class="priv-tools">
+      <button class="back" type="button" data-go="back">&gt; Back</button>
+      <div class="lang-toggle" id="privLang">
+        <button type="button" data-lang="en" class="active">EN</button>
+        <button type="button" data-lang="ru">RU</button>
+      </div>
+    </div>
 
-      <h2>What we store</h2>
+    <div class="prose" lang="en" data-lang-block="en">
+      <p class="muted">Otan ID · Last updated: November 23, 2026</p>
+
+      <h3>Privacy</h3>
+
+      <h2>1. Who we are</h2>
+      <p>Otan Systems ("we") runs Otan ID, the account used across otansystems.com and our product pages. We are the data controller for Otan ID data. Contact: otan-systems@proton.me.</p>
+
+      <h2>2. What we process and why</h2>
       <ul>
-        <li>Your username.</li>
-        <li>Your password, only as a salted hash. We cannot read it.</li>
-        <li>Your 12-digit value, only as a keyed hash. We cannot read or restore it.</li>
-        <li>Dates of account creation and last log in.</li>
-        <li>Active sessions: a hashed session token and its expiry.</li>
-        <li>A keyed hash of your IP address, used only to limit failed attempts and removed automatically after 48 hours.</li>
+        <li><span class="k">Username</span> — identifies your account. Basis: providing the service you asked for (GDPR Art. 6(1)(b)).</li>
+        <li><span class="k">Password</span> — stored only as a salted hash; we cannot read it. Basis: Art. 6(1)(b).</li>
+        <li><span class="k">12-digit value</span> — stored only as a keyed hash; we cannot read or restore it. Used to log in and to reset your account. Basis: Art. 6(1)(b).</li>
+        <li><span class="k">Account dates</span> — when the account was created and last used. Used to delete inactive accounts. Basis: our legitimate interest in keeping data minimal and the service secure (Art. 6(1)(f)).</li>
+        <li><span class="k">Sessions</span> — a hashed token and its expiry, so you stay logged in for 7 days. Basis: Art. 6(1)(b).</li>
+        <li><span class="k">IP address</span> — kept only as a keyed hash, to limit failed attempts and stop abuse. Basis: our legitimate interest in security (Art. 6(1)(f)).</li>
       </ul>
+      <p>Through Otan ID we do not collect your email, phone number, real name, location or payment data. Otan ID uses no advertising or tracking cookies. Your browser's local storage keeps your session token and your language choice; both are purely functional, so no consent banner is shown.</p>
 
-      <h2>What we don't</h2>
-      <p>No email, phone number or real name. No advertising, no tracking cookies. Your session token is kept in your browser's local storage on this device.</p>
+      <h2>3. How long we keep it</h2>
+      <ul>
+        <li>Account data: until you delete the account, or automatically 30 days after your last log in.</li>
+        <li>Sessions: 7 days, or until you log out.</li>
+        <li>IP hashes and failed-attempt counters: up to 48 hours.</li>
+      </ul>
+      <p>Delete in the top bar erases your account and sessions immediately and permanently. Copies in our providers' logs or backups, if any, are removed on their normal schedule.</p>
 
-      <h2>Your value</h2>
-      <p>The value is shown once, when you sign up. You need it to log in and to reset your username or password. If you lose it, the account cannot be recovered. Anyone who has your value can reset your account, so do not share it.</p>
+      <h2>4. Who receives data</h2>
+      <p>We do not sell or rent your data. Our infrastructure providers process it on our behalf: Supabase (database and server functions) and Vercel (website hosting). Their servers may log technical data such as IP address and browser type. Where data is processed outside the EEA, the providers rely on safeguards such as Standard Contractual Clauses.</p>
 
-      <h2>Sessions and attempts</h2>
-      <p>A session lasts 7 days, then you log in again. After 5 failed attempts, further attempts are blocked for 24 hours.</p>
+      <h2>5. Your rights</h2>
+      <p>Under the GDPR you can ask for access to your data, correction, erasure, restriction, objection to processing and a portable copy. Most of this you can do yourself: Reset changes your username and password, Delete erases your account. For anything else write to otan-systems@proton.me; we reply within one month. Because Otan ID holds so little data, we may ask you to prove that you control the account. You may also complain to your local data protection authority.</p>
 
-      <h2>Deleting your data</h2>
-      <p>Use Delete in the top bar at any time: your account and sessions are erased permanently. An account that has not logged in for 30 days is deleted automatically.</p>
+      <h2>6. Security</h2>
+      <p>Passwords and values are hashed, connections use HTTPS, and repeated failed attempts are blocked for 24 hours. No system is perfectly secure. If a breach affects you, we will announce it on this site and notify the authorities as the law requires.</p>
 
-      <h2>Sharing</h2>
-      <p>We do not sell or share your data. Data is stored with our infrastructure provider (Supabase) and the site is served by Vercel.</p>
+      <h2>7. Changes</h2>
+      <p>We may update this page. The date at the top shows the latest version; important changes will be announced on the site.</p>
 
-      <h2>Contact</h2>
+      <h3>Terms</h3>
+
+      <h2>1. Acceptance</h2>
+      <p>By creating an Otan ID you accept these Terms and the Privacy section above.</p>
+
+      <h2>2. Your account</h2>
+      <p>You are responsible for your username, password and value, and for everything done with them. Keep them secret. The value is shown once, at sign-up. We cannot restore it, so save it. Anyone who has your value can reset your username and password.</p>
+
+      <h2>3. Acceptable use</h2>
+      <p>Do not try to break into other accounts, guess passwords or values, bypass the attempt limits, overload the service or use it to harm others.</p>
+
+      <h2>4. Limits and inactivity</h2>
+      <p>Sessions last 7 days. After 5 failed attempts, further attempts are blocked for 24 hours. An account with no log in for 30 days is deleted automatically, and deletion cannot be undone.</p>
+
+      <h2>5. Suspension</h2>
+      <p>We may suspend or delete accounts that break these Terms or put the service or other users at risk.</p>
+
+      <h2>6. No warranty</h2>
+      <p>Otan ID is provided "as is" and may change or stop. To the extent the law allows, we are not liable for indirect losses, including loss of access caused by a lost value or password. Nothing here limits rights you have under mandatory law.</p>
+
+      <h2>7. Products</h2>
+      <p>Azat, Synapse and other Otan Systems products may have their own terms. These Terms cover Otan ID only.</p>
+
+      <h2>8. Contact</h2>
+      <p>otan-systems@proton.me</p>
+    </div>
+
+    <div class="prose" lang="ru" data-lang-block="ru" hidden>
+      <p class="muted">Otan ID · Обновлено: 23 ноября 2026 г.</p>
+
+      <h3>Конфиденциальность</h3>
+
+      <h2>1. Кто мы</h2>
+      <p>Otan Systems («мы») управляет Otan ID — аккаунтом, который используется на otansystems.com и страницах наших продуктов. Мы являемся оператором (контролёром) данных Otan ID. Контакт: otan-systems@proton.me.</p>
+
+      <h2>2. Что мы обрабатываем и зачем</h2>
+      <ul>
+        <li><span class="k">Username</span> — определяет ваш аккаунт. Основание: предоставление запрошенной вами услуги (GDPR, ст. 6(1)(b)).</li>
+        <li><span class="k">Пароль</span> — хранится только в виде хеша с солью; мы не можем его прочитать. Основание: ст. 6(1)(b).</li>
+        <li><span class="k">12-значное value</span> — хранится только в виде хеша с секретным ключом; мы не можем его прочитать или восстановить. Нужно для входа и сброса аккаунта. Основание: ст. 6(1)(b).</li>
+        <li><span class="k">Даты аккаунта</span> — когда аккаунт создан и когда использовался в последний раз. Нужны для удаления неактивных аккаунтов. Основание: наш законный интерес в минимальном объёме данных и безопасности сервиса (ст. 6(1)(f)).</li>
+        <li><span class="k">Сессии</span> — хешированный токен и срок его действия, чтобы вы оставались в аккаунте 7 дней. Основание: ст. 6(1)(b).</li>
+        <li><span class="k">IP-адрес</span> — хранится только как хеш с секретным ключом, чтобы ограничивать неудачные попытки и пресекать злоупотребления. Основание: наш законный интерес в безопасности (ст. 6(1)(f)).</li>
+      </ul>
+      <p>Через Otan ID мы не собираем ваш email, телефон, настоящее имя, местоположение и платёжные данные. Otan ID не использует рекламные и отслеживающие cookie. В локальном хранилище браузера лежат токен сессии и выбранный язык; оба нужны только для работы сайта, поэтому баннер согласия не показывается.</p>
+
+      <h2>3. Как долго мы храним данные</h2>
+      <ul>
+        <li>Данные аккаунта: пока вы не удалите аккаунт, либо автоматически через 30 дней после последнего входа.</li>
+        <li>Сессии: 7 дней или до выхода из аккаунта.</li>
+        <li>Хеши IP и счётчики неудачных попыток: до 48 часов.</li>
+      </ul>
+      <p>Кнопка Delete в верхней панели немедленно и безвозвратно удаляет аккаунт и сессии. Копии в логах или резервных копиях наших провайдеров, если они есть, удаляются по их обычному графику.</p>
+
+      <h2>4. Кто получает данные</h2>
+      <p>Мы не продаём и не сдаём данные в аренду. От нашего имени их обрабатывают инфраструктурные провайдеры: Supabase (база данных и серверные функции) и Vercel (хостинг сайта). Их серверы могут записывать технические данные, например IP-адрес и тип браузера. Если данные обрабатываются за пределами ЕЭЗ, провайдеры опираются на такие гарантии, как стандартные договорные положения (SCC).</p>
+
+      <h2>5. Ваши права</h2>
+      <p>По GDPR вы можете запросить доступ к своим данным, их исправление, удаление, ограничение или возражение против обработки, а также переносимую копию. Многое можно сделать самому: Reset меняет username и пароль, Delete удаляет аккаунт. По остальным вопросам пишите на otan-systems@proton.me; мы ответим в течение одного месяца. Поскольку в Otan ID хранится очень мало данных, мы можем попросить подтвердить, что аккаунт принадлежит вам. Вы также вправе пожаловаться в местный орган по защите данных.</p>
+
+      <h2>6. Безопасность</h2>
+      <p>Пароли и value хранятся в виде хешей, соединения используют HTTPS, а повторные неудачные попытки блокируются на 24 часа. Ни одна система не защищена идеально. Если утечка затронет вас, мы объявим об этом на сайте и уведомим надзорные органы, как требует закон.</p>
+
+      <h2>7. Изменения</h2>
+      <p>Мы можем обновлять эту страницу. Дата вверху показывает последнюю версию; о важных изменениях мы сообщим на сайте.</p>
+
+      <h3>Условия</h3>
+
+      <h2>1. Принятие</h2>
+      <p>Создавая Otan ID, вы принимаете эти Условия и раздел «Конфиденциальность» выше.</p>
+
+      <h2>2. Ваш аккаунт</h2>
+      <p>Вы отвечаете за свои username, пароль и value и за всё, что делается с их помощью. Держите их в секрете. Value показывается один раз, при регистрации. Мы не можем его восстановить, поэтому сохраните его. Любой, у кого есть ваше value, может сбросить ваши username и пароль.</p>
+
+      <h2>3. Допустимое использование</h2>
+      <p>Не пытайтесь взламывать чужие аккаунты, подбирать пароли или value, обходить лимиты попыток, перегружать сервис или использовать его во вред другим.</p>
+
+      <h2>4. Лимиты и неактивность</h2>
+      <p>Сессия длится 7 дней. После 5 неудачных попыток дальнейшие попытки блокируются на 24 часа. Аккаунт, в который не входили 30 дней, удаляется автоматически, и удаление нельзя отменить.</p>
+
+      <h2>5. Приостановка</h2>
+      <p>Мы можем приостановить или удалить аккаунты, нарушающие эти Условия или создающие риск для сервиса или других пользователей.</p>
+
+      <h2>6. Отсутствие гарантий</h2>
+      <p>Otan ID предоставляется «как есть» и может измениться или прекратить работу. В пределах, разрешённых законом, мы не несём ответственности за косвенные убытки, включая потерю доступа из-за утраченного value или пароля. Ничто здесь не ограничивает права, которые вам даёт обязательное законодательство.</p>
+
+      <h2>7. Продукты</h2>
+      <p>У Azat, Synapse и других продуктов Otan Systems могут быть свои условия. Эти Условия относятся только к Otan ID.</p>
+
+      <h2>8. Контакт</h2>
       <p>otan-systems@proton.me</p>
     </div>
   </div>
@@ -407,26 +575,17 @@ dialog p { font-size: 17px; line-height: 1.5; }
 
 </main>
 
-<footer>© 2026 Otan Systems. All rights reserved.</footer>
+<footer>© 2026 Otan Systems. All rights reserved. · <a href="#privacy">Privacy &amp; Policy</a></footer>
 
-<!-- delete account -->
-<dialog id="delDialog" aria-labelledby="delTitle">
-  <h2 id="delTitle">Delete account?</h2>
-  <p>This cannot be undone. Your username, password and value will be erased permanently and cannot be restored.</p>
-  <div class="dlg-msg" id="delMsg" role="alert"></div>
-  <div class="dlg-actions">
-    <button class="pill" id="delCancel" type="button">Cancel</button>
-    <button class="pill danger" id="delConfirm" type="button">Delete forever</button>
-  </div>
-</dialog>
-
+<script src="otan-id.js"></script>
 <script>
 'use strict';
 
 /* ════════════ CONFIG ════════════ */
-const API_URL = 'https://lzbsgrnuufhevjnpxtly.supabase.co/functions/v1/otan-auth';
-const SESSION_KEY = 'otan_session';
 
+/* Чтобы добавить карточку — добавь один объект в нужный массив.
+   Цвет подбирается автоматически по кругу (orange → blue → white → lime),
+   длинное описание само делает карточку шире. Свой цвет: color: 'lime' | 'blue' | 'orange' | 'white'. */
 const PRODUCTS = [
   { tag: 'Coding · LLM', name: 'Azat AI',
     desc: 'Precision-built AI for System & Embedded Development. Long context, RAG-powered, specialized.',
@@ -436,18 +595,18 @@ const PRODUCTS = [
     href: '/synapse', url: 'otansystems.com/synapse' },
 ];
 const POLICIES = [
-  { tag: 'Otan ID · Docs', name: 'Policy',
+  { tag: 'Otan ID · Docs', name: 'Privacy & Policy',
     desc: 'What Otan ID stores, for how long, and how to delete it.',
     href: '#privacy', url: 'otansystems.com' },
-  { tag: 'Azat · Docs', name: 'Azat',
+  { tag: 'Azat · Docs', name: 'Terms of use & Policy for Azat',
     desc: 'Read these articles to understand and see finer points, rules or nuances dedicated to Azat AI product.',
     href: '/azat/reference', url: 'otansystems.com/azat/reference' },
-  { tag: 'Synapse · Docs', name: 'Synapse',
+  { tag: 'Synapse · Docs', name: 'Terms of use & Policy for Synapse',
     desc: 'Read these articles to understand and see finer points, rules or nuances dedicated to Synapse AI product.',
     href: '/synapse/reference', url: 'otansystems.com/synapse/reference' },
 ];
 const COLORS = ['orange', 'blue', 'white', 'lime'];
-const WIDE_AFTER = 140;
+const WIDE_AFTER = 140; // символов описания, после которых карточка занимает 2 колонки
 
 /* ════════════ HELPERS ════════════ */
 const $  = (s, r = document) => r.querySelector(s);
@@ -475,54 +634,20 @@ renderCards($('#productCards'), PRODUCTS);
 renderCards($('#policyCards'), POLICIES);
 
 /* ════════════ API ════════════ */
-async function api(action, body = {}, token) {
-  try {
-    const res = await fetch(API_URL, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', ...(token ? { 'X-Session': token } : {}) },
-      body: JSON.stringify({ action, ...body }),
-    });
-    return await res.json().catch(() => ({ ok: false, error: 'server' }));
-  } catch {
-    return { ok: false, error: 'network' };
-  }
-}
-function errMsg(res) {
-  switch (res.error) {
-    case 'invalid_credentials': return 'Wrong username, password or value';
-    case 'invalid_value':       return 'Wrong value';
-    case 'blocked':             return 'Too many attempts. Blocked until ' + (res.until ? new Date(res.until).toLocaleString() : '24 h');
-    case 'username_taken':      return 'Username is taken';
-    case 'value_taken':         return 'Value was taken. New one generated: save it';
-    case 'invalid_input':       return 'Some conditions undone';
-    case 'network':             return 'No connection. Try again';
-    default:                    return 'Server error. Try again';
-  }
-}
+const { api, errMsg } = OtanID;
 
 /* ════════════ SESSION ════════════ */
-let session = null, expTimer = null, notice = null;
+let session = OtanID.session();
+let notice = null;
+OtanID.on('change', s => { session = s; });
+OtanID.on('ended', reason => {
+  if (reason === 'expired') { notice = 'Session expired. Log in again'; go('login'); }
+  else go('welcome');
+});
 
-function loadSession() {
-  try {
-    const s = JSON.parse(localStorage.getItem(SESSION_KEY));
-    if (s && s.token && s.expires_at > Date.now()) return s;
-    localStorage.removeItem(SESSION_KEY);
-  } catch { /* storage unavailable */ }
-  return null;
-}
-function setSession(s) {
-  session = s;
-  try { s ? localStorage.setItem(SESSION_KEY, JSON.stringify(s)) : localStorage.removeItem(SESSION_KEY); } catch { /* ignore */ }
-  document.body.classList.toggle('authed', !!s);
-  $('#tbUser').textContent = s ? s.username : '';
-  clearTimeout(expTimer);
-  if (s) expTimer = setTimeout(expire, Math.max(0, s.expires_at - Date.now()));
-}
-function expire() {
-  setSession(null);
-  notice = 'Session expired. Log in again';
-  go('login');
+function nextUrl() {
+  const n = new URLSearchParams(location.search).get('next');
+  return n && /^\/(?!\/)[^\s\\]*$/.test(n) ? n : null;
 }
 
 /* ════════════ FORMS ════════════ */
@@ -541,7 +666,7 @@ function genValue() {
   const out = [];
   while (out.length < 12) {
     const b = crypto.getRandomValues(new Uint8Array(1))[0];
-    if (b < 250) out.push(b % 10);
+    if (b < 250) out.push(b % 10); // без перекоса по модулю
   }
   return out.join('');
 }
@@ -604,8 +729,10 @@ async function submit(f) {
   const res = await api(f.name, { username: d.u, password: d.p, value: d.v });
   if (res.ok) {
     if (f.name === 'login') {
-      setSession({ token: res.token, expires_at: Date.parse(res.expires_at), username: res.username });
-      wipe(f); go('welcome');
+      OtanID.setSession({ token: res.token, expires_at: Date.parse(res.expires_at), username: res.username });
+      wipe(f);
+      const n = nextUrl();
+      if (n) location.href = n; else go('welcome');
     } else { // signup / reset: SUCCESS → back to Log In
       refresh(f);
       setTimeout(() => { wipe(f); go('login'); }, 1100);
@@ -646,7 +773,7 @@ $$('[data-form]').forEach(root => {
         const t = await navigator.clipboard.readText();
         f.v.value = fmtValue(t.replace(/\D/g, '').slice(0, 12));
         flash(f.paste); f.lock = null; refresh(f);
-      } catch { f.v.focus(); }
+      } catch { f.v.focus(); } // нет доступа к буферу — вставить вручную
     });
   }
   if (f.vbtn) {
@@ -663,19 +790,28 @@ $$('[data-form]').forEach(root => {
 const VIEWS = ['welcome', 'signup', 'login', 'reset', 'products', 'privacy'];
 const GUEST_ONLY = ['signup', 'login', 'reset'];
 
+let current = null, prev = null;
+
 function go(name) {
   if (location.hash === '#' + name) route(); else location.hash = name;
 }
 function route() {
   let name = location.hash.slice(1);
   if (!VIEWS.includes(name)) name = 'welcome';
-  if (session && GUEST_ONLY.includes(name)) { name = 'welcome'; history.replaceState(null, '', '#welcome'); }
+  if (session && GUEST_ONLY.includes(name)) {
+    const n = nextUrl();
+    if (n) { location.replace(n); return; }
+    name = 'welcome'; history.replaceState(null, '', '#welcome');
+  }
 
+  if (name !== current) { prev = current; current = name; }
   $$('.view').forEach(v => v.classList.toggle('active', v.id === 'v-' + name));
   document.body.dataset.view = name;
 
   if (name === 'signup') {
-    const f = forms.signup; wipe(f); newValue(f); refresh(f);
+    const f = forms.signup;
+    if (!(prev === 'privacy' && f.digits)) { wipe(f); newValue(f); }
+    refresh(f);
   } else if (GUEST_ONLY.includes(name)) {
     const f = forms[name];
     if (name === 'login' && notice) { f.lock = notice; notice = null; }
@@ -688,45 +824,31 @@ function route() {
 window.addEventListener('hashchange', route);
 document.addEventListener('click', e => {
   const b = e.target.closest('[data-go]');
-  if (b) go(b.dataset.go);
+  if (!b) return;
+  if (b.dataset.go === 'back') go(prev && prev !== 'privacy' ? prev : 'welcome');
+  else go(b.dataset.go);
 });
 
-/* ════════════ TOPBAR ACTIONS ════════════ */
-$('#btnLogout').addEventListener('click', async () => {
-  const token = session && session.token;
-  setSession(null);
-  go('welcome');
-  if (token) api('logout', {}, token);
+/* ════════════ PRIVACY LANGUAGE ════════════ */
+const LANG_KEY = 'otan_lang';
+function setPrivLang(l, save) {
+  $$('[data-lang-block]').forEach(b => { b.hidden = b.dataset.langBlock !== l; });
+  $$('#privLang button').forEach(b => b.classList.toggle('active', b.dataset.lang === l));
+  if (save) { try { localStorage.setItem(LANG_KEY, l); } catch { /* ignore */ } }
+}
+$('#privLang').addEventListener('click', e => {
+  const b = e.target.closest('button[data-lang]');
+  if (b) setPrivLang(b.dataset.lang, true);
 });
-$('#btnDelete').addEventListener('click', () => { $('#delMsg').textContent = ''; $('#delDialog').showModal(); });
-$('#delCancel').addEventListener('click', () => $('#delDialog').close());
-$('#delConfirm').addEventListener('click', async () => {
-  const btn = $('#delConfirm');
-  btn.disabled = true;
-  const res = await api('delete', {}, session && session.token);
-  btn.disabled = false;
-  if (res.ok || res.error === 'unauthorized') {
-    $('#delDialog').close();
-    setSession(null);
-    go('welcome');
-  } else {
-    $('#delMsg').textContent = errMsg(res);
-  }
-});
+{
+  let l = null;
+  try { l = localStorage.getItem(LANG_KEY); } catch { /* ignore */ }
+  if (l !== 'en' && l !== 'ru') l = (navigator.language || '').toLowerCase().startsWith('ru') ? 'ru' : 'en';
+  setPrivLang(l, false);
+}
 
 /* ════════════ INIT ════════════ */
-setSession(loadSession());
 route();
-if (session) {
-  api('me', {}, session.token).then(res => {
-    if (res.ok) {
-      setSession({ ...session, username: res.username, expires_at: Date.parse(res.expires_at) });
-    } else if (res.error === 'unauthorized') {
-      setSession(null);
-      route();
-    }
-  });
-}
 </script>
 </body>
 </html>
