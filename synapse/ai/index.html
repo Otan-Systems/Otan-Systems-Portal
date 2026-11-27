@@ -3,502 +3,217 @@
 <head>
 <meta charset="UTF-8">
 <meta name="google" content="notranslate">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>Synapse AI</title>
 <style>
-        html, body {
-          overflow: hidden; 
-          touch-action: none; 
-          height: 100%; 
-        }
-    </style>
-<style>
+@font-face { font-family: 'Peace Sans'; src: url('/peace_sans.otf') format('opentype'); font-display: swap; }
+:root {
+  --bg: #000; --white: #fff; --orange: #ff7a1c; --blue: #38b6ff; --lime: #c3ff6b; --red: #ff5a5f; --muted: #9a9a9a;
+  --font: 'Peace Sans', 'Arial Black', 'Segoe UI Black', Impact, sans-serif;
+  --bb-h: calc(64px + env(safe-area-inset-bottom, 0px));
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body {
+  margin: 0; padding: 0; height: 100%; overflow: hidden; touch-action: none;
+  background: var(--bg); color: var(--white); font-family: var(--font); font-weight: 400; line-height: 1.2;
+  -webkit-text-size-adjust: 100%;
+}
+h1 { margin: 0; }
+button, input, textarea { font-family: inherit; }
+:focus-visible { outline: 3px solid var(--white); outline-offset: 3px; }
+#app { position: relative; width: 100vw; height: 100dvh; }
+.screen {
+  position: absolute; inset: 0 0 var(--bb-h) 0; display: none; flex-direction: column;
+  background: var(--bg); z-index: 1; visibility: hidden;
+}
+.screen.active { display: flex; z-index: 2; visibility: visible; animation: screenFadeIn .28s ease; }
+@keyframes screenFadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
 
-  :root {
-    --white: #ffffff;
-    --black: #000000;
-    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
-  }
+.ico { width: 22px; height: 22px; flex: none; stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 
-  * { box-sizing: border-box; }
+.btn2 {
+  --c: var(--white); cursor: pointer; user-select: none; color: var(--white); background: #000;
+  border: 4px solid var(--c); border-radius: 18px; font-size: 16px; padding: 10px 20px;
+  transition: transform .2s ease;
+}
+.btn2:hover { transform: scale(.96); }
+.btn2[disabled] { pointer-events: none; opacity: .35; }
+.c-orange { --c: var(--orange); }
+.c-blue { --c: var(--blue); }
+.c-lime { --c: var(--lime); }
 
-  html, body {
-    margin: 0; padding: 0;
-    height: 100%;
-    font-family: var(--font);
-    background: var(--white);
-    color: var(--black);
-  }
+#screen-entry { align-items: center; padding: 24px 16px; overflow-y: auto; }
+.entry-content {
+  display: flex; flex-direction: column; align-items: center; gap: clamp(14px, 3vh, 26px);
+  width: 100%; max-width: 760px; margin: auto 0; text-align: center;
+}
+.entry-logo { width: clamp(72px, 12vh, 120px); height: auto; }
+.entry-badge {
+  display: inline-flex; align-items: center; gap: 10px; color: var(--lime);
+  border: 4px solid var(--lime); border-radius: 999px; padding: 6px 20px; font-size: clamp(14px, 2.4vw, 18px);
+}
+.entry-badge i { width: 10px; height: 10px; border-radius: 50%; background: var(--lime); }
+.entry-title { font-size: clamp(44px, 10vw, 104px); line-height: 1; color: var(--lime); }
+.entry-sub { color: var(--muted); font-size: clamp(14px, 2vw, 18px); }
+.lang-switch { display: flex; gap: 6px; }
+.lang-btn {
+  font-size: 15px; color: var(--white); background: #000; border: 3px solid var(--white);
+  border-radius: 12px; padding: 3px 12px; cursor: pointer; transition: transform .2s ease;
+}
+.lang-btn:hover { transform: scale(.94); }
+.lang-btn.chosen { background: var(--lime); border-color: var(--lime); color: #000; }
+.entry-buttons { display: flex; flex-direction: column; gap: 16px; width: min(92vw, 460px); }
+.entry-buttons .btn2 { width: 100%; padding: clamp(16px, 3vh, 24px) 0; font-size: clamp(24px, 5vw, 34px); border-width: 6px; border-radius: 22px; }
+.auth-hint { max-width: min(92vw, 460px); font-size: 14px; line-height: 1.4; color: var(--muted); text-align: center; }
 
-  #app { height: 100vh; width: 100vw; position: relative; }
-  #app { height: 100dvh; }
+.topbar {
+  height: 68px; flex-shrink: 0; background: #000; border-bottom: 3px solid #1a1a1a;
+  display: flex; align-items: center; justify-content: space-between; padding: 0 16px; width: 100%;
+}
+.topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
+.topbar .side:last-child { justify-content: flex-end; }
+.icon-btn { width: 44px; height: 44px; padding: 0; display: grid; place-items: center; border-width: 3px; border-radius: 14px; }
+.topbar .logo { display: flex; align-items: center; gap: 10px; font-size: clamp(18px, 3vw, 26px); color: var(--lime); }
+.topbar .logo img { width: 28px; height: 28px; }
 
-  .screen {
-    position: absolute; inset: 0;
-    display: none;
-    flex-direction: column;
-    box-sizing: border-box;
-    background: var(--white);
-    z-index: 1;
-    visibility: hidden;
-  }
-  .screen.active {
-    display: flex; z-index: 2; visibility: visible;
-    animation: screenFadeIn 0.28s ease;
-  }
-  @keyframes screenFadeIn {
-    from { opacity: 0; transform: translateY(8px); }
-    to   { opacity: 1; transform: translateY(0); }
-  }
+#screen-main { padding: 16px; gap: 12px; }
+.video-stage {
+  flex: 1; min-height: 0; width: 100%; display: flex; align-items: center; justify-content: center;
+  container-type: size;
+}
+.video-frame {
+  --vr: 1.7778; flex: none; aspect-ratio: var(--vr); width: min(100cqw, calc(100cqh * var(--vr)));
+  background: #000; border: 6px solid var(--blue); border-radius: 26px;
+  display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;
+}
+.video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; background: #000; }
+.video-frame .placeholder { color: var(--muted); font-size: clamp(14px, 2vw, 18px); padding: 0 20px; text-align: center; }
+.status { display: none; flex-direction: column; align-items: center; gap: 14px; color: var(--white); text-align: center; padding: 0 20px; }
+.status.show { display: flex; }
+.spinner { width: clamp(48px, 12cqw, 84px); height: auto; color: var(--lime); animation: spin 1s linear infinite; }
+.status.static .spinner { display: none; }
+.status:not(.static) .st-text { display: none; }
+.st-text { font-size: clamp(18px, 3.2cqw, 30px); }
+.st-detail { display: none; font-size: 13px; word-break: break-all; color: var(--muted); }
+.status.static.err .st-detail { display: block; }
+@keyframes spin { to { transform: rotate(360deg); } }
+@media (prefers-reduced-motion: reduce) { .spinner { animation-duration: 3s; } }
 
-  /* Black object on white background */
-  .btn2 {
-    cursor: pointer;
-    user-select: none;
-    border: 2px solid var(--black);
-    background: var(--black);
-    color: var(--white);
-    font-weight: 700;
-    font-family: var(--font);
-    border-radius: 10px;
-    transition: background .12s ease, color .12s ease;
-  }
-  .btn2:hover { background: #222; }
-  /* armed = inverted */
-  .btn2.armed {
-    background: var(--white);
-    color: var(--black);
-    border-color: var(--black);
-  }
-  .btn2[disabled] {
-    pointer-events: none;
-    opacity: 0.35;
-  }
+.toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; gap: 10px; }
+.toolbar-left { min-width: 0; display: flex; gap: 10px; align-items: center; }
+.toolbar-left .btn2, #btn-send { flex-shrink: 0; padding: 8px 20px; font-size: 16px; }
+.file-chips { display: flex; gap: 10px; margin-left: 4px; min-width: 0; }
+.file-chips:empty { display: none; }
+.file-chip {
+  color: #000; background: var(--lime); font-size: 14px; padding: 6px 14px; border-radius: 12px; cursor: pointer;
+  max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.type-row { position: relative; flex-shrink: 0; }
+#prompt-input {
+  width: 100%; background: #000; border: 4px solid var(--white); border-radius: 22px; color: var(--white);
+  font-size: 16px; padding: 14px 18px; resize: none; outline: none;
+}
+#prompt-input:focus { border-color: var(--lime); }
+#prompt-input::placeholder { color: var(--muted); }
+#char-count { position: absolute; right: 16px; bottom: -18px; font-size: 12px; color: var(--muted); }
 
-  /* White object lying on a black object */
-  .on-dark .btn2,
-  .topbar .btn2,
-  .mode-panel .btn2 {
-    background: var(--white);
-    color: var(--black);
-    border-color: var(--white);
-  }
-  .topbar .btn2:hover,
-  .mode-panel .btn2:hover { background: #e6e6e6; }
-  .topbar .btn2.armed,
-  .mode-panel .btn2.armed {
-    background: var(--black);
-    color: var(--white);
-    border-color: var(--white);
-  }
+.overlay { position: absolute; inset: 0; background: rgba(0,0,0,.85); display: none; align-items: center; justify-content: center; z-index: 20; }
+.overlay.show { display: flex; animation: overlayFadeIn .2s ease; }
+.overlay.show .mode-panel { animation: panelPopIn .25s cubic-bezier(.2,.9,.3,1.2); }
+@keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
+@keyframes panelPopIn { from { opacity: 0; transform: scale(.94) translateY(10px); } to { opacity: 1; transform: none; } }
+.mode-panel {
+  background: #000; border: 6px solid var(--lime); border-radius: 26px; padding: 22px 24px;
+  width: min(92vw, 480px); max-height: 94%; overflow-y: auto;
+}
+.mode-opt {
+  background: #000; color: var(--white); font-size: 17px; border: 4px solid var(--white); border-radius: 14px;
+  padding: 10px 14px; margin-bottom: 6px; cursor: pointer; transition: transform .2s ease;
+}
+.mode-opt:hover { transform: scale(.98); }
+.mode-opt.selected { background: var(--lime); border-color: var(--lime); color: #000; }
+.mode-desc { color: var(--muted); font-size: 13px; margin: 0 0 14px 4px; line-height: 1.4; }
+.mode-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; gap: 10px; }
+.mode-row .label { font-size: 16px; }
+.mode-row .controls { display: flex; align-items: center; gap: 6px; }
+.pill {
+  background: #000; color: var(--white); font-size: 15px; padding: 6px 12px; border-radius: 12px;
+  cursor: pointer; border: 3px solid var(--white); transition: transform .2s ease;
+}
+.pill:hover { transform: scale(.94); }
+.pill.selected { background: var(--lime); border-color: var(--lime); color: #000; }
+.pill.arrow { padding: 6px 10px; display: grid; place-items: center; }
+.pill.arrow .ico { width: 16px; height: 16px; }
+.mode-actions { display: flex; gap: 10px; margin-top: 16px; justify-content: flex-end; }
 
-  /* ───────── ENTRY SCREEN ───────── */
-  #screen-entry {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    padding: 24px 16px;
-    overflow-y: auto;
-  }
+#screen-settings { align-items: center; overflow-y: auto; padding-bottom: 16px; }
+.balance-card, .topup-card { width: min(92vw, 520px); border-radius: 26px; padding: 18px 22px; }
+.balance-card { border: 6px solid var(--blue); display: flex; justify-content: space-between; align-items: center; margin-top: 28px; font-size: 20px; }
+.balance-card .val { color: var(--blue); }
+.warn-text { text-align: center; font-size: 14px; color: var(--muted); margin: 14px 16px; }
+.topup-card { border: 6px solid var(--orange); }
+.topup-title { font-size: 17px; margin-bottom: 14px; }
+.topup-row { display: flex; align-items: center; justify-content: space-between; }
+.topup-row input {
+  width: 84px; background: #000; border: 3px solid var(--white); color: var(--white); font-size: 18px;
+  border-radius: 12px; padding: 6px 8px; text-align: center; outline: none;
+}
+.topup-row input[readonly] { border-color: var(--orange); color: var(--orange); }
+.topup-mid { display: flex; align-items: center; gap: 8px; font-size: 18px; }
+#confirm-topup { display: block; margin: 18px auto 0; padding: 10px 32px; }
 
-  .entry-content {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 28px;
-    width: 100%;
-    max-width: 760px;
-    margin: auto 0;
-  }
-
-  .entry-title-bar {
-    background: var(--black);
-    border: none;
-    padding: 16px 18px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    width: 100%;
-    flex-shrink: 0;
-    white-space: nowrap;
-  }
-  .entry-title-bar .intro {
-    color: var(--white);
-    font-size: clamp(10px, 2.8vw, 14px);
-    font-weight: 700;
-    letter-spacing: 1px;
-  }
-  .entry-title-bar .brand {
-    font-size: clamp(14px, 4.2vw, 22px);
-    font-weight: 800;
-    color: var(--white);
-    font-family: 'Courier New', monospace;
-    letter-spacing: 2px;
-  }
-  .entry-title-bar .sub {
-    font-size: clamp(10px, 2.8vw, 14px);
-    font-weight: 700;
-    color: var(--white);
-    letter-spacing: 1px;
-  }
-
-  .lang-switch {
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 10px;
-    padding: 6px 18px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-  }
-  .lang-switch .lang-btn {
-    background: transparent;
-    border: none;
-    padding: 2px 4px;
-    font-size: 14px;
-    font-weight: 700;
-    font-family: var(--font);
-    color: var(--white);
-    opacity: 0.5;
-    cursor: pointer;
-  }
-  .lang-switch .lang-btn.chosen {
-    opacity: 1;
-    text-decoration: underline;
-    text-underline-offset: 4px;
-  }
-  .lang-switch .sep { color: var(--white); opacity: 0.5; font-size: 14px; }
-
-  .entry-buttons {
-    display: flex;
-    flex-direction: column;
-    gap: 10px;
-    width: min(90vw, 360px);
-  }
-  .auth-hint {
-    max-width: min(90vw, 360px);
-    text-align: center;
-    font-size: 12px;
-    color: var(--black);
-  }
-  .entry-buttons .btn2 {
-    width: 100%;
-    padding: 12px 0;
-    font-size: 15px;
-    text-align: center;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-
-  .settings-footer {
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 14px;
-    padding: 10px 24px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 26px;
-    width: fit-content;
-    max-width: 94vw;
-    flex-wrap: wrap;
-  }
-  .settings-footer a {
-    text-decoration: none;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 8px;
-    color: var(--white);
-    font-size: 12.5px;
-    font-weight: 700;
-    white-space: nowrap;
-  }
-  .settings-footer .ic {
-    width: 26px; height: 26px;
-    border-radius: 50%;
-    background: var(--white);
-    color: var(--black);
-    display: flex; align-items: center; justify-content: center;
-    font-size: 13px; font-weight: 800;
-    flex-shrink: 0;
-    transition: transform 0.15s ease;
-  }
-  .settings-footer a:hover .ic { transform: scale(1.1); }
-
-  /* ───────── MAIN SCREEN ───────── */
-  .topbar {
-    height: 56px; background: var(--black);
-    border-bottom: 1px solid var(--black);
-    display: flex; align-items: center; justify-content: space-between;
-    padding: 0 16px; flex-shrink: 0;
-  }
-  #screen-settings .topbar {
-    height: 64px;
-    border: 1px solid var(--black);
-    border-radius: 16px;
-    margin-bottom: 4px;
-    width: 100%;
-  }
-  .topbar .side { display: flex; align-items: center; gap: 10px; min-width: 90px; }
-  .topbar .icon-btn {
-    width: 34px; height: 34px;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 16px;
-  }
-  .topbar .logo {
-    font-family: 'Courier New', monospace; letter-spacing: 6px;
-    font-size: 20px; color: var(--white);
-  }
-  /* switch sits on the black topbar → white */
-  .topbar .lang-switch {
-    padding: 4px 12px;
-    background: var(--white);
-    border-color: var(--white);
-  }
-  .topbar .lang-switch .lang-btn { font-size: 11px; color: var(--black); }
-  .topbar .lang-switch .sep { color: var(--black); }
-
-  #screen-main { padding: 16px; gap: 12px; border: 2px solid var(--black); }
-  .video-stage {
-    flex: 1; min-height: 0; width: 100%;
-    display: flex; align-items: center; justify-content: center;
-    container-type: size;
-  }
-  .video-frame {
-    --vr: 1.7778;
-    flex: none;
-    aspect-ratio: var(--vr);
-    width: min(100cqw, calc(100cqh * var(--vr)));
-    background: var(--black);
-    border: 1px solid var(--black); border-radius: 14px;
-    display: flex; align-items: center; justify-content: center;
-    position: relative; overflow: hidden;
-  }
-  .video-frame video { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: none; background: var(--black); }
-  .video-frame .placeholder { color: var(--white); font-size: 13px; }
-
-  /* generation status: bold, animated, prominent */
-  .video-frame .status {
-    display: none; flex-direction: column; align-items: center; gap: 14px;
-    color: var(--white); text-align: center; padding: 0 20px;
-  }
-  .video-frame .status.show { display: flex; }
-  .status .st-text {
-    font-size: clamp(22px, 4.2cqw, 40px); font-weight: 900; letter-spacing: 1.5px;
-    text-transform: uppercase;
-    animation: stPulse 1.6s ease-in-out infinite;
-  }
-  .status.static .st-text { animation: none; }
-  .status .st-dots { display: inline-block; width: 1.3em; text-align: left; }
-  .status .st-dots::after { content: ""; animation: stDots 1.4s steps(1, end) infinite; }
-  .status.static .st-dots { display: none; }
-  .status .st-count {
-    font-size: clamp(16px, 2.4cqw, 24px); font-weight: 800; letter-spacing: 3px;
-    font-family: 'Courier New', monospace; opacity: 0.95;
-  }
-  .status .st-bar {
-    width: min(320px, 70%); height: 6px; border-radius: 6px;
-    background: rgba(255,255,255,0.22); overflow: hidden;
-  }
-  .status .st-bar i { display: block; height: 100%; width: 0; background: var(--white); border-radius: 6px; }
-  .status.static .st-count, .status.static .st-bar { display: none; }
-  .status.static.err .st-count { display: block; font-size: 13px; letter-spacing: 1px; word-break: break-all; }
-  @keyframes stPulse {
-    0%, 100% { opacity: 0.55; text-shadow: 0 0 0 rgba(255,255,255,0); transform: scale(0.98); }
-    50%      { opacity: 1;    text-shadow: 0 0 18px rgba(255,255,255,0.85); transform: scale(1.03); }
-  }
-  @keyframes stDots {
-    0% { content: ""; } 25% { content: "."; } 50% { content: ".."; } 75% { content: "..."; }
-  }
-  @media (prefers-reduced-motion: reduce) {
-    .status .st-text, .status .st-dots::after { animation: none; }
-  }
-
-  .toolbar-row { display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
-  .toolbar-left { min-width: 0; display: flex; gap: 10px; }
-  .toolbar-left .btn2 { flex-shrink: 0; padding: 10px 18px; font-size: 14px; }
-
-  .file-chips { display: flex; gap: 10px; margin-left: 14px; min-width: 0; }
-  .file-chips:empty { display: none; }
-  .file-chip {
-    background: var(--black);
-    color: var(--white);
-    font-weight: 700;
-    font-size: 14px;
-    padding: 8px 14px;
-    border: 2px solid var(--black);
-    border-radius: 10px;
-    cursor: pointer;
-    max-width: 220px;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-  }
-  .file-chip.armed { background: var(--white); color: var(--black); }
-  #btn-send { padding: 10px 26px; font-size: 14px; position: relative; }
-
-  .type-row { position: relative; flex-shrink: 0; }
-  #prompt-input {
-    width: 100%; background: var(--black);
-    border: 2px solid var(--black); border-radius: 14px;
-    color: var(--white); font-size: 15px; padding: 16px 18px;
-    font-family: var(--font); resize: none; outline: none;
-  }
-  #prompt-input::placeholder { color: var(--white); opacity: 0.55; }
-  #char-count { position: absolute; right: 16px; bottom: -18px; font-size: 11px; color: var(--black); }
-
-  /* ───────── MODE PANEL (overlay) ───────── */
-  .overlay {
-    position: absolute; inset: 0;
-    background: rgba(255,255,255,0.85);
-    display: none;
-    align-items: center; justify-content: center;
-    z-index: 20;
-  }
-  .overlay.show {
-    display: flex;
-    animation: overlayFadeIn 0.2s ease;
-  }
-  .overlay.show .mode-panel {
-    animation: panelPopIn 0.25s cubic-bezier(.2,.9,.3,1.2);
-  }
-  @keyframes overlayFadeIn { from { opacity: 0; } to { opacity: 1; } }
-  @keyframes panelPopIn {
-    from { opacity: 0; transform: scale(0.94) translateY(10px); }
-    to   { opacity: 1; transform: scale(1) translateY(0); }
-  }
-
-  .mode-panel {
-    background: var(--black);
-    border: 2px solid var(--black);
-    border-radius: 16px;
-    padding: 22px 24px;
-    width: min(92vw, 460px);
-    max-height: 88vh;
-    overflow-y: auto;
-  }
-  .mode-opt {
-    background: var(--white);
-    color: var(--black);
-    font-weight: 800;
-    font-size: 14px;
-    border-radius: 8px;
-    padding: 9px 12px;
-    margin-bottom: 6px;
-    cursor: pointer;
-    border: 2px solid var(--white);
-  }
-  .mode-opt.selected { background: var(--black); color: var(--white); border-color: var(--white); }
-  .mode-desc {
-    color: var(--white);
-    font-size: 11.5px;
-    margin: 0 0 14px 2px;
-    line-height: 1.4;
-  }
-  .mode-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
-  .mode-row .label { background: var(--white); color: var(--black); font-weight: 800; font-size: 13px; padding: 8px 12px; border-radius: 8px; }
-  .mode-row .controls { display: flex; align-items: center; gap: 6px; }
-  .pill {
-    background: var(--white);
-    color: var(--black);
-    font-weight: 800;
-    font-size: 13px;
-    padding: 7px 12px;
-    border-radius: 8px;
-    cursor: pointer;
-    border: 2px solid var(--white);
-    font-family: var(--font);
-  }
-  .pill.selected { background: var(--black); color: var(--white); border-color: var(--white); }
-  .pill.arrow { padding: 7px 10px; }
-  #confirm-mode { display: block; margin: 16px 0 0 auto; padding: 9px 24px; font-size: 14px; }
-
-  /* ───────── SETTINGS SCREEN ───────── */
-  #screen-settings { padding: 20px 20px 0; align-items: center; border: 2px solid var(--black); }
-  .balance-card, .topup-card {
-    background: var(--black); color: var(--white);
-    border: 1px solid var(--black); border-radius: 14px;
-    width: min(92vw, 520px); padding: 18px 22px;
-  }
-  .balance-card { display: flex; justify-content: space-between; align-items: center; margin-top: 28px; }
-  .balance-card .lbl { font-weight: 800; font-size: 17px; }
-  .balance-card .val { color: var(--white); font-weight: 800; font-size: 17px; }
-  .warn-text { text-align: center; font-size: 13px; color: var(--black); margin: 14px 0; }
-  .topup-card { margin-top: 6px; }
-  .topup-title { color: var(--white); font-weight: 800; font-size: 15px; margin-bottom: 14px; }
-  .topup-row { display: flex; align-items: center; justify-content: space-between; }
-  .topup-row input {
-    width: 70px; background: var(--white); border: 2px solid var(--white);
-    color: var(--black); font-weight: 800; font-size: 16px; border-radius: 8px;
-    padding: 6px 8px; text-align: center; font-family: var(--font);
-  }
-  .topup-mid { color: var(--white); font-weight: 800; display: flex; align-items: center; gap: 6px; }
-  #confirm-topup { display: block; margin: 18px auto 0; padding: 10px 30px; font-size: 14px; }
-  .topup-card .btn2 {
-    background: var(--white); color: var(--black); border-color: var(--white);
-  }
-  .topup-card .btn2:hover { background: #e6e6e6; }
-  .topup-card .btn2.armed { background: var(--black); color: var(--white); border-color: var(--white); }
-
-  #screen-settings .settings-footer { margin-top: auto; margin-bottom: 20px; }
-
+.bottombar {
+  position: absolute; left: 0; right: 0; bottom: 0; height: var(--bb-h); z-index: 30;
+  display: flex; align-items: center; justify-content: center; gap: clamp(14px, 4vw, 40px);
+  padding: 0 12px env(safe-area-inset-bottom, 0px); background: #000; border-top: 3px solid #1a1a1a;
+}
+.bb-item {
+  display: inline-flex; align-items: center; gap: 8px; color: var(--white); text-decoration: none;
+  font-size: 15px; white-space: nowrap; transition: color .15s ease, transform .2s ease;
+}
+.bb-item:hover { color: var(--lime); transform: scale(.96); }
+.bb-item .ico { width: 24px; height: 24px; }
+@media (max-width: 720px) {
+  .bb-item span { display: none; }
+  .bb-item .ico { width: 28px; height: 28px; }
+  .bottombar { justify-content: space-around; gap: 0; }
+}
 </style>
 </head>
 <body>
 
 <div id="app">
 
-  <!-- ═══════════ ENTRY SCREEN ═══════════ -->
   <section class="screen active" id="screen-entry">
-    <div class="entry-title-bar">
-        <span class="intro" data-i18n="entry_intro">INTRODUCING</span>
-        <span class="brand">SYNAPSE AI</span>
-        <span class="sub">OTAN SYSTEMS</span>
-      </div>
-      
     <div class="entry-content">
+      <img class="entry-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Synapse logo">
+      <div class="entry-badge"><i></i><span data-i18n="entry_intro">INTRODUCING</span></div>
+      <h1 class="entry-title">SYNAPSE AI</h1>
+      <div class="entry-sub">OTAN SYSTEMS</div>
 
       <div class="lang-switch">
         <button type="button" class="lang-btn chosen" data-lang="en">English</button>
-        <span class="sep">/</span>
         <button type="button" class="lang-btn" data-lang="ru">Русский</button>
       </div>
 
       <div class="entry-buttons">
-    <button type="button" class="btn2 auth-btn" data-i18n="entry_signup">Sign Up</button>
-    <button type="button" class="btn2 auth-btn" data-i18n="entry_signin">Sign In</button>
-    <button type="button" class="btn2 auth-btn provider-bitbucket">BitBucket</button>
-    <button type="button" class="btn2 auth-btn provider-google">Google</button>
-    <button type="button" class="btn2 auth-btn provider-github">GitHub</button>
-    <div class="auth-hint" data-i18n="auth_hint">On the next page, keep the default settings and press Authorize.</div>
-   </div>
-
-      <div class="settings-footer">
-        <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span></a>
-        <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span></a>
-        <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span></a>
+        <button type="button" class="btn2 auth-btn c-lime" data-i18n="entry_signup">Sign Up</button>
+        <button type="button" class="btn2 auth-btn c-blue" data-i18n="entry_signin">Sign In</button>
+        <div class="auth-hint" data-i18n="auth_hint">On the next page, keep the default settings and press Authorize.</div>
       </div>
-
     </div>
   </section>
 
-  <!-- ═══════════ MAIN SCREEN ═══════════ -->
   <section class="screen" id="screen-main">
     <div class="topbar">
       <div class="side">
-        <div class="icon-btn btn2 armable" id="btn-gear" title="Settings">&#9881;</div>
+        <button type="button" class="btn2 icon-btn" id="btn-gear" title="Settings" aria-label="Settings"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg></button>
       </div>
-      <div class="logo">SYNAPSE</div>
-      <div class="side" style="justify-content:flex-end;">
+      <div class="logo"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt=""><span>SYNAPSE</span></div>
+      <div class="side">
         <div class="lang-switch">
           <button type="button" class="lang-btn chosen" data-lang="en">EN</button>
-          <span class="sep">/</span>
           <button type="button" class="lang-btn" data-lang="ru">RU</button>
         </div>
       </div>
@@ -508,22 +223,22 @@
       <div class="video-frame" id="videoFrame">
         <div class="placeholder" id="videoPlaceholder" data-i18n="video_placeholder">Your generated video will appear here</div>
         <div class="status" id="videoStatus">
-          <div class="st-text"><span id="videoStatusText" data-i18n="video_generating">Generating</span><span class="st-dots"></span></div>
-          <div class="st-count" id="videoCount"></div>
-          <div class="st-bar"><i id="videoBar"></i></div>
+          <svg class="spinner" viewBox="0 0 72 72" fill="none" stroke="currentColor" stroke-width="6"><path d="M36 10A26 26 0 1 1 10 36"/><polygon points="10,22 0,38 20,38" fill="currentColor" stroke="none"/></svg>
+          <div class="st-text"><span id="videoStatusText" data-i18n="video_nosample">Real generation is not connected yet</span></div>
+          <div class="st-detail" id="videoCount"></div>
         </div>
-        <video id="videoPlayer" controls playsinline></video>
+        <video id="videoPlayer" playsinline></video>
       </div>
     </div>
 
-      <div class="toolbar-row">
+    <div class="toolbar-row">
       <div class="toolbar-left">
-        <button type="button" class="btn2 armable" id="btn-addfiles" data-i18n="btn_addfiles">Add files</button>
-        <button type="button" class="btn2 cyan armable" id="btn-mode" data-i18n="btn_mode">Mode</button>
+        <button type="button" class="btn2 c-orange" id="btn-addfiles" data-i18n="btn_addfiles">Add files</button>
+        <button type="button" class="btn2 c-blue" id="btn-mode" data-i18n="btn_mode">Mode</button>
         <input type="file" id="fileInput" multiple hidden>
         <div class="file-chips" id="fileChips"></div>
       </div>
-      <button type="button" class="btn2 green armable" id="btn-send" disabled data-i18n="btn_send">Send</button>
+      <button type="button" class="btn2 c-lime" id="btn-send" disabled data-i18n="btn_send">Send</button>
     </div>
 
     <div class="type-row">
@@ -531,7 +246,6 @@
       <div id="char-count">0 / 5000</div>
     </div>
 
-    <!-- MODE OVERLAY -->
     <div class="overlay" id="modeOverlay">
       <div class="mode-panel">
         <div class="mode-opt" data-mode="text" data-i18n="mode_text">Text &rarr; Video</div>
@@ -550,9 +264,9 @@
         <div class="mode-row">
           <span class="label" data-i18n="mode_duration">Duration</span>
           <div class="controls">
-            <button type="button" class="pill arrow" id="durMinus">&lt;</button>
-            <span class="pill" id="durVal" style="min-width:64px;text-align:center;">15 sec</span>
-            <button type="button" class="pill arrow" id="durPlus">&gt;</button>
+            <button type="button" class="pill arrow" id="durMinus" aria-label="Less"><svg class="ico" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg></button>
+            <span class="pill" id="durVal" style="min-width:64px;text-align:center;cursor:default;">15 sec</span>
+            <button type="button" class="pill arrow" id="durPlus" aria-label="More"><svg class="ico" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg></button>
           </div>
         </div>
 
@@ -567,21 +281,20 @@
           </div>
         </div>
 
-        <div style="display:flex; gap:10px; margin-top:16px; justify-content:flex-end;">
-          <button type="button" class="btn2 armable" id="reset-mode" style="padding:9px 20px; font-size:14px;" data-i18n="btn_reset">Reset</button>
-          <button type="button" class="btn2 green armable" id="confirm-mode" style="margin:0; padding:9px 24px; font-size:14px;" data-i18n="btn_confirm">Confirm</button>
+        <div class="mode-actions">
+          <button type="button" class="btn2" id="reset-mode" style="padding:9px 20px; font-size:15px;" data-i18n="btn_reset">Reset</button>
+          <button type="button" class="btn2 c-lime" id="confirm-mode" style="padding:9px 24px; font-size:15px;" data-i18n="btn_confirm">Confirm</button>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════ SETTINGS SCREEN ═══════════ -->
   <section class="screen" id="screen-settings">
     <div class="topbar">
       <div class="side">
-        <div class="icon-btn btn2 armable" id="btn-back" title="Back">&#8630;</div>
+        <button type="button" class="btn2 icon-btn" id="btn-back" title="Back" aria-label="Back"><svg class="ico" viewBox="0 0 24 24"><path d="M19 12H5M12 19l-7-7 7-7"/></svg></button>
       </div>
-      <div class="logo">SYNAPSE</div>
+      <div class="logo"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt=""><span>SYNAPSE</span></div>
       <div class="side"></div>
     </div>
 
@@ -596,19 +309,19 @@
       <div class="topup-title" id="topupTitle" data-i18n-template="topup_title">Wanna top up? ---------- $0.1 per second</div>
       <div class="topup-row">
         <input type="number" id="topupX" min="1" value="10">
-        <span class="topup-mid"><span data-i18n="topup_unit_sec">s</span>&#10148;$</span>
+        <span class="topup-mid"><span data-i18n="topup_unit_sec">s</span><svg class="ico" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span>$</span></span>
         <input type="text" id="topupY" readonly value="1.0">
       </div>
-      <button type="button" class="btn2 green armable" id="confirm-topup" data-i18n="btn_confirm">Confirm</button>
-    </div>
-
-    <div class="settings-footer">
-      <a href="#" id="browseVideos"><span class="ic">&#128193;</span><span data-i18n="footer_browse">Browse all videos</span></a>
-      <a href="https://otansystems.com/synapse" target="_blank"><span class="ic">&#127760;</span><span data-i18n="footer_website">Visit our website</span></a>
-      <a href="mailto:otan-systems@proton.me"><span class="ic">&#9993;</span><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
-      <a href="https://otansystems.com/synapse/reference" target="_blank"><span class="ic">?</span><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+      <button type="button" class="btn2 c-lime" id="confirm-topup" data-i18n="btn_confirm">Confirm</button>
     </div>
   </section>
+
+  <nav class="bottombar" id="bottombar">
+    <a class="bb-item" href="#" id="browseVideos" aria-label="Browse all videos"><svg class="ico" viewBox="0 0 24 24"><path d="M22 19a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h5l2 3h9a2 2 0 0 1 2 2z"/></svg><span data-i18n="footer_browse">Browse all videos</span></a>
+    <a class="bb-item" href="https://otansystems.com/synapse" target="_blank" aria-label="Website"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><span data-i18n="footer_website">Visit our website</span></a>
+    <a class="bb-item" href="mailto:otan-systems@proton.me" aria-label="Contact"><svg class="ico" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><span data-i18n="footer_contact">Contact Sales &amp; Support</span></a>
+    <a class="bb-item" href="https://otansystems.com/synapse/reference" target="_blank" aria-label="Terms"><svg class="ico" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M9.1 9a3 3 0 0 1 5.8 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg><span data-i18n="footer_terms">Terms of Use &amp; Policy</span></a>
+  </nav>
 
 </div>
 
@@ -616,7 +329,6 @@
 (function () {
   "use strict";
 
-  /* ───────── i18n ───────── */
   var dict = {
     en: {
       entry_intro: "INTRODUCING", entry_signup: "Sign Up", entry_signin: "Sign In",
@@ -625,7 +337,7 @@
       btn_addfiles: "Add files", btn_mode: "Mode", btn_send: "Send", btn_confirm: "Confirm",
       type_here: "Type here...",
       video_placeholder: "Your generated video will appear here",
-      video_generating: "Generating", video_error: "Couldn't load this video", video_nosample: "Real generation is not connected yet",
+      video_error: "Couldn't load this video", video_nosample: "Real generation is not connected yet",
       mode_text: "Text → Video", mode_text_desc: "5000 symbols max. No additional files supported.",
       mode_ti: "Text & Image → Video", mode_ti_desc: "5000 symbols max. Up to 2 images (PNG, JPG, JPEG, WEBP), <20MB each.",
       mode_fs: "Full-Stack → Video", mode_fs_desc: "5000 symbols max. Up to 5 elements: images or video (<10s, <100MB). Formats: PNG, JPG, JPEG, WEBP, MP4, MOV.",
@@ -642,7 +354,7 @@
       btn_addfiles: "Файлы", btn_mode: "Режим", btn_send: "Отправить", btn_confirm: "Подтвердить",
       type_here: "Введите текст...",
       video_placeholder: "Здесь появится сгенерированное видео",
-      video_generating: "Генерация", video_error: "Не удалось загрузить видео", video_nosample: "Реальная генерация ещё не подключена",
+      video_error: "Не удалось загрузить видео", video_nosample: "Реальная генерация ещё не подключена",
       mode_text: "Текст → Видео", mode_text_desc: "До 5000 символов. Дополнительные файлы не поддерживаются.",
       mode_ti: "Текст и изображение → Видео", mode_ti_desc: "До 5000 символов. До 2 изображений (PNG, JPG, JPEG, WEBP), <20MB каждое.",
       mode_fs: "Full-Stack → Видео", mode_fs_desc: "До 5000 символов. До 5 элементов: изображения или видео (<10с, <100MB). Форматы: PNG, JPG, JPEG, WEBP, MP4, MOV.",
@@ -656,8 +368,8 @@
 
   var state = {
     lang: "en",
-    mode: null,           // 'text' | 'text-image' | 'fullstack'
-    audio: "O",            // 'I' | 'O'
+    mode: null,
+    audio: "O",
     duration: 15,
     ratio: "16/9",
     files: [],
@@ -717,29 +429,13 @@
     });
   });
 
-  var armed = null;
-
-  function wireArmable(el, action) {
-    el.classList.add("btn2", "armable");
+  function bindClick(el, action) {
     el.addEventListener("click", function (e) {
       if (el.hasAttribute("disabled")) return;
-      if (armed === el) {
-        el.classList.remove("armed");
-        armed = null;
-        action(e);
-      } else {
-        if (armed) armed.classList.remove("armed");
-        armed = el;
-        el.classList.add("armed");
-      }
+      action(e);
     });
   }
 
-  document.querySelectorAll(".armable").forEach(function (el) {
-    if (el.dataset.wired) return;
-  });
-  
-  /* ───────── OpenRouter login (PKCE) ───────── */
   var KEY_STORAGE = "synapse_or_key";
 
   function getApiKey() {
@@ -814,7 +510,6 @@
     }
   }
 
-  /* ───────── screen navigation ───────── */
   function showScreen(id) {
     document.querySelectorAll(".screen").forEach(function (s) { s.classList.remove("active"); });
     document.getElementById(id).classList.add("active");
@@ -825,16 +520,15 @@
     showScreen("screen-main");
   }
 
-  wireArmable(document.getElementById("btn-gear"), function () { showScreen("screen-settings"); });
-  wireArmable(document.getElementById("btn-back"), function () { showScreen("screen-main"); });
+  bindClick(document.getElementById("btn-gear"), function () { showScreen("screen-settings"); });
+  bindClick(document.getElementById("btn-back"), function () { showScreen("screen-main"); });
 
   document.querySelectorAll(".auth-btn").forEach(function (b) {
-  wireArmable(b, function () { startLogin(); });
+  bindClick(b, function () { startLogin(); });
   });
 
-  /* ───────── mode panel ───────── */
   var modeOverlay = document.getElementById("modeOverlay");
-  wireArmable(document.getElementById("btn-mode"), function () { modeOverlay.classList.add("show"); });
+  bindClick(document.getElementById("btn-mode"), function () { modeOverlay.classList.add("show"); });
 
   document.querySelectorAll(".mode-opt").forEach(function (opt) {
     opt.addEventListener("click", function () {
@@ -865,15 +559,8 @@
         ? (state.lang === "ru" ? "первый кадр" : "first frame")
         : (state.lang === "ru" ? "последний кадр" : "last frame"));
               chip.addEventListener("click", function () {
-        if (armed === chip) {
-          armed = null;
-          state.files.splice(i, 1);
-          updateModeFieldLocks();
-        } else {
-          if (armed) armed.classList.remove("armed");
-          armed = chip;
-          chip.classList.add("armed");
-        }
+        state.files.splice(i, 1);
+        updateModeFieldLocks();
       });
       box.appendChild(chip);
     });
@@ -904,7 +591,7 @@
     });
   });
 
-  wireArmable(document.getElementById("reset-mode"), function () {
+  bindClick(document.getElementById("reset-mode"), function () {
     state.mode = null;
     state.audio = "O";
     state.duration = 15;
@@ -920,7 +607,7 @@
     saveState();
   });
 
-  wireArmable(document.getElementById("confirm-mode"), function () {
+  bindClick(document.getElementById("confirm-mode"), function () {
     if (!state.mode) return;
     modeOverlay.classList.remove("show");
     setFrameRatio(state.ratio);
@@ -928,7 +615,6 @@
     saveState();
   });
 
-  /* ───────── send / prompt ───────── */
   var promptInput = document.getElementById("prompt-input");
   promptInput.addEventListener("input", function () {
     document.getElementById("char-count").textContent = promptInput.value.length + " / 5000";
@@ -941,12 +627,12 @@
     else sendBtn.setAttribute("disabled", "disabled");
   }
 
-  wireArmable(document.getElementById("btn-send"), function () {
+  bindClick(document.getElementById("btn-send"), function () {
     if (!state.mode) return;
     runGeneration();
   });
 
-  wireArmable(document.getElementById("btn-addfiles"), function () {
+  bindClick(document.getElementById("btn-addfiles"), function () {
     document.getElementById("fileInput").click();
   });
 
@@ -973,25 +659,23 @@
     updateModeFieldLocks();
   });
 
-  /* ───────── video frame + status helpers ───────── */
-  function setFrameRatio(r) {                       // r: "16/9" or number
+  function setFrameRatio(r) {
     var v = typeof r === "number" ? r : (function () { var p = String(r).split("/"); return p[0] / p[1]; })();
     document.getElementById("videoFrame").style.setProperty("--vr", v);
   }
 
-  var statusTimer = null;
-  function setStatus(key, mode) {                   // mode: "run" (animated + countdown) | "static" | "hide"
+  function setStatus(key, mode) {
     var status = document.getElementById("videoStatus");
     var txt = document.getElementById("videoStatusText");
-    txt.setAttribute("data-i18n", key);
-    txt.textContent = t(key);
+    if (key) {
+      txt.setAttribute("data-i18n", key);
+      txt.textContent = t(key);
+    }
     status.classList.toggle("show", mode !== "hide");
     status.classList.toggle("static", mode === "static");
   }
-  function stopCountdown() { if (statusTimer) { clearInterval(statusTimer); statusTimer = null; } }
 
-  /* ───────── demo samples: /sample <prompt> → local file after 30 s ───────── */
-  var SAMPLE_DELAY_SEC = 30;
+  var SAMPLE_DELAY_MS = 5000;
   var SAMPLES = [
     { prompt: "a cozy rainforest cafe",                            file: "202004-916894674_medium.mov" },
     { prompt: "a mysterious gradient mushroom in a forest",        file: "218309_medium.mov" },
@@ -1013,18 +697,16 @@
     if (generating) return;
     var placeholder = document.getElementById("videoPlaceholder");
     var player = document.getElementById("videoPlayer");
-    var count = document.getElementById("videoCount");
-    var bar = document.getElementById("videoBar");
     var sample = findSample(document.getElementById("prompt-input").value);
 
     generating = true;
-    stopCountdown();
     player.pause(); player.removeAttribute("src"); player.load();
     player.style.display = "none";
     placeholder.style.display = "none";
+    document.getElementById("videoStatus").classList.remove("err");
     setFrameRatio(state.ratio);
 
-    if (!sample) {                                  
+    if (!sample) {
       setStatus("video_nosample", "static");
       setTimeout(function () {
         setStatus("video_nosample", "hide");
@@ -1034,17 +716,8 @@
       return;
     }
 
-    var left = SAMPLE_DELAY_SEC, started = Date.now();
-    function tick() {
-      var elapsed = (Date.now() - started) / 1000;
-      left = Math.max(0, Math.ceil(SAMPLE_DELAY_SEC - elapsed));
-      count.textContent = "00:" + (left < 10 ? "0" : "") + left;
-      bar.style.width = Math.min(100, elapsed / SAMPLE_DELAY_SEC * 100) + "%";
-      if (elapsed >= SAMPLE_DELAY_SEC) { stopCountdown(); showGeneratedVideo([sample.file, sample.alt]); }
-    }
-    setStatus("video_generating", "run");
-    tick();
-    statusTimer = setInterval(tick, 250);
+    setStatus(null, "run");
+    setTimeout(function () { showGeneratedVideo([sample.file, sample.alt]); }, SAMPLE_DELAY_MS);
   }
 
     function showGeneratedVideo(urls) {
@@ -1074,17 +747,21 @@
     }
     player.onloadedmetadata = function () {
       setFrameRatio(player.videoWidth / player.videoHeight);
-      setStatus("video_generating", "hide");
+      setStatus(null, "hide");
       document.getElementById("videoStatus").classList.remove("err");
       player.style.display = "block";
       generating = false;
-      var pr = player.play(); if (pr && pr.catch) pr.catch(function () {});
+      var pr = player.play();
+      if (pr && pr.catch) pr.catch(function () {
+        player.muted = true;
+        var p2 = player.play();
+        if (p2 && p2.catch) p2.catch(function () {});
+      });
     };
     player.onerror = fail;
     load();
   }
 
-  /* ───────── settings: balance / top-up ───────── */
   function renderBalance() {
     document.getElementById("balanceVal").textContent = state.balanceSec + " sec";
   }
@@ -1097,7 +774,7 @@
   }
   topupX.addEventListener("input", syncTopup);
 
-  wireArmable(document.getElementById("confirm-topup"), function () {
+  bindClick(document.getElementById("confirm-topup"), function () {
     var sec = Math.max(0, parseInt(topupX.value, 10) || 0);
     state.balanceSec += sec;
     renderBalance();
@@ -1112,7 +789,6 @@
       : "All downloaded videos are in your browser's downloads folder.");
   });
 
-  /* ───────── init ───────── */
 (function restore() {
     var saved = loadSavedState();
     if (saved) {
