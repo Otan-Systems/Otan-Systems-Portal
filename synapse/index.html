@@ -52,7 +52,7 @@ h1:focus { outline: none; }
 }
 .shape:hover { transform: scale(.88); }
 
-/* ───────── topbar ───────── */
+
 .otan-topbar {
   display: none; position: fixed; inset: 0 0 auto 0; height: var(--topbar-h); z-index: 50;
   align-items: center; justify-content: space-between; gap: 12px;
@@ -122,13 +122,6 @@ h1:focus { outline: none; }
 .tb-links a { font-size: 16px; color: var(--white); text-decoration: none; white-space: nowrap; transition: color .15s ease, transform .2s ease; display: inline-block; }
 .tb-links a:hover { color: var(--accent); transform: scale(.96); }
 .tb-links a.tb-cta { color: var(--accent); border: 3px solid var(--accent); border-radius: 12px; padding: 3px 12px; }
-.lang-toggle { display: flex; gap: 6px; }
-.lang-toggle button {
-  font-size: 15px; color: var(--white); background: #000; border: 3px solid var(--white);
-  border-radius: 12px; padding: 3px 10px; cursor: pointer; transition: transform .2s ease;
-}
-.lang-toggle button:hover { transform: scale(.94); }
-.lang-toggle button.active { background: var(--accent); border-color: var(--accent); color: #000; }
 
 @media (max-width: 1280px) {
   .tb-burger { display: grid; }
@@ -157,7 +150,7 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 .sec-title { font-size: clamp(34px, 6vw, 72px); line-height: 1.05; margin-bottom: clamp(18px, 3vw, 32px); }
 .sec-desc { max-width: 60ch; font-size: clamp(16px, 1.8vw, 20px); line-height: 1.5; color: #e2e2e2; margin: -10px 0 clamp(20px, 3vw, 32px); }
 
-/* hero */
+
 .p-hero {
   min-height: calc(100svh - var(--topbar-h)); display: flex; flex-direction: column; align-items: center;
   justify-content: center; text-align: center; gap: clamp(14px, 2.4vw, 24px);
@@ -180,7 +173,7 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 }
 .btn:hover { transform: scale(.96); }
 
-/* stats */
+
 .p-stats { display: grid; gap: clamp(12px, 2vw, 20px); grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); padding-top: 0; }
 .p-stat { border: 6px solid var(--c); border-radius: 26px; padding: 18px 20px; text-align: center; }
 .p-stat-value { font-size: clamp(36px, 5vw, 60px); line-height: 1; color: var(--c); }
@@ -191,7 +184,7 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 .p-stats .p-stat:nth-child(4n+3), .tiles > :nth-child(4n+3), .bench-item:nth-child(4n+3), .link-grid > :nth-child(4n+3), .cd-item:nth-child(4n+3) { --c: var(--white); }
 .p-stats .p-stat:nth-child(4n+4), .tiles > :nth-child(4n+4), .bench-item:nth-child(4n+4), .link-grid > :nth-child(4n+4), .cd-item:nth-child(4n+4) { --c: var(--lime); }
 
-/* tiles */
+
 .tiles { display: grid; gap: clamp(14px, 2vw, 24px); grid-template-columns: repeat(auto-fill, minmax(min(100%, 300px), 1fr)); }
 .tile { display: flex; flex-direction: column; gap: 12px; border: 6px solid var(--c); border-radius: 26px; padding: 24px 26px; }
 .tile-title { font-size: clamp(24px, 3vw, 34px); line-height: 1.1; }
@@ -199,7 +192,7 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 .tile-stat { color: var(--c); font-size: 15px; }
 .tiles.two { grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr)); margin-bottom: clamp(24px, 4vw, 40px); }
 
-/* context / limits block */
+
 .ctx { border: 6px solid var(--accent); border-radius: 26px; padding: clamp(18px, 3vw, 28px); }
 .ctx-head { color: var(--accent); font-size: clamp(18px, 2.2vw, 24px); margin-bottom: 16px; }
 .budget { display: flex; gap: 8px; height: 60px; }
@@ -222,7 +215,7 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 .tag { border: 4px solid var(--white); border-radius: 999px; padding: 6px 20px; font-size: clamp(18px, 2.4vw, 26px); }
 .tag.featured { background: var(--accent); border-color: var(--accent); color: #000; }
 
-/* benchmarks */
+
 .bench { display: grid; gap: clamp(14px, 2vw, 22px); }
 .bench-item { border: 6px solid var(--c); border-radius: 26px; padding: 18px 22px; }
 .bench-head { display: flex; justify-content: space-between; align-items: baseline; gap: 12px; margin-bottom: 12px; }
@@ -232,23 +225,25 @@ body[data-accent="lime"]   { --accent: var(--lime); }
 .bench-fill { height: 100%; width: 0; background: var(--c); transition: width 1.2s cubic-bezier(.2, .8, .2, 1); }
 .bench-ticks { display: flex; justify-content: space-between; margin-top: 8px; font-size: 13px; color: var(--muted); }
 
-/* release */
+
 .release-big { font-size: clamp(48px, 11vw, 140px); line-height: 1; color: var(--accent); }
 .release-note { margin-top: 18px; font-size: 17px; color: #e2e2e2; }
+#release .sec-label { margin-bottom: clamp(24px, 4vw, 44px); }
+.tw-off { visibility: hidden; }
 .btn-release { --c: var(--lime); font-size: clamp(26px, 4vw, 48px); padding: 16px 36px; }
 
-/* link cards (download / contact) */
+
 .link-grid { display: grid; gap: clamp(14px, 2vw, 20px); grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); }
 .link-card {
   display: flex; align-items: center; gap: 16px; text-decoration: none; color: var(--white);
   border: 6px solid var(--c); border-radius: 26px; padding: 18px 22px; transition: transform .2s ease;
 }
 a.link-card:hover { transform: scale(.97); }
-.link-icon { font-size: 34px; line-height: 1; }
+.link-icon { width: 40px; height: 40px; flex: none; color: var(--c); stroke: currentColor; fill: none; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
 .link-platform { font-size: clamp(20px, 2.4vw, 26px); }
 .link-handle { margin-top: 4px; font-size: 15px; color: var(--c); word-break: break-all; }
 
-/* footer */
+
 .p-footer {
   display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px;
   padding: 28px clamp(20px, 4vw, 52px); border-top: 3px solid #1a1a1a; font-size: 14px; color: var(--muted);
@@ -258,7 +253,7 @@ a.link-card:hover { transform: scale(.97); }
 .p-footer-left { display: flex; align-items: center; gap: 10px; color: var(--white); font-size: 16px; }
 .p-footer-left img { width: 28px; height: 28px; }
 
-/* reveal */
+
 html.js .reveal { opacity: 0; transform: translateY(18px); transition: opacity .6s ease, transform .6s ease; }
 html.js .reveal.visible { opacity: 1; transform: none; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } html.js .reveal { opacity: 1; transform: none; } }
@@ -270,82 +265,78 @@ html.js .reveal.visible { opacity: 1; transform: none; }
 <header class="otan-topbar" id="otanTopbar" data-mode="always">
   <div class="tb-right">
     <ul class="tb-links">
-      <li><a href="#why" data-i18n="nav_why">Why Synapse</a></li>
-      <li><a href="#modes" data-i18n="nav_modes">Modes</a></li>
-      <li><a href="#release" data-i18n="nav_release">Release</a></li>
-      <li><a href="#contact" data-i18n="nav_contact">Contact</a></li>
-      <li><a class="tb-cta" href="mailto:otan-systems@proton.me" data-i18n="nav_sales">Sales</a></li>
+      <li><a href="#why">Why Synapse</a></li>
+      <li><a href="#modes">Modes</a></li>
+      <li><a href="#release">Release</a></li>
+      <li><a href="#contact">Contact</a></li>
+      <li><a class="tb-cta" href="mailto:otan-systems@proton.me">Sales</a></li>
     </ul>
-    <div class="lang-toggle" id="langToggle">
-      <button type="button" data-lang="en" class="active">EN</button>
-      <button type="button" data-lang="ru">RU</button>
-    </div>
   </div>
 </header>
 
 <main>
 <section class="p-hero">
-  <div class="p-badge"><i></i><span data-i18n="hero_badge">AI Video Generation</span></div>
+  <div class="p-badge"><i></i><span>AI Video Generation</span></div>
   <img class="p-logo" src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt="Synapse logo">
   <h1 class="p-title">
-    <span data-i18n="hero_title_1">Introducing</span><br>
-    <span class="accent" data-i18n="hero_title_2">Synapse</span>
+    <span>Introducing</span><br>
+    <span class="accent">Synapse</span>
   </h1>
-  <p class="p-sub" data-i18n="hero_sub">Text, image, or reference — Synapse turns it into finished 4K video in minutes.</p>
+  <p class="p-sub">Text, image, or reference — Synapse turns it into finished 4K video in minutes.</p>
   <div class="p-actions">
-    <a href="#modes" class="btn c-blue" data-i18n="hero_cta_primary">Explore modes</a>
-    <a href="mailto:otan-systems@proton.me" class="btn c-white" data-i18n="hero_cta_ghost">Talk to sales</a>
+    <a href="#modes" class="btn c-blue">Explore modes</a>
+    <a href="mailto:otan-systems@proton.me" class="btn c-white">Talk to sales</a>
   </div>
 </section>
 
 <div class="sec p-stats">
-  <div class="p-stat reveal"><div class="p-stat-value">4<span>K</span></div><div class="p-stat-label" data-i18n="stat_res">Resolution</div></div>
-  <div class="p-stat reveal"><div class="p-stat-value">60<span>fps</span></div><div class="p-stat-label" data-i18n="stat_fps">Frame rate</div></div>
-  <div class="p-stat reveal"><div class="p-stat-value">$0.1<span data-i18n="stat_sec_unit">/sec</span></div><div class="p-stat-label" data-i18n="stat_price">Flat rate</div></div>
-  <div class="p-stat reveal"><div class="p-stat-value">5<span data-i18n="stat_ratios_unit">ratios</span></div><div class="p-stat-label" data-i18n="stat_ratios">Aspect ratios</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">4<span>K</span></div><div class="p-stat-label">Resolution</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">60<span>fps</span></div><div class="p-stat-label">Frame rate</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">$0.1<span>/sec</span></div><div class="p-stat-label">Flat rate</div></div>
+  <div class="p-stat reveal"><div class="p-stat-value">5<span>ratios</span></div><div class="p-stat-label">Aspect ratios</div></div>
 </div>
 
 <section class="sec" id="why">
-  <div class="sec-label" data-i18n="why_label">Why Synapse</div>
-  <h2 class="sec-title" data-i18n="why_title">Built for creators who don't wait</h2>
-  <p class="sec-desc" data-i18n="why_desc">No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.</p>
+  <div class="sec-label">Why Synapse</div>
+  <h2 class="sec-title">Built for creators who don't wait</h2>
+  <p class="sec-desc">No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.</p>
   <div class="tiles">
     <div class="tile reveal">
-      <div class="tile-title" data-i18n="why1_title">Three ways in</div>
-      <div class="tile-desc" data-i18n="why1_desc">Start from a text prompt, a still image, or a reference clip — whichever fits the shot.</div>
-      <div class="tile-stat" data-i18n="why1_stat">Text · Image · Reference</div>
+      <div class="tile-title">Three ways in</div>
+      <div class="tile-desc">Start from a text prompt, a still image, or a reference clip — whichever fits the shot.</div>
+      <div class="tile-stat">Text · Image · Reference</div>
     </div>
     <div class="tile reveal">
-      <div class="tile-title" data-i18n="why2_title">One flat rate</div>
-      <div class="tile-desc" data-i18n="why2_desc">No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.</div>
-      <div class="tile-stat" data-i18n="why2_stat">$0.1 / sec, always</div>
+      <div class="tile-title">One flat rate</div>
+      <div class="tile-desc">No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.</div>
+      <div class="tile-stat">$0.1 / sec, always</div>
     </div>
     <div class="tile reveal">
-      <div class="tile-title" data-i18n="why3_title">Studio-grade output</div>
-      <div class="tile-desc" data-i18n="why3_desc">4K at 60FPS in five aspect ratios — ready for any platform, no re-export needed.</div>
-      <div class="tile-stat" data-i18n="why3_stat">4K · 60FPS</div>
+      <div class="tile-title">Studio-grade output</div>
+      <div class="tile-desc">4K at 60FPS in five aspect ratios — ready for any platform, no re-export needed.</div>
+      <div class="tile-stat">4K · 60FPS</div>
     </div>
     <div class="tile reveal">
-      <div class="tile-title" data-i18n="why4_title">Audio built in</div>
-      <div class="tile-desc" data-i18n="why4_desc">Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.</div>
-      <div class="tile-stat" data-i18n="why4_stat">Synapse Studio Pro</div>
+      <div class="tile-title">Audio built in</div>
+      <div class="tile-desc">Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.</div>
+      <div class="tile-stat">Synapse Studio Pro</div>
     </div>
   </div>
 </section>
 
 <section class="sec" id="modes">
-  <div class="sec-label" data-i18n="modes_label">Modes</div>
-  <h2 class="sec-title" data-i18n="modes_title">Video Pro. Studio Pro.</h2>
-  <p class="sec-desc" data-i18n="modes_desc">Same engine, same price. Choose whether sound comes with it.</p>
+  <div class="sec-label">Modes</div>
+  <h2 class="sec-title">Video Pro. Studio Pro.</h2>
+  <p class="sec-desc">Same engine, same price. Choose whether sound comes with it.</p>
 
   <div class="tiles two">
     <div class="tile reveal">
       <div class="tile-title">Synapse Video Pro</div>
-      <div class="tile-desc" data-i18n="mode_video_desc">Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.</div>
+      <div class="tile-desc">Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.</div>
     </div>
     <div class="tile reveal">
       <div class="tile-title">Synapse Studio Pro</div>
-      <div class="tile-desc" data-i18n="mode_studio_desc">Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.</div>
+      <div class="tile-desc">Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.</div>
     </div>
   </div>
 
@@ -358,116 +349,42 @@ html.js .reveal.visible { opacity: 1; transform: none; }
   </div>
 
   <div class="ctx reveal">
-    <div class="ctx-head" data-i18n="limits_header">Generation limits</div>
+    <div class="ctx-head">Generation limits</div>
     <div class="cd-grid">
-      <div class="cd-item"><div class="cd-label" data-i18n="limit_ttv">Text-to-Video</div><div class="cd-val">512 toks</div></div>
-      <div class="cd-item"><div class="cd-label" data-i18n="limit_itv">Image-to-Video</div><div class="cd-val">1024 toks</div></div>
-      <div class="cd-item"><div class="cd-label" data-i18n="limit_rtv">Reference-to-Video</div><div class="cd-val">1024 toks</div></div>
-      <div class="cd-item"><div class="cd-label" data-i18n="limit_res">Output</div><div class="cd-val">4K&amp;60FPS</div></div>
+      <div class="cd-item"><div class="cd-label">Text-to-Video</div><div class="cd-val">512 toks</div></div>
+      <div class="cd-item"><div class="cd-label">Image-to-Video</div><div class="cd-val">1024 toks</div></div>
+      <div class="cd-item"><div class="cd-label">Reference-to-Video</div><div class="cd-val">1024 toks</div></div>
+      <div class="cd-item"><div class="cd-label">Output</div><div class="cd-val">4K&amp;60FPS</div></div>
     </div>
   </div>
 </section>
 
 <section class="sec" id="release">
-  <div class="sec-label" data-i18n="release_label">Release</div>
-  <a class="btn btn-release reveal" href="https://otansystems.com/synapse/ai" target="_self" data-i18n="release_btn">Ready To Use!</a>
+  <div class="sec-label">Release</div>
+  <a class="btn btn-release reveal" href="https://otansystems.com/synapse/ai" target="_self">Ready To Use!</a>
 </section>
 
 <section class="sec" id="contact">
-  <div class="sec-label" data-i18n="contact_label">Contact</div>
-  <h2 class="sec-title" data-i18n="contact_title">Let's get in touch</h2>
-  <p class="sec-desc" data-i18n="contact_desc">Questions, partnerships, or just curious?</p>
+  <div class="sec-label">Contact</div>
+  <h2 class="sec-title">Let's get in touch</h2>
+  <p class="sec-desc">Questions, partnerships, or just curious?</p>
   <div class="link-grid">
-    <a class="link-card reveal" href="mailto:otan-systems@proton.me"><div class="link-icon">✉️</div><div><div class="link-platform" data-i18n="contact_email_label">Email · Sales</div><div class="link-handle">otan-systems@proton.me</div></div></a>
-    <a class="link-card reveal" href="https://otansystems.com"><div class="link-icon">🌐</div><div><div class="link-platform" data-i18n="contact_lobby_label">Website · To Lobby</div><div class="link-handle">otansystems.com</div></div></a>
+    <a class="link-card reveal" href="mailto:otan-systems@proton.me"><svg class="link-icon" viewBox="0 0 24 24"><rect x="2" y="4" width="20" height="16" rx="2"/><path d="M22 7l-10 7L2 7"/></svg><div><div class="link-platform">Email · Sales</div><div class="link-handle">otan-systems@proton.me</div></div></a>
+    <a class="link-card reveal" href="https://otansystems.com"><svg class="link-icon" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10z"/></svg><div><div class="link-platform">Website · To Lobby</div><div class="link-handle">otansystems.com</div></div></a>
   </div>
 </section>
 </main>
 
 <footer class="p-footer">
-  <div class="p-footer-left"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt=""><span data-i18n="footer_copy">© 2026 Otan Systems. All rights reserved.</span></div>
-  <a href="/#privacy" data-i18n="footer_priv">Otan ID Privacy &amp; Policy</a>
+  <div class="p-footer-left"><img src="data:image/svg+xml,%3Csvg%20xmlns=%22http://www.w3.org/2000/svg%22%20viewBox=%220%200%201000%201000%22%3E%3Cpolygon%20points=%22500,50%20933,300%20500,550%2067,300%22%20fill=%22%23ffffff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%2267,300%20500,550%20500,950%2067,700%22%20fill=%22%231200b3%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3Cpolygon%20points=%22500,550%20933,300%20933,700%20500,950%22%20fill=%22%233caeff%22%20stroke=%22%23000000%22%20stroke-width=%2235%22%20stroke-linejoin=%22round%22/%3E%3C/svg%3E" alt=""><span>© 2026 Otan Systems. All rights reserved.</span></div>
+  <a href="/#privacy">Otan ID Privacy &amp; Policy</a>
 </footer>
 
 <script src="/otan-id.js"></script>
 <script>
 (function(){
-  var dict = {
-    en: {
-      nav_why: "Why Synapse", nav_modes: "Modes", nav_release: "Release", nav_contact: "Contact",
-      nav_sales: "Sales",
-      hero_badge: "AI Video Generation",
-      hero_title_1: "Your idea.", hero_title_2: "Already video.",
-      hero_sub: "Text, image, or reference — Synapse turns it into finished 4K video in minutes.",
-      hero_cta_primary: "Explore modes", hero_cta_ghost: "Talk to sales",
-      stat_res: "Resolution", stat_fps: "Frame rate", stat_price: "Flat rate", stat_ratios: "Aspect ratios",
-      stat_sec_unit: "/sec", stat_ratios_unit: "ratios",
-      why_label: "Why Synapse", why_title: "Built for creators who don't wait",
-      why_desc: "No timelines, no rendering rigs, no learning curve — describe the shot and get finished footage back.",
-      why1_title: "Three ways in", why1_desc: "Start from a text prompt, a still image, or a reference clip — whichever fits the shot.", why1_stat: "Text · Image · Reference",
-      why2_title: "One flat rate", why2_desc: "No bundles, no tiers, no leftover credits. Pay for exactly the seconds you generate.", why2_stat: "$0.1 / sec, always",
-      why3_title: "Studio-grade output", why3_desc: "4K at 60FPS in five aspect ratios — ready for any platform, no re-export needed.", why3_stat: "4K · 60FPS",
-      why4_title: "Audio built in", why4_desc: "Switch to Studio Pro and get a soundtrack generated alongside the picture — same request.", why4_stat: "Synapse Studio Pro",
-      modes_label: "Modes", modes_title: "Video Pro. Studio Pro.", modes_desc: "Same engine, same price. Choose whether sound comes with it.",
-      mode_video_desc: "Silent video generation — Text-to-Video, Image-to-Video, and Reference-to-Video.",
-      mode_studio_desc: "Everything in Video Pro, plus a generated soundtrack — video and audio in one pass.",
-      limits_header: "Generation limits", tokens_word: "tokens",
-      limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Output",
-      release_label: "Release", release_btn: "Ready To Use!", release_big: "Not Estimated",
-      release_note: "No fixed date yet — check back, or reach out and we'll keep you posted.",
-      release_info: "Synapse AI is in active development. Video Pro and Studio Pro will ship for Windows, macOS, Linux, and Android — all builds distributed through GitHub Releases.",
-      release_cta: "Get notified",
-      contact_label: "Contact", contact_title: "Let's talk", contact_desc: "Questions, partnerships, or just curious — reach us directly.",
-      contact_email_label: "Email · Sales", contact_lobby_label: "Website · To Lobby",
-      footer_copy: "© 2026 Otan Systems. All rights reserved.",
-      footer_priv: "Otan ID Privacy & Policy"
-    },
-    ru: {
-      nav_why: "Почему Synapse", nav_modes: "Режимы", nav_release: "Релиз", nav_contact: "Контакты",
-      nav_sales: "Sales",
-      hero_badge: "ИИ-генерация видео",
-      hero_title_1: "Ваша идея.", hero_title_2: "Уже видео.",
-      hero_sub: "Текст, изображение или референс — Synapse превращает это в готовое видео 4K за минуты.",
-      hero_cta_primary: "Смотреть режимы", hero_cta_ghost: "Связаться с продажами",
-      stat_res: "Разрешение", stat_fps: "Частота кадров", stat_price: "Единый тариф", stat_ratios: "Форматов кадра",
-      stat_sec_unit: "/сек", stat_ratios_unit: "форматов",
-      why_label: "Почему Synapse", why_title: "Для тех, кто не хочет ждать",
-      why_desc: "Без таймлайнов, без рендер-ферм, без обучения — опишите кадр и получите готовое видео.",
-      why1_title: "Три точки входа", why1_desc: "Начните с текстового описания, изображения или референса — как удобнее для кадра.", why1_stat: "Текст · Изображение · Референс",
-      why2_title: "Единый тариф", why2_desc: "Без пакетов, без уровней, без сгорающих кредитов. Платите ровно за сгенерированные секунды.", why2_stat: "$0.1 / сек, всегда",
-      why3_title: "Качество студии", why3_desc: "4K при 60FPS в пяти форматах кадра — готово под любую площадку, без переэкспорта.", why3_stat: "4K • 60FPS",
-      why4_title: "Звук из коробки", why4_desc: "Включите Studio Pro — и звуковая дорожка генерируется вместе с картинкой, одним запросом.", why4_stat: "Synapse Studio Pro",
-      modes_label: "Режимы", modes_title: "Video Pro. Studio Pro.", modes_desc: "Один движок, одна цена. Вы выбираете, нужен ли звук.",
-      mode_video_desc: "Генерация видео без звука — Text-to-Video, Image-to-Video и Reference-to-Video.",
-      mode_studio_desc: "Всё то же самое, что в Video Pro, плюс сгенерированная звуковая дорожка — видео и аудио за один проход.",
-      limits_header: "Лимиты генерации", tokens_word: "токенов",
-      limit_ttv: "Text-to-Video", limit_itv: "Image-to-Video", limit_rtv: "Reference-to-Video", limit_res: "Вывод",
-      release_label: "Релиз", release_btn: "Готово к использованию!", release_big: "Не определена",
-      release_note: "Точной даты пока нет — загляните позже или напишите нам, и мы вас предупредим.",
-      release_info: "Synapse AI в активной разработке. Video Pro и Studio Pro выйдут для Windows, macOS, Linux и Android — все сборки будут доступны в GitHub Releases.",
-      release_cta: "Сообщить о релизе",
-      contact_label: "Контакты", contact_title: "Свяжемся", contact_desc: "Вопросы, партнёрство или просто интересно — пишите напрямую.",
-      contact_email_label: "Почта · Sales", contact_lobby_label: "Сайт · To Lobby",
-      footer_copy: "© 2026 Otan Systems. Все права защищены.",
-      footer_priv: "Политика конфиденциальности Otan ID"
-    }
-  };
-  function setLang(lang){
-    document.documentElement.lang = lang;
-    document.querySelectorAll('[data-i18n]').forEach(function(el){
-      var key = el.getAttribute('data-i18n');
-      if (dict[lang][key] !== undefined) el.textContent = dict[lang][key];
-    });
-    document.querySelectorAll('#langToggle button').forEach(function(btn){
-      btn.classList.toggle('active', btn.getAttribute('data-lang') === lang);
-    });
-  }
-
-  document.getElementById('langToggle').addEventListener('click', function(e){
-    var btn = e.target.closest('button[data-lang]');
-    if (!btn) return;
-    setLang(btn.getAttribute('data-lang'));
-  });
+  var DURATION = 500;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
   var io = new IntersectionObserver(function(entries){
     entries.forEach(function(entry){
@@ -478,6 +395,42 @@ html.js .reveal.visible { opacity: 1; transform: none; }
     });
   }, { threshold: 0.15 });
   document.querySelectorAll('.reveal').forEach(function(el){ io.observe(el); });
+
+  function type(el){
+    var on = el._on, off = el._off, text = el._text;
+    if (reduce) { on.textContent = text; off.textContent = ''; return; }
+    var start = null;
+    function step(ts){
+      if (start === null) start = ts;
+      var n = Math.min(text.length, Math.floor((ts - start) / DURATION * text.length));
+      on.textContent = text.slice(0, n);
+      off.textContent = text.slice(n);
+      if (n < text.length) requestAnimationFrame(step);
+    }
+    requestAnimationFrame(step);
+  }
+
+  var tio = new IntersectionObserver(function(entries){
+    entries.forEach(function(entry){
+      if (entry.isIntersecting) {
+        tio.unobserve(entry.target);
+        type(entry.target);
+      }
+    });
+  }, { threshold: 0.15 });
+
+  document.querySelectorAll('.p-badge span, .p-title span, .p-sub, .sec-label, .sec-title, .sec-desc, .tile-title, .tile-desc, .tile-stat, .p-stat-label, .ctx-head, .cd-label, .link-platform, .link-handle').forEach(function(el){
+    var text = el.textContent;
+    var on = document.createElement('span');
+    var off = document.createElement('span');
+    off.className = 'tw-off';
+    off.textContent = text;
+    el.textContent = '';
+    el.appendChild(on);
+    el.appendChild(off);
+    el._on = on; el._off = off; el._text = text;
+    tio.observe(el);
+  });
 })();
 </script>
 </body>
